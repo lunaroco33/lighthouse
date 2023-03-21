@@ -68,7 +68,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       return element;
     }
     const details = audit.result.details;
-    if (details.type !== 'opportunity') {
+    if (details.overallSavingsMs === undefined) {
       return element;
     }
 
@@ -98,7 +98,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
    * @return {number}
    */
   _getWastedMs(audit) {
-    if (audit.result.details && audit.result.details.type === 'opportunity') {
+    if (audit.result.details) {
       const details = audit.result.details;
       if (typeof details.overallSavingsMs !== 'number') {
         throw new Error('non-opportunity details passed to _getWastedMs');
@@ -165,7 +165,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
    */
   _classifyPerformanceAudit(audit) {
     if (audit.group) return null;
-    if (audit.result.details && audit.result.details.type === 'opportunity') {
+    if (audit.result.details?.overallSavingsMs !== undefined) {
       return 'load-opportunity';
     }
     return 'diagnostic';
