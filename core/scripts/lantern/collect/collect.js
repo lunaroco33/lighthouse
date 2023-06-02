@@ -42,24 +42,23 @@ function saveData(filename, data) {
  */
 async function runUnthrottledLocally(url) {
   const artifactsFolder = `${LH_ROOT}/.tmp/collect-traces-artifacts`;
-  const {stdout} = await execFileAsync('node', [
+  if (fs.existsSync(artifactsFolder)) {
+    fs.rmSync(artifactsFolder, {recursive: true});
+  }
+  await execFileAsync('node', [
     `${LH_ROOT}/cli`,
     url,
     '--throttling-method=provided',
-    '--output=json',
     `-AG=${artifactsFolder}`,
     process.env.OOPIFS === '1' ? '' : '--chrome-flags=--disable-features=site-per-process',
-  ], {
-    // Default (1024 * 1024) is too small.
-    maxBuffer: 10 * 1024 * 1024,
-  });
-  const lhr = JSON.parse(stdout);
-  assertLhr(lhr);
+  ]);
+  const lhrString = fs.readFileSync(`${artifactsFolder}/lhr.report.json`, 'utf-8');
+  assertLhr(JSON.parse(lhrString));
   const devtoolsLog = fs.readFileSync(`${artifactsFolder}/defaultPass.devtoolslog.json`, 'utf-8');
   const trace = fs.readFileSync(`${artifactsFolder}/defaultPass.trace.json`, 'utf-8');
   return {
     devtoolsLog,
-    lhr: JSON.stringify(lhr),
+    lhr: lhrString,
     trace,
   };
 }
