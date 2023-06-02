@@ -9,7 +9,7 @@
 /** @typedef {import('./common.js').Summary} Summary */
 
 import fs from 'fs';
-import {execFile} from 'child_process';
+import {execFile, execFileSync} from 'child_process';
 import {promisify} from 'util';
 
 import defaultTestUrls from './urls.js';
@@ -64,12 +64,28 @@ async function runUnthrottledLocally(url) {
   };
 }
 
+function enableLinkConditioner() {
+  execFileSync('osascript', ['link-conditioner.applescript', 'true', 'LighthouseCustom'], {
+    cwd: `${LH_ROOT}/core/scripts/lantern/collect`,
+  });
+  return () => {
+    execFileSync('osascript', ['link-conditioner.applescript', 'false', 'LighthouseCustom'], {
+      cwd: `${LH_ROOT}/core/scripts/lantern/collect`,
+    });
+  };
+}
+
 /**
  * @param {string} url
  * @return {Promise<Result>}
  */
 async function runThrottledMobileDevice(url) {
-  return runUnthrottledLocally(url);
+  const disableLinkConditioner = enableLinkConditioner();
+  try {
+    return await runUnthrottledLocally(url);
+  } finally {
+    disableLinkConditioner();
+  }
 }
 
 /**
