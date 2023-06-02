@@ -22,7 +22,7 @@ There are 9 runs for each URL in the big zip. The golden zip contains just the m
 ## Run
 
 ```sh
-DEBUG=1 node --max-old-space-size=4096 collect.js
+node --max-old-space-size=4096 collect.js
 ```
 
 Output will be in `dist/collect-lantern-traces`, and zipped at `dist/collect-lantern-traces.zip`.
