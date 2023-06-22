@@ -56,7 +56,6 @@ function generateTraceWithLongTasks({count, duration = 200, withChildTasks = fal
 describe('Long tasks audit', () => {
   const devtoolsLog = networkRecordsToDevtoolsLog([{
     url: TASK_URL,
-    requestId: '1',
     priority: 'High',
   }]);
   const URL = {
