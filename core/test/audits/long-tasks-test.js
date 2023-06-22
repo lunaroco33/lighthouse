@@ -137,7 +137,7 @@ describe('Long tasks audit', () => {
     ]);
     expect(result.score).toBe(0);
     expect(result.displayValue).toBeDisplayString('2 long tasks found');
-    expect(result.metricSavings).toEqual({TBT: 50}); // Only 1 event is long enough, 100ms - 50ms
+    expect(result.metricSavings).toEqual({TBT: 50}); // (100ms - 50ms) + (50ms - 50ms)
   });
 
   it('should not filter out tasks with duration >= 50 ms only after throttling', async () => {
