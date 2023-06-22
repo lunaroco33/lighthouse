@@ -415,6 +415,18 @@ class Audit {
       details: product.details,
     };
   }
+
+  /**
+   * @param {LH.Artifacts} artifacts
+   * @param {LH.Audit.Context} context
+   * @returns {LH.Artifacts.MetricComputationDataInput}
+   */
+  static makeMetricComputationDataInput(artifacts, context) {
+    const trace = artifacts.traces[Audit.DEFAULT_PASS];
+    const devtoolsLog = artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+    const gatherContext = artifacts.GatherContext;
+    return {trace, devtoolsLog, gatherContext, settings: context.settings, URL: artifacts.URL};
+  }
 }
 
 export {Audit};
