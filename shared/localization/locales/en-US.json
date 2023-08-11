@@ -1328,15 +1328,6 @@
   "core/audits/redirects.js | title": {
     "message": "Avoid multiple page redirects"
   },
-  "core/audits/resource-summary.js | description": {
-    "message": "To set budgets for the quantity and size of page resources, add a budget.json file. [Learn more about performance budgets](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount, plural, =1 {1 request • {byteCount, number, bytes} KiB} other {# requests • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Keep request counts low and transfer sizes small"
-  },
   "core/audits/seo/canonical.js | description": {
     "message": "Canonical links suggest which URL to show in search results. [Learn more about canonical links](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
   },

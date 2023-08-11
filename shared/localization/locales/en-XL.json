@@ -1328,15 +1328,6 @@
   "core/audits/redirects.js | title": {
     "message": "Âv́ôíd̂ ḿûĺt̂íp̂ĺê ṕâǵê ŕêd́îŕêćt̂ś"
   },
-  "core/audits/resource-summary.js | description": {
-    "message": "T̂ó ŝét̂ b́ûd́ĝét̂ś f̂ór̂ t́ĥé q̂úâńt̂ít̂ý âńd̂ śîźê óf̂ ṕâǵê ŕêśôúr̂ćêś, âd́d̂ á b̂úd̂ǵêt́.ĵśôń f̂íl̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂ś](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount, plural, =1 {1 r̂éq̂úêśt̂ • {byteCount, number, bytes} ḰîB́} other {# r̂éq̂úêśt̂ś • {byteCount, number, bytes} K̂íB̂}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "K̂éêṕ r̂éq̂úêśt̂ ćôún̂t́ŝ ĺôẃ âńd̂ t́r̂án̂śf̂ér̂ śîźêś ŝḿâĺl̂"
-  },
   "core/audits/seo/canonical.js | description": {
     "message": "Ĉán̂ón̂íĉál̂ ĺîńk̂ś ŝúĝǵêśt̂ ẃĥíĉh́ ÛŔL̂ t́ô śĥóŵ ín̂ śêár̂ćĥ ŕêśûĺt̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĉán̂ón̂íĉál̂ ĺîńk̂ś](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
   },

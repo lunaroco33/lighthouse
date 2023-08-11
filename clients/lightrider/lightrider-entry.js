@@ -54,7 +54,8 @@ async function getPageFromConnection(connection) {
     undefined /* defaultViewport */,
     undefined /* process */,
     undefined /* closeCallback */,
-    targetInfo => targetInfo.targetId === mainTargetInfo.targetId
+    // @ts-expect-error internal property
+    targetInfo => targetInfo._targetId === mainTargetInfo.targetId
   );
 
   const pages = await browser.pages();

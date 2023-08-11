@@ -1,3 +1,117 @@
+<a name="11.0.0"></a>
+# 11.0.0 (2023-08-03)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v10.4.0...v11.0.0)
+
+We expect this release to ship in the DevTools of [Chrome 118](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New Contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- Nakamura Ayahito @penicillin0
+- patrick kettner @patrickkettner
+- lasseschou @lasseschou
+- ZzZzzzxc @ZzZzzzxc
+
+## Notable Changes
+
+### Removed legacy navigation runner
+
+The `--legacy-navigation` flag on the CLI, the `legacyNavigation()` function in the Node API, and the "Legacy navigation" checkbox in the DevTools panel have all been removed.
+
+### New `DevtoolsLog` and `Trace` artifacts
+
+For custom audits, the `devtoolsLogs['defaultPass']` and `traces['defaultPass']` artifacts have been deprecated in favor of `DevtoolsLog` and `Trace`. See our [plugin docs](https://github.com/GoogleChrome/lighthouse/blob/main/docs/plugins.md#using-network-requests) for example usage.
+
+`devtoolsLogs` and `traces` still exist for compatibility purposes but will be removed in a future breaking release.
+
+## 🆕 New Audits
+
+* add minor aXe audits and re-weight existing ones ([#15298](https://github.com/GoogleChrome/lighthouse/pull/15298))
+
+## 💥 Breaking changes
+
+* misc: drop node 16 support ([#15290](https://github.com/GoogleChrome/lighthouse/pull/15290))
+* core: remove `resource-summary` audit ([#15299](https://github.com/GoogleChrome/lighthouse/pull/15299))
+* core: add `DevtoolsLogError` and `TraceError` artifacts ([#15311](https://github.com/GoogleChrome/lighthouse/pull/15311))
+* core: make INP non-experimental ([#15285](https://github.com/GoogleChrome/lighthouse/pull/15285))
+* core: remove `service-worker` audit ([#15257](https://github.com/GoogleChrome/lighthouse/pull/15257))
+* core: remove legacy runner ([#15253](https://github.com/GoogleChrome/lighthouse/pull/15253))
+* core: remove `first-contentful-paint-3g` audit ([#15252](https://github.com/GoogleChrome/lighthouse/pull/15252))
+
+## Core
+
+* re-weight best practices ([#15321](https://github.com/GoogleChrome/lighthouse/pull/15321))
+* single network monitor kept on Driver ([#15055](https://github.com/GoogleChrome/lighthouse/pull/15055))
+* do not emit NOT_HTML error if record not ok ([#15271](https://github.com/GoogleChrome/lighthouse/pull/15271))
+* report artifact error when collected, add err.extra ([#15258](https://github.com/GoogleChrome/lighthouse/pull/15258))
+* remove the "FR" prefix from types ([#15274](https://github.com/GoogleChrome/lighthouse/pull/15274))
+* remove legacy artifacts types ([#15273](https://github.com/GoogleChrome/lighthouse/pull/15273))
+* duplicated-javascript: use valid granularity ([#15275](https://github.com/GoogleChrome/lighthouse/pull/15275))
+* lcp-element: gracefully handle error in phase table ([#15329](https://github.com/GoogleChrome/lighthouse/pull/15329))
+* network-analyzer: coarse rtt estimate on per-origin basis ([#15103](https://github.com/GoogleChrome/lighthouse/pull/15103))
+* network-request: loosen lightrider timing checksum ([#15330](https://github.com/GoogleChrome/lighthouse/pull/15330))
+* render-blocking-resources: add FCP and LCP savings ([#15238](https://github.com/GoogleChrome/lighthouse/pull/15238))
+* response-compresson: throw on unexpected error ([#15259](https://github.com/GoogleChrome/lighthouse/pull/15259))
+* source-maps: use `Scripts` as a dependency ([#15293](https://github.com/GoogleChrome/lighthouse/pull/15293))
+* stack-packs: add NitroPack detection ([#15314](https://github.com/GoogleChrome/lighthouse/pull/15314))
+* uses-http2: add LCP and FCP savings ([#15320](https://github.com/GoogleChrome/lighthouse/pull/15320))
+* uses-rel-preconnect: add FCP and LCP savings ([#15281](https://github.com/GoogleChrome/lighthouse/pull/15281))
+
+## CLI
+
+* sentry: mention --enable-error-reporting flag in prompt ([#15174](https://github.com/GoogleChrome/lighthouse/pull/15174))
+
+## Report
+
+* re-order manual audits and expand when audits pass ([#15310](https://github.com/GoogleChrome/lighthouse/pull/15310))
+* move "View Original Trace" to the topbar dropdown ([#15315](https://github.com/GoogleChrome/lighthouse/pull/15315))
+
+## Deps
+
+* upgrade puppeteer to 21.0.1 ([#15331](https://github.com/GoogleChrome/lighthouse/pull/15331))
+* upgrade `lighthouse-logger` to 2.0.1 ([#15282](https://github.com/GoogleChrome/lighthouse/pull/15282))
+* upgrade `chrome-launcher` to 1.0.0 ([#15287](https://github.com/GoogleChrome/lighthouse/pull/15287))
+* deduplicate yarn.lock ([#15269](https://github.com/GoogleChrome/lighthouse/pull/15269))
+* upgrade robots-parser to 3.0.1 ([#15268](https://github.com/GoogleChrome/lighthouse/pull/15268))
+
+## Clients
+
+* extension: update to manifest v3 ([#15219](https://github.com/GoogleChrome/lighthouse/pull/15219))
+
+## I18n
+
+* import ([#15334](https://github.com/GoogleChrome/lighthouse/pull/15334))
+
+## Docs
+
+* remove legacy navigation ([#15340](https://github.com/GoogleChrome/lighthouse/pull/15340))
+* remove references to `devtoolsLogs` and `traces` ([#15318](https://github.com/GoogleChrome/lighthouse/pull/15318))
+* plugins: fix syntax typos ([#15264](https://github.com/GoogleChrome/lighthouse/pull/15264))
+* readme: add PageVitals to the list of integrations ([#15288](https://github.com/GoogleChrome/lighthouse/pull/15288))
+
+## Tests
+
+* add page functions bundling test ([#15280](https://github.com/GoogleChrome/lighthouse/pull/15280))
+* make smokehouse output dir with recursive flag ([#15261](https://github.com/GoogleChrome/lighthouse/pull/15261))
+* save smokehouse outputs to .tmp/smokehouse-output ([#15251](https://github.com/GoogleChrome/lighthouse/pull/15251))
+* call toString for errors from bundled worker ([#15245](https://github.com/GoogleChrome/lighthouse/pull/15245))
+* devtools: remove unused test options ([#15260](https://github.com/GoogleChrome/lighthouse/pull/15260))
+* devtools: sync e2e ([#15250](https://github.com/GoogleChrome/lighthouse/pull/15250))
+* smoke: allow for decimal in a11y tap target ([#15327](https://github.com/GoogleChrome/lighthouse/pull/15327))
+* smoke: drop legacy support ([#15249](https://github.com/GoogleChrome/lighthouse/pull/15249))
+
+## Misc
+
+* remove residual references to legacy ([#15292](https://github.com/GoogleChrome/lighthouse/pull/15292))
+* fix typo ([#15120](https://github.com/GoogleChrome/lighthouse/pull/15120))
+* rename `fraggle-rock` fixtures directory to `user-flows` ([#15291](https://github.com/GoogleChrome/lighthouse/pull/15291))
+* add main path to logger ([#15284](https://github.com/GoogleChrome/lighthouse/pull/15284))
+* build: bundle with esbuild minification instead of terser ([#15283](https://github.com/GoogleChrome/lighthouse/pull/15283))
+* build: replace rollup with esbuild ([#15239](https://github.com/GoogleChrome/lighthouse/pull/15239))
+* ci: update actions using deprecated node12 ([#15304](https://github.com/GoogleChrome/lighthouse/pull/15304))
+* logger: add types, remove cjs ([#15279](https://github.com/GoogleChrome/lighthouse/pull/15279))
+
 <a name="10.4.0"></a>
 # 10.4.0 (2023-07-10)
 [Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v10.3.0...v10.4.0)

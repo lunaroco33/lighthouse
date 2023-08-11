@@ -21,6 +21,8 @@ import {NetworkRequest} from '../../lib/network-request.js';
 import {NetworkRecords} from '../../computed/network-records.js';
 import {LoadSimulator} from '../../computed/load-simulator.js';
 import {PageDependencyGraph} from '../../computed/page-dependency-graph.js';
+import {LanternLargestContentfulPaint} from '../../computed/metrics/lantern-largest-contentful-paint.js';
+import {LanternFirstContentfulPaint} from '../../computed/metrics/lantern-first-contentful-paint.js';
 import * as i18n from '../../lib/i18n/i18n.js';
 
 const UIStrings = {
@@ -66,23 +68,23 @@ class UsesHTTP2Audit extends Audit {
   }
 
   /**
-   * Computes the estimated effect all results being converted to use http/2, the max of:
-   *
-   * - end time of the last long task in the provided graph
-   * - end time of the last node in the graph
+   * Computes the estimated effect of all results being converted to http/2 on the provided graph.
    *
    * @param {Array<{url: string}>} results
    * @param {Node} graph
    * @param {Simulator} simulator
-   * @return {number}
+   * @param {{label?: string}=} options
+   * @return {{savings: number, simulationBefore: LH.Gatherer.Simulation.Result, simulationAfter: LH.Gatherer.Simulation.Result}}
    */
-  static computeWasteWithTTIGraph(results, graph, simulator) {
-    const beforeLabel = `uses-http2-before`;
-    const afterLabel = `uses-http2-after`;
+  static computeWasteWithGraph(results, graph, simulator, options) {
+    options = Object.assign({label: ''}, options);
+    const beforeLabel = `${this.meta.id}-${options.label}-before`;
+    const afterLabel = `${this.meta.id}-${options.label}-after`;
     const flexibleOrdering = true;
 
     const urlsToChange = new Set(results.map(result => result.url));
-    const simulationBefore = simulator.simulate(graph, {label: beforeLabel, flexibleOrdering});
+    const simulationBefore =
+      simulator.simulate(graph, {label: beforeLabel, flexibleOrdering});
 
     // Update all the protocols to reflect implementing our recommendations
     /** @type {Map<string, string>} */
@@ -105,9 +107,36 @@ class UsesHTTP2Audit extends Audit {
       node.record.protocol = originalProtocol;
     });
 
-    const savingsOnOverallLoad = simulationBefore.timeInMs - simulationAfter.timeInMs;
-    const savingsOnTTI = LanternInteractive.getLastLongTaskEndTime(simulationBefore.nodeTimings) -
+    const savings = simulationBefore.timeInMs - simulationAfter.timeInMs;
+
+    return {
+      // Round waste to nearest 10ms
+      savings: Math.round(Math.max(savings, 0) / 10) * 10,
+      simulationBefore,
+      simulationAfter,
+    };
+  }
+
+  /**
+   * Computes the estimated effect all results being converted to use http/2, the max of:
+   *
+   * - end time of the last long task in the provided graph
+   * - end time of the last node in the graph
+   * @param {Array<{url: string}>} results
+   * @param {Node} graph
+   * @param {Simulator} simulator
+   * @return {number}
+   */
+  static computeWasteWithTTIGraph(results, graph, simulator) {
+    const {savings: savingsOnOverallLoad, simulationBefore, simulationAfter} =
+      this.computeWasteWithGraph(results, graph, simulator, {
+        label: 'tti',
+      });
+
+    const savingsOnTTI =
+      LanternInteractive.getLastLongTaskEndTime(simulationBefore.nodeTimings) -
       LanternInteractive.getLastLongTaskEndTime(simulationAfter.nodeTimings);
+
     const savings = Math.max(savingsOnTTI, savingsOnOverallLoad);
 
     // Round waste to nearest 10ms
@@ -237,9 +266,25 @@ class UsesHTTP2Audit extends Audit {
       devtoolsLog,
       settings,
     };
-    const graph = await PageDependencyGraph.request({trace, devtoolsLog, URL}, context);
+    const pageGraph = await PageDependencyGraph.request({trace, devtoolsLog, URL}, context);
     const simulator = await LoadSimulator.request(simulatorOptions, context);
-    const wastedMs = UsesHTTP2Audit.computeWasteWithTTIGraph(resources, graph, simulator);
+    const metricComputationInput = Audit.makeMetricComputationDataInput(artifacts, context);
+
+    const {
+      pessimisticGraph: fcpGraph,
+    } = await LanternFirstContentfulPaint.request(metricComputationInput, context);
+    const {
+      pessimisticGraph: lcpGraph,
+    } = await LanternLargestContentfulPaint.request(metricComputationInput, context);
+
+    const wastedMsTti = UsesHTTP2Audit.computeWasteWithTTIGraph(
+      resources, pageGraph, simulator);
+    const wasteFcp =
+      UsesHTTP2Audit.computeWasteWithGraph(resources,
+        fcpGraph, simulator, {label: 'fcp'});
+    const wasteLcp =
+      UsesHTTP2Audit.computeWasteWithGraph(resources,
+        lcpGraph, simulator, {label: 'lcp'});
 
     /** @type {LH.Audit.Details.Opportunity['headings']} */
     const headings = [
@@ -248,14 +293,15 @@ class UsesHTTP2Audit extends Audit {
     ];
 
     const details = Audit.makeOpportunityDetails(headings, resources,
-      {overallSavingsMs: wastedMs});
+      {overallSavingsMs: wastedMsTti});
 
     return {
       displayValue,
-      numericValue: wastedMs,
+      numericValue: wastedMsTti,
       numericUnit: 'millisecond',
-      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
+      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMsTti),
       details,
+      metricSavings: {LCP: wasteLcp.savings, FCP: wasteFcp.savings},
     };
   }
 }

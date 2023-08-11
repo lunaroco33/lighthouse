@@ -4,10 +4,13 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+import log from 'lighthouse-logger';
+
 import {Audit} from './audit.js';
 import * as i18n from '../lib/i18n/i18n.js';
 import {LargestContentfulPaint} from '../computed/metrics/largest-contentful-paint.js';
 import {LCPBreakdown} from '../computed/metrics/lcp-breakdown.js';
+import {Sentry} from '../lib/sentry.js';
 
 const UIStrings = {
   /** Descriptive title of a diagnostic audit that provides the element that was determined to be the Largest Contentful Paint. */
@@ -47,19 +50,6 @@ class LargestContentfulPaintElement extends Audit {
       requiredArtifacts:
         ['traces', 'TraceElements', 'devtoolsLogs', 'GatherContext', 'settings', 'URL'],
     };
-  }
-
-  /**
-   * @param {LH.Artifacts.MetricComputationDataInput} metricComputationData
-   * @param {LH.Audit.Context} context
-   * @return {Promise<number|undefined>}
-   */
-  static async getOptionalLCPMetric(metricComputationData, context) {
-    try {
-      const {timing: metricLcp} =
-        await LargestContentfulPaint.request(metricComputationData, context);
-      return metricLcp;
-    } catch {}
   }
 
   /**
@@ -139,11 +129,19 @@ class LargestContentfulPaintElement extends Audit {
     const items = [elementTable];
     let displayValue;
 
-    const metricLcp = await this.getOptionalLCPMetric(metricComputationData, context);
-    if (metricLcp) {
+    try {
+      const {timing: metricLcp} =
+        await LargestContentfulPaint.request(metricComputationData, context);
       displayValue = str_(i18n.UIStrings.ms, {timeInMs: metricLcp});
+
       const phaseTable = await this.makePhaseTable(metricLcp, metricComputationData, context);
       items.push(phaseTable);
+    } catch (err) {
+      Sentry.captureException(err, {
+        tags: {audit: this.meta.id},
+        level: 'error',
+      });
+      log.error(this.meta.id, err.message);
     }
 
     const details = Audit.makeListDetails(items);

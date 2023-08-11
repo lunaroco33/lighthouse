@@ -416,6 +416,10 @@ function addRedirectResponseIfNeeded(networkRecords, record) {
 function networkRecordsToDevtoolsLog(networkRecords, options = {}) {
   const devtoolsLog = [];
   networkRecords.forEach((networkRecord, index) => {
+    if (networkRecord.url && new URL(networkRecord.url).hash) {
+      throw new Error(`Network records should not have hashes: ${networkRecord.url}`);
+    }
+
     networkRecord = addRedirectResponseIfNeeded(networkRecords, networkRecord);
 
     const normalizedTiming = getNormalizedRequestTiming(networkRecord);

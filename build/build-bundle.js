@@ -51,9 +51,6 @@ const isDevtools = file =>
 /** @param {string} file */
 const isLightrider = file => path.basename(file).includes('lightrider');
 
-// Set to true for source maps.
-const DEBUG = false;
-
 const today = (() => {
   const date = new Date();
   const year = new Intl.DateTimeFormat('en', {year: 'numeric'}).format(date);
@@ -143,15 +140,16 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
     shimsObj[modulePath] = 'export default {}';
   }
 
-  const result = await esbuild.build({
+  await esbuild.build({
     entryPoints: [entryPath],
+    outfile: distPath,
     write: false,
     format: 'iife',
     charset: 'utf8',
     bundle: true,
     minify: opts.minify,
     treeShaking: true,
-    sourcemap: DEBUG,
+    sourcemap: 'linked',
     banner: {js: banner},
     // Because of page-functions!
     keepNames: true,
@@ -219,12 +217,26 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
       {
         name: 'postprocess',
         setup({onEnd}) {
-          onEnd(result => {
-            if (!result.outputFiles) throw new Error();
+          onEnd(async (result) => {
+            if (result.errors.length) {
+              return;
+            }
 
-            let code = result.outputFiles[0].text;
+            const codeFile = result.outputFiles?.find(file => file.path.endsWith('.js'));
+            const mapFile = result.outputFiles?.find(file => file.path.endsWith('.js.map'));
+            if (!codeFile) {
+              throw new Error('missing output');
+            }
+
+            // Just make sure the above shimming worked.
+            let code = codeFile.text;
+            if (code.includes('inflate_fast')) {
+              throw new Error('Expected zlib inflate code to have been removed');
+            }
 
             // Get rid of our extra license comments.
+            // All comments would have been moved to the end of the file, so removing some will not break
+            // source maps.
             // https://stackoverflow.com/a/35923766
             const re = /\/\*\*\s*\n([^*]|(\*(?!\/)))*\*\/\n/g;
             let hasSeenFirst = false;
@@ -240,21 +252,15 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
               return match;
             });
 
-            result.outputFiles[0].contents = new TextEncoder().encode(code);
+            await fs.promises.writeFile(codeFile.path, code);
+            if (mapFile) {
+              await fs.promises.writeFile(mapFile.path, mapFile.text);
+            }
           });
         },
       },
     ],
   });
-
-  const code = result.outputFiles[0].text;
-
-  // Just make sure the above shimming worked.
-  if (code.includes('inflate_fast')) {
-    throw new Error('Expected zlib inflate code to have been removed');
-  }
-
-  await fs.promises.writeFile(distPath, code);
 }
 
 /**

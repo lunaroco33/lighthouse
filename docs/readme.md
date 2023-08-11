@@ -113,8 +113,6 @@ Lighthouse can run against a real mobile device. You can follow the [Remote Debu
 
 You'll likely want to use the CLI flags `--screenEmulation.disabled --throttling.cpuSlowdownMultiplier=1 --throttling-method=provided` to disable any additional emulation.
 
-> **Warning:** If you are running Lighthouse 10.x with any chrome version older than M112 (<=M111) you will need to add the `--legacy-navigation` to the `lighthouse` command. See https://github.com/GoogleChrome/lighthouse/issues/14746 for more info.
-
 ```sh
 $ adb kill-server
 
