@@ -173,6 +173,47 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
+   * @param {LH.ReportResult.AuditRef} audit
+   * @param {LH.ReportResult.AuditRef[]} metricAudits
+   * @return {number}
+   */
+  overallImpact(audit, metricAudits) {
+    if (audit.result.metricSavings) {
+      let overallImpact = 0;
+      for (const [k, savings] of Object.entries(audit.result.metricSavings)) {
+        // Get metric savings for individual audit.
+        // Don't do anything if we don't have savings for a metric.
+        if (savings === undefined) continue;
+
+        // Get the metric data.
+        const mAudit = metricAudits.find(audit => audit.acronym === k);
+        if (!mAudit) continue;
+        if (mAudit.result.score === null) continue;
+
+        const mValue = mAudit.result.numericValue;
+        if (mValue === undefined) continue;
+
+        const scoringOptions = mAudit.result.scoringOptions;
+        if (!scoringOptions) continue;
+
+        const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
+        // only if there's a diff between old & new.
+        if (newMetricScore !== mAudit.result.score) {
+          // console.log(audit.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
+          // This is the impact on the metric. how do you find the impact on the score (how to calculate overall impact score)?
+          const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
+          overallImpact += weightedMetricImpact;
+
+          // console.log('Weighted', k, 'impact: ', weightedMetricImpact);
+        }
+      }
+      // console.log('overall impact: ', overallImpact);
+      return overallImpact;
+    }
+    return 0;
+  }
+
+  /**
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} groups
    * @param {{gatherMode: LH.Result.GatherMode}=} options
@@ -276,21 +317,14 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     // Diagnostics
     const diagnosticAudits = category.auditRefs
         // All audits here.
-        // .filter(audit => this._classifyPerformanceAudit(audit) === 'diagnostic')
         .filter(audit => this._classifyPerformanceAudit(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
-          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
-          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
-          return scoreA - scoreB;
+          // sort by higher impact.
+          return this.overallImpact(b, metricAudits) - this.overallImpact(a, metricAudits);
         });
-        // .sort((a, b) => {
-        //   return
-        // });
 
-    // sort by weighted impact - is this individual from each individual metric impact, or all together?
-
-
+    // TODO: rm this. just for console logging purposes.
     diagnosticAudits.forEach(a => {
       if (a.result.metricSavings) {
         let overallImpact = 0;
@@ -312,16 +346,16 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
 
           const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
           // only if there's a diff between old & new.
-          // if (newMetricScore !== mAudit.result.score) {
-          console.log(a.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
-          // This is the impact on the metric. how do you find the impact on the score (how to calculate overall impact score)?
-          const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
-          overallImpact += weightedMetricImpact;
+          if (newMetricScore !== mAudit.result.score) {
+            console.log(a.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
+            // This is the impact on the metric. how do you find the impact on the score (how to calculate overall impact score)?
+            const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
+            overallImpact += weightedMetricImpact;
 
-          console.log('Weighted', k, 'impact: ', weightedMetricImpact);
-          // }
+            console.log('Weighted', k, 'impact: ', weightedMetricImpact);
+          }
         }
-        console.log('overall impact: ', overallImpact);
+        console.log(a.id, 'overall impact:', overallImpact);
       }
     });
 
