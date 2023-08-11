@@ -86,6 +86,7 @@ declare module Audit {
     runWarnings?: Array<IcuMessage>;
     /** [EXPERIMENTAL] Estimates of how much this audit affects various performance metrics. Values will be in the unit of the respective metrics. */
     metricSavings?: MetricSavings;
+    scoringOptions?: ScoreOptions;
   }
 
   /** The Audit.Product type for audits that do not return a `numericValue`. */

@@ -6,7 +6,6 @@
 
 import * as LH from '../../types/lh.js';
 import {isUnderTest} from '../lib/lh-env.js';
-import * as statistics from '../lib/statistics.js';
 import {Util} from '../../shared/util.js';
 
 const DEFAULT_PASS = 'defaultPass';
@@ -105,14 +104,7 @@ class Audit {
    * @return {number}
    */
   static computeLogNormalScore(controlPoints, value) {
-    let percentile = statistics.getLogNormalScore(controlPoints, value);
-    // Add a boost to scores of 90+, linearly ramping from 0 at 0.9 to half a
-    // point (0.005) at 1. Expands scores in (0.9, 1] to (0.9, 1.005], so more top
-    // scores will be a perfect 1 after the two-digit `Math.floor()` rounding below.
-    if (percentile > 0.9) { // getLogNormalScore ensures `percentile` can't exceed 1.
-      percentile += 0.05 * (percentile - 0.9);
-    }
-    return Math.floor(percentile * 100) / 100;
+    return Util.computeLogNormalScore(controlPoints, value);
   }
 
   /**
@@ -411,6 +403,8 @@ class Audit {
       errorMessage: product.errorMessage,
       errorStack: product.errorStack,
       warnings: product.warnings,
+      scoringOptions: product.scoringOptions,
+      metricSavings: product.metricSavings,
 
       details: product.details,
     };

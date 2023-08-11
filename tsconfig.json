@@ -28,6 +28,7 @@
     "core/test/fixtures/traces/lcp-m78.devtools.log.json",
     "core/audits/byte-efficiency/polyfill-graph-data.json",
     "shared/localization/locales/en-US.json",
+    "shared/statistics.js",
   ],
   "exclude": [
     "build/test/*test-case*.js",

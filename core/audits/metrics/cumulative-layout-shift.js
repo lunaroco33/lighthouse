@@ -62,11 +62,14 @@ class CumulativeLayoutShift extends Audit {
       items: [rest],
     };
 
+    const scoringOptions = {p10: context.options.p10, median: context.options.median};
+
     return {
       score: Audit.computeLogNormalScore(
-        {p10: context.options.p10, median: context.options.median},
+        scoringOptions,
         cumulativeLayoutShift
       ),
+      scoringOptions,
       numericValue: cumulativeLayoutShift,
       numericUnit: 'unitless',
       displayValue: cumulativeLayoutShift.toLocaleString(context.settings.locale),

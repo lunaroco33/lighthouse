@@ -52,7 +52,10 @@
       "description": "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents [a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/). [Learn more about using the viewport meta tag](https://developer.chrome.com/docs/lighthouse/pwa/viewport/).",
       "score": 1,
       "scoreDisplayMode": "binary",
-      "warnings": []
+      "warnings": [],
+      "metricSavings": {
+        "INP": 0
+      }
     },
     "first-contentful-paint": {
       "id": "first-contentful-paint",
@@ -62,7 +65,11 @@
       "scoreDisplayMode": "numeric",
       "numericValue": 6843.95,
       "numericUnit": "millisecond",
-      "displayValue": "6.8 s"
+      "displayValue": "6.8 s",
+      "scoringOptions": {
+        "p10": 1800,
+        "median": 3000
+      }
     },
     "largest-contentful-paint": {
       "id": "largest-contentful-paint",
@@ -72,7 +79,11 @@
       "scoreDisplayMode": "numeric",
       "numericValue": 13319.961,
       "numericUnit": "millisecond",
-      "displayValue": "13.3 s"
+      "displayValue": "13.3 s",
+      "scoringOptions": {
+        "p10": 2500,
+        "median": 4000
+      }
     },
     "first-meaningful-paint": {
       "id": "first-meaningful-paint",
@@ -92,7 +103,11 @@
       "scoreDisplayMode": "numeric",
       "numericValue": 8114,
       "numericUnit": "millisecond",
-      "displayValue": "8.1 s"
+      "displayValue": "8.1 s",
+      "scoringOptions": {
+        "p10": 3387,
+        "median": 5800
+      }
     },
     "screenshot-thumbnails": {
       "id": "screenshot-thumbnails",
@@ -168,7 +183,11 @@
       "scoreDisplayMode": "numeric",
       "numericValue": 1220.691999999999,
       "numericUnit": "millisecond",
-      "displayValue": "1,220 ms"
+      "displayValue": "1,220 ms",
+      "scoringOptions": {
+        "p10": 200,
+        "median": 600
+      }
     },
     "max-potential-fid": {
       "id": "max-potential-fid",
@@ -189,6 +208,10 @@
       "numericValue": 0.13570762803819444,
       "numericUnit": "unitless",
       "displayValue": "0.136",
+      "scoringOptions": {
+        "p10": 0.1,
+        "median": 0.25
+      },
       "details": {
         "type": "debugdata",
         "items": [
@@ -308,6 +331,10 @@
       "numericValue": 568.468,
       "numericUnit": "millisecond",
       "displayValue": "Root document took 570 ms",
+      "metricSavings": {
+        "FCP": 468.46799999999996,
+        "LCP": 468.46799999999996
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -755,6 +782,10 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "",
+      "metricSavings": {
+        "LCP": 0,
+        "FCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -1139,6 +1170,10 @@
       "numericUnit": "millisecond",
       "displayValue": "",
       "warnings": [],
+      "metricSavings": {
+        "LCP": 0,
+        "FCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -2392,6 +2427,9 @@
       "score": null,
       "scoreDisplayMode": "informative",
       "displayValue": "5 elements found",
+      "metricSavings": {
+        "CLS": 0.13570762803819444
+      },
       "details": {
         "type": "table",
         "headings": [
@@ -2618,6 +2656,9 @@
       "score": null,
       "scoreDisplayMode": "informative",
       "displayValue": "1 animated element found",
+      "metricSavings": {
+        "CLS": 0
+      },
       "details": {
         "type": "table",
         "headings": [
@@ -2677,6 +2718,9 @@
       "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/optimize-cls/#images-without-dimensions)",
       "score": 0,
       "scoreDisplayMode": "binary",
+      "metricSavings": {
+        "CLS": 0
+      },
       "details": {
         "type": "table",
         "headings": [
@@ -2754,6 +2798,9 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "",
+      "metricSavings": {
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4320,6 +4367,10 @@
       "numericUnit": "millisecond",
       "displayValue": "",
       "warnings": [],
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -4347,6 +4398,10 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 0 ms",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4410,6 +4465,10 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -4438,6 +4497,10 @@
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 82 KiB",
       "warnings": [],
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 300
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4488,6 +4551,10 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -4515,6 +4582,10 @@
       "numericValue": 750,
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 64 KiB",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 450
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4582,6 +4653,10 @@
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 76 KiB",
       "warnings": [],
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 450
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4696,6 +4771,10 @@
       "numericUnit": "millisecond",
       "displayValue": "",
       "warnings": [],
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -4723,6 +4802,10 @@
       "numericValue": 2400,
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 143 KiB",
+      "metricSavings": {
+        "FCP": 150,
+        "LCP": 750
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4777,6 +4860,10 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -4804,6 +4891,10 @@
       "numericValue": 3450,
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 666 KiB",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 3300
+      },
       "details": {
         "type": "opportunity",
         "headings": [
@@ -4853,6 +4944,10 @@
       "numericValue": 0,
       "numericUnit": "millisecond",
       "displayValue": "",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [],
@@ -4880,6 +4975,10 @@
       "numericValue": 450,
       "numericUnit": "millisecond",
       "displayValue": "Potential savings of 26 KiB",
+      "metricSavings": {
+        "FCP": 0,
+        "LCP": 0
+      },
       "details": {
         "type": "opportunity",
         "headings": [

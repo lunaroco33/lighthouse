@@ -74,6 +74,7 @@ class FirstContentfulPaint extends Audit {
         options.scoring,
         metricResult.timing
       ),
+      scoringOptions: options.scoring,
       numericValue: metricResult.timing,
       numericUnit: 'millisecond',
       displayValue: str_(i18n.UIStrings.seconds, {timeInMs: metricResult.timing}),

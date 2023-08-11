@@ -20,6 +20,7 @@
 import {CategoryRenderer} from './category-renderer.js';
 import {ReportUtils} from './report-utils.js';
 import {Globals} from './report-globals.js';
+import {Util} from '../../shared/util.js';
 
 export class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
@@ -239,7 +240,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     }
 
     // Opportunities
-    const opportunityAudits = category.auditRefs
+    /* const opportunityAudits = category.auditRefs
         .filter(audit => this._classifyPerformanceAudit(audit) === 'load-opportunity')
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((auditA, auditB) => this._getWastedMs(auditB) - this._getWastedMs(auditA));
@@ -270,17 +271,59 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         groupEl.insertBefore(this._renderOpportunity(item, scale), footerEl));
       groupEl.classList.add('lh-audit-group--load-opportunities');
       element.append(groupEl);
-    }
+    } */
 
     // Diagnostics
     const diagnosticAudits = category.auditRefs
-        .filter(audit => this._classifyPerformanceAudit(audit) === 'diagnostic')
+        // All audits here.
+        // .filter(audit => this._classifyPerformanceAudit(audit) === 'diagnostic')
+        .filter(audit => this._classifyPerformanceAudit(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
           const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
           const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
           return scoreA - scoreB;
         });
+        // .sort((a, b) => {
+        //   return
+        // });
+
+    // sort by weighted impact - is this individual from each individual metric impact, or all together?
+
+
+    diagnosticAudits.forEach(a => {
+      if (a.result.metricSavings) {
+        let overallImpact = 0;
+        for (const [k, savings] of Object.entries(a.result.metricSavings)) {
+          // Get metric savings for individual audit.
+          // Don't do anything if we don't have savings for a metric.
+          if (savings === undefined) continue;
+
+          // Get the metric data.
+          const mAudit = metricAudits.find(a => a.acronym === k);
+          if (!mAudit) continue;
+          if (mAudit.result.score === null) continue;
+
+          const mValue = mAudit.result.numericValue;
+          if (mValue === undefined) continue;
+
+          const scoringOptions = mAudit.result.scoringOptions;
+          if (!scoringOptions) continue;
+
+          const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
+          // only if there's a diff between old & new.
+          // if (newMetricScore !== mAudit.result.score) {
+          console.log(a.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
+          // This is the impact on the metric. how do you find the impact on the score (how to calculate overall impact score)?
+          const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
+          overallImpact += weightedMetricImpact;
+
+          console.log('Weighted', k, 'impact: ', weightedMetricImpact);
+          // }
+        }
+        console.log('overall impact: ', overallImpact);
+      }
+    });
 
     if (diagnosticAudits.length) {
       const [groupEl, footerEl] = this.renderAuditGroup(groups['diagnostics']);

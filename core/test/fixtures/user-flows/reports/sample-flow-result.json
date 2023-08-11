@@ -38,7 +38,10 @@
             "description": "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents [a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/). [Learn more about using the viewport meta tag](https://developer.chrome.com/docs/lighthouse/pwa/viewport/).",
             "score": 1,
             "scoreDisplayMode": "binary",
-            "warnings": []
+            "warnings": [],
+            "metricSavings": {
+              "INP": 0
+            }
           },
           "first-contentful-paint": {
             "id": "first-contentful-paint",
@@ -48,7 +51,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 1372.2951999999998,
             "numericUnit": "millisecond",
-            "displayValue": "1.4 s"
+            "displayValue": "1.4 s",
+            "scoringOptions": {
+              "p10": 1800,
+              "median": 3000
+            }
           },
           "largest-contentful-paint": {
             "id": "largest-contentful-paint",
@@ -58,7 +65,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 1372.2951999999998,
             "numericUnit": "millisecond",
-            "displayValue": "1.4 s"
+            "displayValue": "1.4 s",
+            "scoringOptions": {
+              "p10": 2500,
+              "median": 4000
+            }
           },
           "first-meaningful-paint": {
             "id": "first-meaningful-paint",
@@ -78,7 +89,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 1372.2951999999998,
             "numericUnit": "millisecond",
-            "displayValue": "1.4 s"
+            "displayValue": "1.4 s",
+            "scoringOptions": {
+              "p10": 3387,
+              "median": 5800
+            }
           },
           "screenshot-thumbnails": {
             "id": "screenshot-thumbnails",
@@ -154,7 +169,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 143,
             "numericUnit": "millisecond",
-            "displayValue": "140 ms"
+            "displayValue": "140 ms",
+            "scoringOptions": {
+              "p10": 200,
+              "median": 600
+            }
           },
           "max-potential-fid": {
             "id": "max-potential-fid",
@@ -175,6 +194,10 @@
             "numericValue": 0.002631263732910156,
             "numericUnit": "unitless",
             "displayValue": "0.003",
+            "scoringOptions": {
+              "p10": 0.1,
+              "median": 0.25
+            },
             "details": {
               "type": "debugdata",
               "items": [
@@ -205,6 +228,10 @@
             "numericValue": 19.687999999999988,
             "numericUnit": "millisecond",
             "displayValue": "Root document took 20 ms",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [
@@ -333,6 +360,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "LCP": 0,
+              "FCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -618,6 +649,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "LCP": 0,
+              "FCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -1654,6 +1689,9 @@
             "score": null,
             "scoreDisplayMode": "informative",
             "displayValue": "5 elements found",
+            "metricSavings": {
+              "CLS": 0.002631263732910156
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -1865,6 +1903,9 @@
             "description": "Animations which are not composited can be janky and increase CLS. [Learn how to avoid non-composited animations](https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations/)",
             "score": null,
             "scoreDisplayMode": "notApplicable",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [],
@@ -1877,6 +1918,9 @@
             "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/optimize-cls/#images-without-dimensions)",
             "score": 0,
             "scoreDisplayMode": "binary",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -1935,6 +1979,9 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -2863,6 +2910,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -2889,6 +2940,10 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 0,
             "numericUnit": "millisecond",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -2905,6 +2960,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -2933,6 +2992,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -2960,6 +3023,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -2987,6 +3054,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3015,6 +3086,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3043,6 +3118,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3070,6 +3149,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3097,6 +3180,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3124,6 +3211,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3151,6 +3242,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -3178,6 +3273,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "Potential savings of 0 KiB",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [
@@ -8501,7 +8600,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 122.83299999999986,
             "numericUnit": "millisecond",
-            "displayValue": "120 ms"
+            "displayValue": "120 ms",
+            "scoringOptions": {
+              "p10": 200,
+              "median": 600
+            }
           },
           "cumulative-layout-shift": {
             "id": "cumulative-layout-shift",
@@ -8512,6 +8615,10 @@
             "numericValue": 0.13125,
             "numericUnit": "unitless",
             "displayValue": "0.131",
+            "scoringOptions": {
+              "p10": 0.1,
+              "median": 0.25
+            },
             "details": {
               "type": "debugdata",
               "items": [
@@ -9647,6 +9754,9 @@
             "score": null,
             "scoreDisplayMode": "informative",
             "displayValue": "1 element found",
+            "metricSavings": {
+              "CLS": 0.13125
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -9758,6 +9868,9 @@
             "description": "Animations which are not composited can be janky and increase CLS. [Learn how to avoid non-composited animations](https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations/)",
             "score": null,
             "scoreDisplayMode": "notApplicable",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [],
@@ -9770,6 +9883,9 @@
             "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/optimize-cls/#images-without-dimensions)",
             "score": 0,
             "scoreDisplayMode": "binary",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -10077,6 +10193,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10105,6 +10225,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10132,6 +10256,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10159,6 +10287,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10187,6 +10319,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10215,6 +10351,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10242,6 +10382,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10269,6 +10413,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10296,6 +10444,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10323,6 +10475,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10350,6 +10506,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -10411,6 +10571,9 @@
             "score": 1,
             "scoreDisplayMode": "numeric",
             "displayValue": "60 ms spent on event 'keypress'",
+            "metricSavings": {
+              "INP": 64
+            },
             "details": {
               "type": "list",
               "items": [
@@ -12435,7 +12598,10 @@
             "description": "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents [a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/). [Learn more about using the viewport meta tag](https://developer.chrome.com/docs/lighthouse/pwa/viewport/).",
             "score": 1,
             "scoreDisplayMode": "binary",
-            "warnings": []
+            "warnings": [],
+            "metricSavings": {
+              "INP": 0
+            }
           },
           "image-aspect-ratio": {
             "id": "image-aspect-ratio",
@@ -12590,6 +12756,9 @@
             "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/optimize-cls/#images-without-dimensions)",
             "score": 0,
             "scoreDisplayMode": "binary",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -17658,7 +17827,10 @@
             "description": "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents [a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/). [Learn more about using the viewport meta tag](https://developer.chrome.com/docs/lighthouse/pwa/viewport/).",
             "score": 1,
             "scoreDisplayMode": "binary",
-            "warnings": []
+            "warnings": [],
+            "metricSavings": {
+              "INP": 0
+            }
           },
           "first-contentful-paint": {
             "id": "first-contentful-paint",
@@ -17668,7 +17840,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 866.7026,
             "numericUnit": "millisecond",
-            "displayValue": "0.9 s"
+            "displayValue": "0.9 s",
+            "scoringOptions": {
+              "p10": 1800,
+              "median": 3000
+            }
           },
           "largest-contentful-paint": {
             "id": "largest-contentful-paint",
@@ -17678,7 +17854,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 1803.0092,
             "numericUnit": "millisecond",
-            "displayValue": "1.8 s"
+            "displayValue": "1.8 s",
+            "scoringOptions": {
+              "p10": 2500,
+              "median": 4000
+            }
           },
           "first-meaningful-paint": {
             "id": "first-meaningful-paint",
@@ -17698,7 +17878,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 866.7026,
             "numericUnit": "millisecond",
-            "displayValue": "0.9 s"
+            "displayValue": "0.9 s",
+            "scoringOptions": {
+              "p10": 3387,
+              "median": 5800
+            }
           },
           "screenshot-thumbnails": {
             "id": "screenshot-thumbnails",
@@ -17774,7 +17958,11 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 13,
             "numericUnit": "millisecond",
-            "displayValue": "10 ms"
+            "displayValue": "10 ms",
+            "scoringOptions": {
+              "p10": 200,
+              "median": 600
+            }
           },
           "max-potential-fid": {
             "id": "max-potential-fid",
@@ -17795,6 +17983,10 @@
             "numericValue": 0,
             "numericUnit": "unitless",
             "displayValue": "0",
+            "scoringOptions": {
+              "p10": 0.1,
+              "median": 0.25
+            },
             "details": {
               "type": "debugdata",
               "items": [
@@ -17825,6 +18017,10 @@
             "numericValue": 10.263,
             "numericUnit": "millisecond",
             "displayValue": "Root document took 10 ms",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [
@@ -17953,6 +18149,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "LCP": 0,
+              "FCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -18244,6 +18444,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "LCP": 0,
+              "FCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -19220,6 +19424,9 @@
             "description": "These DOM elements contribute most to the CLS of the page. [Learn how to improve CLS](https://web.dev/optimize-cls/)",
             "score": null,
             "scoreDisplayMode": "notApplicable",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [],
@@ -19310,6 +19517,9 @@
             "description": "Animations which are not composited can be janky and increase CLS. [Learn how to avoid non-composited animations](https://developer.chrome.com/docs/lighthouse/performance/non-composited-animations/)",
             "score": null,
             "scoreDisplayMode": "notApplicable",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [],
@@ -19322,6 +19532,9 @@
             "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/optimize-cls/#images-without-dimensions)",
             "score": 0,
             "scoreDisplayMode": "binary",
+            "metricSavings": {
+              "CLS": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -19399,6 +19612,9 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20344,6 +20560,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20370,6 +20590,10 @@
             "scoreDisplayMode": "numeric",
             "numericValue": 0,
             "numericUnit": "millisecond",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20386,6 +20610,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20414,6 +20642,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20441,6 +20673,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20468,6 +20704,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20496,6 +20736,10 @@
             "numericUnit": "millisecond",
             "displayValue": "Potential savings of 67 KiB",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 330
+            },
             "details": {
               "type": "opportunity",
               "headings": [
@@ -20570,6 +20814,10 @@
             "numericUnit": "millisecond",
             "displayValue": "",
             "warnings": [],
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20597,6 +20845,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20624,6 +20876,10 @@
             "numericValue": 300,
             "numericUnit": "millisecond",
             "displayValue": "Potential savings of 51 KiB",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 300
+            },
             "details": {
               "type": "opportunity",
               "headings": [
@@ -20695,6 +20951,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20722,6 +20982,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [],
@@ -20749,6 +21013,10 @@
             "numericValue": 0,
             "numericUnit": "millisecond",
             "displayValue": "",
+            "metricSavings": {
+              "FCP": 0,
+              "LCP": 0
+            },
             "details": {
               "type": "opportunity",
               "headings": [

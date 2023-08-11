@@ -9,7 +9,7 @@ import parseCacheControl from 'parse-cache-control';
 import {Audit} from '../audit.js';
 import {NetworkRequest} from '../../lib/network-request.js';
 import UrlUtils from '../../lib/url-utils.js';
-import {linearInterpolation} from '../../lib/statistics.js';
+import {linearInterpolation} from '../../../shared/statistics.js';
 import * as i18n from '../../lib/i18n/i18n.js';
 import {NetworkRecords} from '../../computed/network-records.js';
 
