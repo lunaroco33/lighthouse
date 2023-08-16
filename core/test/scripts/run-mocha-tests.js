@@ -146,6 +146,14 @@ const rawArgv = y
     'require': {
       type: 'string',
     },
+    'retries': {
+      type: 'number',
+      default: process.env.CI ? 5 : undefined,
+    },
+    'forbidOnly': {
+      type: 'boolean',
+      default: Boolean(process.env.CI),
+    },
   })
   .wrap(y.terminalWidth())
   .argv;
@@ -257,8 +265,10 @@ function exit({numberFailures, numberMochaInvocations}) {
  * @typedef OurMochaArgs
  * @property {RegExp | string | undefined} grep
  * @property {boolean} bail
+ * @property {boolean} forbidOnly
  * @property {boolean} parallel
  * @property {string | undefined} require
+ * @property {number | undefined} retries
  */
 
 /**
@@ -278,9 +288,11 @@ async function runMocha(tests, mochaArgs, invocationNumber) {
       timeout: 20_000,
       bail: mochaArgs.bail,
       grep: mochaArgs.grep,
+      forbidOnly: mochaArgs.forbidOnly,
       // TODO: not working
       // parallel: tests.length > 1 && mochaArgs.parallel,
       parallel: false,
+      retries: mochaArgs.retries,
     });
 
     // @ts-expect-error - not in types.
@@ -325,6 +337,8 @@ async function main() {
     bail: argv.bail,
     parallel: argv.parallel,
     require: argv.require,
+    retries: argv.retries,
+    forbidOnly: argv.forbidOnly,
   };
 
   mochaGlobalSetup();

@@ -75,6 +75,7 @@ describe('Individual modes API', function() {
       if (!result) throw new Error('Lighthouse failed to produce a result');
 
       const {lhr, artifacts} = result;
+      state.saveTrace(artifacts.Trace);
       expect(artifacts.URL).toEqual({
         finalDisplayedUrl: `${state.serverBaseUrl}/onclick.html#done`,
       });
@@ -133,6 +134,8 @@ describe('Individual modes API', function() {
 
       if (!result) throw new Error('Lighthouse failed to produce a result');
 
+      state.saveTrace(result.artifacts.Trace);
+
       expect(result.artifacts.URL).toEqual({
         finalDisplayedUrl: `${serverBaseUrl}/onclick.html#done`,
       });
@@ -164,6 +167,8 @@ describe('Individual modes API', function() {
       const result = await run.endTimespan();
 
       if (!result) throw new Error('Lighthouse failed to produce a result');
+
+      state.saveTrace(result.artifacts.Trace);
 
       const networkRequestsDetails = /** @type {LH.Audit.Details.Table} */ (
         result.lhr.audits['network-requests'].details);
@@ -222,6 +227,7 @@ Array [
       if (!result) throw new Error('Lighthouse failed to produce a result');
 
       const {lhr, artifacts} = result;
+      state.saveTrace(artifacts.Trace);
       expect(artifacts.URL).toEqual({
         requestedUrl: url,
         mainDocumentUrl: url,
@@ -263,6 +269,7 @@ Array [
       expect(requestor).toHaveBeenCalled();
 
       const {lhr, artifacts} = result;
+      state.saveTrace(artifacts.Trace);
       expect(lhr.requestedUrl).toEqual(requestedUrl);
       expect(lhr.finalDisplayedUrl).toEqual(mainDocumentUrl);
       expect(artifacts.URL).toEqual({

@@ -2216,6 +2216,7 @@
             "mainThreadTime": 35.64800000000001,
             "blockingTime": 0,
             "transferSize": 30346,
+            "tbtImpact": 23.424291876693196,
             "entity": "Google CDN",
             "subItems": {
               "type": "subitems",
@@ -2224,7 +2225,8 @@
                   "url": "http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js",
                   "mainThreadTime": 35.64800000000001,
                   "blockingTime": 0,
-                  "transferSize": 30346
+                  "transferSize": 30346,
+                  "tbtImpact": 23.424291876693196
                 }
               ]
             }
@@ -8285,6 +8287,12 @@
       {
         "startTime": 0,
         "name": "lh:audit:third-party-summary",
+        "duration": 100,
+        "entryType": "measure"
+      },
+      {
+        "startTime": 0,
+        "name": "lh:computed:TBTImpactTasks",
         "duration": 100,
         "entryType": "measure"
       },

@@ -8,7 +8,8 @@ import log from 'lighthouse-logger';
 
 import {Audit} from './audit.js';
 import * as i18n from '../lib/i18n/i18n.js';
-import {LargestContentfulPaint} from '../computed/metrics/largest-contentful-paint.js';
+import {LargestContentfulPaint as LargestContentfulPaintComputed} from '../computed/metrics/largest-contentful-paint.js';
+import LargestContentfulPaint from './metrics/largest-contentful-paint.js';
 import {LCPBreakdown} from '../computed/metrics/lcp-breakdown.js';
 import {Sentry} from '../lib/sentry.js';
 
@@ -124,14 +125,22 @@ class LargestContentfulPaintElement extends Audit {
       settings: context.settings, URL: artifacts.URL};
 
     const elementTable = this.makeElementTable(artifacts);
-    if (!elementTable) return {score: null, notApplicable: true};
+    if (!elementTable) {
+      return {
+        score: null,
+        notApplicable: true,
+        metricSavings: {LCP: 0},
+      };
+    }
 
     const items = [elementTable];
     let displayValue;
+    let metricLcp = 0;
 
     try {
-      const {timing: metricLcp} =
-        await LargestContentfulPaint.request(metricComputationData, context);
+      const lcpResult =
+        await LargestContentfulPaintComputed.request(metricComputationData, context);
+      metricLcp = lcpResult.timing;
       displayValue = str_(i18n.UIStrings.ms, {timeInMs: metricLcp});
 
       const phaseTable = await this.makePhaseTable(metricLcp, metricComputationData, context);
@@ -146,10 +155,18 @@ class LargestContentfulPaintElement extends Audit {
 
     const details = Audit.makeListDetails(items);
 
+    // Conceptually, this doesn't make much sense as "savings" for this audit since there isn't anything to "fix".
+    // However, this audit will always be useful when improving LCP and that should be reflected in our impact calculations.
+    const idealLcp = LargestContentfulPaint.defaultOptions[context.settings.formFactor].scoring.p10;
+    const lcpSavings = Math.max(0, metricLcp - idealLcp);
+
     return {
       score: 1,
       displayValue,
       details,
+      metricSavings: {
+        LCP: lcpSavings,
+      },
     };
   }
 }

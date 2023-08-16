@@ -37,6 +37,8 @@ describe('Start/End navigation', function() {
     const lhr = flowResult.steps[0].lhr;
     const artifacts = flowArtifacts.gatherSteps[0].artifacts;
 
+    state.saveTrace(artifacts.Trace);
+
     expect(artifacts.URL).toEqual({
       requestedUrl: `${state.serverBaseUrl}/?redirect=/index.html`,
       mainDocumentUrl: `${state.serverBaseUrl}/index.html`,

@@ -66,7 +66,6 @@ Array [
   "prefer-related-applications-only-beta-stable",
   "start-url-not-valid",
   "url-not-supported-for-webapk",
-  "warn-not-offline-capable",
 ]
 `);
   });

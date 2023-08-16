@@ -84,6 +84,13 @@ jobs:
     - name: yarn test-viewer
       run: yarn build-viewer && xvfb-run --auto-servernum bash $GITHUB_WORKSPACE/.github/scripts/test-retry.sh yarn test-viewer
 
+    - name: Upload failures
+      if: failure()
+      uses: actions/upload-artifact@v1
+      with:
+        name: Unit (ubuntu; node ${{ matrix.node }})
+        path: .tmp/unit-failures/
+
   # For windows, just test the potentially platform-specific code.
   unit-windows:
     runs-on: windows-latest

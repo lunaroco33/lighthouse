@@ -12,8 +12,6 @@ import {TotalBlockingTime} from './metrics/total-blocking-time.js';
 import {ProcessedTrace} from './processed-trace.js';
 import {calculateTbtImpactForEvent} from './metrics/tbt-utils.js';
 
-/** @typedef {LH.Artifacts.TaskNode & {tbtImpact: number, selfTbtImpact: number}} TBTImpactTask */
-
 class TBTImpactTasks {
   /**
    * @param {LH.Artifacts.TaskNode} task
@@ -66,7 +64,7 @@ class TBTImpactTasks {
    * @param {Map<LH.Artifacts.TaskNode, number>} taskToImpact
    */
   static createImpactTasks(tasks, taskToImpact) {
-    /** @type {TBTImpactTask[]} */
+    /** @type {LH.Artifacts.TBTImpactTask[]} */
     const tbtImpactTasks = [];
 
     for (const task of tasks) {
@@ -92,7 +90,7 @@ class TBTImpactTasks {
    * @param {LH.Artifacts.TaskNode[]} tasks
    * @param {number} startTimeMs
    * @param {number} endTimeMs
-   * @return {TBTImpactTask[]}
+   * @return {LH.Artifacts.TBTImpactTask[]}
    */
   static computeImpactsFromObservedTasks(tasks, startTimeMs, endTimeMs) {
     /** @type {Map<LH.Artifacts.TaskNode, number>} */
@@ -125,7 +123,7 @@ class TBTImpactTasks {
    * @param {LH.Gatherer.Simulation.Result['nodeTimings']} tbtNodeTimings
    * @param {number} startTimeMs
    * @param {number} endTimeMs
-   * @return {TBTImpactTask[]}
+   * @return {LH.Artifacts.TBTImpactTask[]}
    */
   static computeImpactsFromLantern(tasks, tbtNodeTimings, startTimeMs, endTimeMs) {
     /** @type {Map<LH.Artifacts.TaskNode, number>} */
@@ -193,7 +191,7 @@ class TBTImpactTasks {
   /**
    * @param {LH.Artifacts.MetricComputationDataInput} metricComputationData
    * @param {LH.Artifacts.ComputedContext} context
-   * @return {Promise<TBTImpactTask[]>}
+   * @return {Promise<LH.Artifacts.TBTImpactTask[]>}
    */
   static async compute_(metricComputationData, context) {
     const tbtResult = await TotalBlockingTime.request(metricComputationData, context);

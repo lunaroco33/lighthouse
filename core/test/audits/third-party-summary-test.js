@@ -5,8 +5,9 @@
  */
 
 import ThirdPartySummary from '../../audits/third-party-summary.js';
+import {defaultSettings} from '../../config/constants.js';
 import {networkRecordsToDevtoolsLog} from '../network-records-to-devtools-log.js';
-import {readJson} from '../test-utils.js';
+import {getURLArtifactFromDevtoolsLog, readJson} from '../test-utils.js';
 
 const pwaTrace = readJson('../fixtures/traces/progressive-app-m60.json', import.meta);
 const pwaDevtoolsLog = readJson('../fixtures/traces/progressive-app-m60.devtools.log.json', import.meta);
@@ -17,12 +18,16 @@ describe('Third party summary', () => {
     const artifacts = {
       devtoolsLogs: {defaultPass: pwaDevtoolsLog},
       traces: {defaultPass: pwaTrace},
-      URL: {finalDisplayedUrl: 'https://pwa.rocks'},
+      URL: getURLArtifactFromDevtoolsLog(pwaDevtoolsLog),
+      GatherContext: {gatherMode: 'navigation'},
     };
 
-    const results = await ThirdPartySummary.audit(artifacts, {computedCache: new Map()});
+    const settings = JSON.parse(JSON.stringify(defaultSettings));
+    settings.throttlingMethod = 'devtools';
+    const results = await ThirdPartySummary.audit(artifacts, {computedCache: new Map(), settings});
 
     expect(results.score).toBe(1);
+    expect(results.metricSavings).toEqual({TBT: 32.574000000000076});
     expect(results.displayValue).toBeDisplayString(
       'Third-party code blocked the main thread for 20 ms'
     );
@@ -31,12 +36,14 @@ describe('Third party summary', () => {
         entity: 'Google Tag Manager',
         mainThreadTime: 127.15300000000003,
         blockingTime: 18.186999999999998,
+        tbtImpact: 28.40875949507274,
         transferSize: 30827,
         subItems: {
           items: [
             {
               blockingTime: 18.186999999999998,
               mainThreadTime: 127.15300000000003,
+              tbtImpact: 28.40875949507274,
               transferSize: 30827,
               url: 'https://www.googletagmanager.com/gtm.js?id=GTM-Q5SW',
             },
@@ -47,6 +54,7 @@ describe('Third party summary', () => {
       {
         entity: 'Google Analytics',
         mainThreadTime: 95.15599999999999,
+        tbtImpact: 4.1652405049273336,
         blockingTime: 0,
         transferSize: 20913,
         subItems: {
@@ -54,11 +62,13 @@ describe('Third party summary', () => {
             {
               blockingTime: 0,
               mainThreadTime: 55.246999999999986,
+              tbtImpact: 4.1652405049273336,
               transferSize: 12906,
               url: 'https://www.google-analytics.com/analytics.js',
             },
             {
               blockingTime: 0,
+              tbtImpact: 0,
               transferSize: 8007,
               url: expect.toBeDisplayString('Other resources'),
             },
@@ -74,13 +84,15 @@ describe('Third party summary', () => {
     const artifacts = {
       devtoolsLogs: {defaultPass: pwaDevtoolsLog},
       traces: {defaultPass: pwaTrace},
-      URL: {finalDisplayedUrl: 'https://pwa.rocks'},
+      URL: getURLArtifactFromDevtoolsLog(pwaDevtoolsLog),
+      GatherContext: {gatherMode: 'navigation'},
     };
 
-    const settings = {throttlingMethod: 'simulate', throttling: {cpuSlowdownMultiplier: 4}};
+    const settings = JSON.parse(JSON.stringify(defaultSettings));
     const results = await ThirdPartySummary.audit(artifacts, {computedCache: new Map(), settings});
 
     expect(results.score).toBe(0);
+    expect(results.metricSavings).toEqual({TBT: 0});
     expect(results.details.items).toHaveLength(2);
     expect(Math.round(results.details.items[0].mainThreadTime)).toEqual(509);
     expect(Math.round(results.details.items[0].blockingTime)).toEqual(250);
@@ -92,15 +104,21 @@ describe('Third party summary', () => {
     const artifacts = {
       devtoolsLogs: {defaultPass: networkRecordsToDevtoolsLog([{url: 'chrome://version'}])},
       traces: {defaultPass: noThirdPartyTrace},
-      URL: {finalDisplayedUrl: 'chrome://version'},
+      URL: {
+        requestedUrl: 'chrome://version',
+        mainDocumentUrl: 'chrome://version',
+        finalDisplayedUrl: 'chrome://version',
+      },
+      GatherContext: {gatherMode: 'navigation'},
     };
 
-    const settings = {throttlingMethod: 'simulate', throttling: {cpuSlowdownMultiplier: 4}};
+    const settings = JSON.parse(JSON.stringify(defaultSettings));
     const results = await ThirdPartySummary.audit(artifacts, {computedCache: new Map(), settings});
 
     expect(results).toEqual({
       score: 1,
       notApplicable: true,
+      metricSavings: {TBT: 0},
     });
   });
 
@@ -121,7 +139,12 @@ describe('Third party summary', () => {
         ]),
       },
       traces: {defaultPass: pwaTrace},
-      URL: {finalDisplayedUrl: 'http://example.com'},
+      GatherContext: {gatherMode: 'navigation'},
+      URL: {
+        requestedUrl: 'http://example.com',
+        mainDocumentUrl: 'http://example.com',
+        finalDisplayedUrl: 'http://example.com',
+      },
     };
     const facebookArtifacts = {
       devtoolsLogs: {
@@ -139,9 +162,17 @@ describe('Third party summary', () => {
         ]),
       },
       traces: {defaultPass: pwaTrace},
-      URL: {finalDisplayedUrl: 'http://facebook.com'},
+      GatherContext: {gatherMode: 'navigation'},
+      URL: {
+        requestedUrl: 'http://facebook.com',
+        mainDocumentUrl: 'http://facebook.com',
+        finalDisplayedUrl: 'http://facebook.com',
+      },
     };
-    const context = {computedCache: new Map()};
+
+    const settings = JSON.parse(JSON.stringify(defaultSettings));
+    settings.throttlingMethod = 'devtools';
+    const context = {computedCache: new Map(), settings};
 
     const resultsOnExternal = await ThirdPartySummary.audit(externalArtifacts, context);
     const resultsOnFacebook = await ThirdPartySummary.audit(facebookArtifacts, context);

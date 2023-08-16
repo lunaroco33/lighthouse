@@ -103,6 +103,7 @@ describe('Performance: largest-contentful-paint-element audit', () => {
     expect(auditResult.score).toEqual(1);
     expect(auditResult.notApplicable).toBeUndefined();
     expect(auditResult.displayValue).toBeDisplayString('5,800\xa0ms');
+    expect(auditResult.metricSavings).toEqual({LCP: 3304}); // 5804 - 2500 (p10 mobile)
     expect(auditResult.details.items).toHaveLength(2);
     expect(auditResult.details.items[0].items).toHaveLength(1);
     expect(auditResult.details.items[0].items[0].node.path).toEqual('1,HTML,3,BODY,5,DIV,0,HEADER');
@@ -148,6 +149,7 @@ describe('Performance: largest-contentful-paint-element audit', () => {
     expect(auditResult.score).toEqual(null);
     expect(auditResult.notApplicable).toEqual(true);
     expect(auditResult.displayValue).toBeUndefined();
+    expect(auditResult.metricSavings).toEqual({LCP: 0});
     expect(auditResult.details).toBeUndefined();
   });
 

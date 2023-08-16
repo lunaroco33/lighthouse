@@ -4,11 +4,14 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+import fs from 'fs';
+
 import {before, beforeEach, after, afterEach} from 'mocha';
 import * as puppeteer from 'puppeteer-core';
 import {getChromePath} from 'chrome-launcher';
 
 import {Server} from '../../../cli/test/fixtures/static-server.js';
+import {LH_ROOT} from '../../../root.js';
 
 /** @typedef {InstanceType<typeof import('../../../cli/test/fixtures/static-server.js').Server>} StaticServer */
 
@@ -22,11 +25,16 @@ const FLAKY_AUDIT_IDS_APPLICABILITY = new Set([
   'layout-shift-elements', // Depends on if the JS takes too long after input to be ignored for layout shift.
 ]);
 
+const UNIT_OUTPUT_DIR = `${LH_ROOT}/.tmp/unit-failures`;
+
 function createTestState() {
   /** @param {string} name @return {any} */
   const any = name => new Proxy({}, {get: () => {
     throw new Error(`${name} used without invoking \`state.before\``);
   }});
+
+  /** @type {LH.Trace|undefined} */
+  let trace;
 
   return {
     browser: /** @type {puppeteer.Browser} */ (any('browser')),
@@ -68,6 +76,8 @@ function createTestState() {
       });
 
       beforeEach(async () => {
+        trace = undefined;
+        console.log('########');
         this.page = await this.browser.newPage();
       });
 
@@ -75,9 +85,27 @@ function createTestState() {
         await this.page.close();
       });
 
+      afterEach(function() {
+        // eslint-disable-next-line no-invalid-this
+        const currentTest = this.currentTest;
+        if (currentTest?.state === 'failed' && trace) {
+          const dirname = currentTest.fullTitle().replace(/[^a-z0-9]/gi, '_').toLowerCase();
+          const testOutputDir = `${UNIT_OUTPUT_DIR}/${dirname}`;
+          fs.mkdirSync(testOutputDir, {recursive: true});
+          fs.writeFileSync(`${testOutputDir}/trace.json`, JSON.stringify(trace, null, 2));
+        }
+      });
+
       after(async () => {
         await this.browser.close();
       });
+    },
+
+    /**
+     * @param {LH.Trace} testTrace
+     */
+    saveTrace(testTrace) {
+      trace = testTrace;
     },
   };
 }

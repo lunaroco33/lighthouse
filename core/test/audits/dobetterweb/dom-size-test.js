@@ -7,37 +7,99 @@
 import assert from 'assert/strict';
 
 import DOMSize from '../../../audits/dobetterweb/dom-size.js';
+import {createTestTrace} from '../../create-test-trace.js';
+import {networkRecordsToDevtoolsLog} from '../../network-records-to-devtools-log.js';
 
 const options = DOMSize.defaultOptions;
 
 describe('DOMSize audit', () => {
-  const numElements = 1500;
-  const artifact = {
-    DOMStats: {
-      totalBodyElements: numElements,
-      depth: {max: 1},
-      width: {max: 2},
-    },
-  };
-  const context = {options, settings: {locale: 'en'}};
+  let artifacts;
+  let context;
 
-  it('calculates score hitting mid distribution', () => {
-    const auditResult = DOMSize.audit(artifact, context);
+  beforeEach(() => {
+    const mainDocumentUrl = 'https://example.com/';
+
+    const trace = createTestTrace({
+      topLevelTasks: [
+        {ts: 1000, duration: 1000, children: [
+          {ts: 1100, duration: 200, eventName: 'ScheduleStyleRecalculation'},
+        ]},
+      ],
+    });
+
+    const devtoolsLog = networkRecordsToDevtoolsLog([{
+      url: mainDocumentUrl,
+      priority: 'High',
+    }]);
+
+    artifacts = {
+      DOMStats: {
+        totalBodyElements: 1500,
+        depth: {max: 1},
+        width: {max: 2},
+      },
+      GatherContext: {gatherMode: 'navigation'},
+      URL: {
+        requestedUrl: mainDocumentUrl,
+        mainDocumentUrl,
+        finalDisplayedUrl: mainDocumentUrl,
+      },
+      traces: {defaultPass: trace},
+      devtoolsLogs: {defaultPass: devtoolsLog},
+    };
+    context = {
+      options,
+      settings: {throttlingMethod: 'simulate'},
+      computedCache: new Map(),
+    };
+  });
+
+  it('calculates score hitting mid distribution', async () => {
+    const auditResult = await DOMSize.audit(artifacts, context);
     assert.equal(auditResult.score, 0.43);
-    assert.equal(auditResult.numericValue, numElements);
+    assert.equal(auditResult.numericValue, 1500);
     expect(auditResult.displayValue).toBeDisplayString('1,500 elements');
-    assert.equal(auditResult.details.items[0].value.value, numElements);
+    assert.equal(auditResult.details.items[0].value.value, 1500);
     assert.equal(auditResult.details.items[1].value.value, 1);
     assert.equal(auditResult.details.items[2].value.value, 2);
+
+    // 200 (dur) * 4 (throttling) - 50 (blocking threshold) * 200 (dur) / 1000 (top level dur)
+    expect(auditResult.metricSavings).toEqual({TBT: 790});
   });
 
-  it('calculates score hitting top distribution', () => {
-    artifact.DOMStats.totalBodyElements = 400;
-    assert.equal(DOMSize.audit(artifact, context).score, 1);
+  it('works in snapshot mode', async () => {
+    artifacts.GatherContext.gatherMode = 'snapshot';
+    const auditResult = await DOMSize.audit(artifacts, context);
+    expect(auditResult.score).toEqual(0.43);
+    expect(auditResult.metricSavings).toEqual({});
   });
 
-  it('calculates score hitting bottom of distribution', () => {
-    artifact.DOMStats.totalBodyElements = 5970;
-    assert.equal(DOMSize.audit(artifact, context).score, 0);
+  it('works if missing trace/dtlog in navigation mode', async () => {
+    artifacts.devtoolsLogs = undefined;
+    artifacts.traces = undefined;
+    const auditResult = await DOMSize.audit(artifacts, context);
+    expect(auditResult.score).toEqual(0.43);
+    expect(auditResult.metricSavings).toEqual({TBT: 0});
+  });
+
+  it('works if tbt impact throws an error', async () => {
+    // Empty array will cause an error.
+    artifacts.traces.defaultPass = [];
+
+    const auditResult = await DOMSize.audit(artifacts, context);
+    expect(auditResult.score).toEqual(0.43);
+    expect(auditResult.metricSavings).toEqual({TBT: 0});
+  });
+
+  it('calculates score hitting top distribution', async () => {
+    artifacts.DOMStats.totalBodyElements = 400;
+    const auditResult = await DOMSize.audit(artifacts, context);
+    assert.equal(auditResult.score, 1);
+  });
+
+  it('calculates score hitting bottom of distribution', async () => {
+    artifacts.DOMStats.totalBodyElements = 5970;
+    const auditResult = await DOMSize.audit(artifacts, context);
+    assert.equal(auditResult.score, 0);
   });
 });

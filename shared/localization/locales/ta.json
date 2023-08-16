@@ -1085,9 +1085,6 @@
   "core/audits/installable-manifest.js | protocol-timeout": {
     "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Androidல் மெனிஃபெஸ்ட் URL ஸ்கீம் ({scheme}) ஆதரிக்கப்படவில்லை."
-  },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "மெனிஃபெஸ்ட் ஸ்டார்ட் URL தவறானது"
   },

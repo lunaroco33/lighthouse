@@ -1085,9 +1085,6 @@
   "core/audits/installable-manifest.js | protocol-timeout": {
     "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Het URL-schema van het manifest ({scheme}) wordt niet ondersteund op Android."
-  },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "De start-URL voor het manifest is ongeldig"
   },

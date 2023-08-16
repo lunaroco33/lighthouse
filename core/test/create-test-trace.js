@@ -13,7 +13,7 @@ const lcpNodeId = 16;
 const lcpImageUrl = 'http://www.example.com/image.png';
 
 /** @typedef {{ts: number, duration: number, children?: Array<ChildTaskDef>}} TopLevelTaskDef */
-/** @typedef {{ts: number, duration: number, url: string | undefined}} ChildTaskDef */
+/** @typedef {{ts: number, duration: number, url: string | undefined, eventName?: string}} ChildTaskDef */
 /** @typedef {{frame: string}} ChildFrame */
 /**
  * @typedef TraceOptions
@@ -47,9 +47,9 @@ function getTopLevelTask({ts, duration}) {
  * @param {ChildTaskDef} options
  * @return {LH.TraceEvent}
  */
-function getChildTask({ts, duration, url}) {
+function getChildTask({ts, duration, url, eventName}) {
   return {
-    name: 'FunctionCall',
+    name: eventName ?? 'FunctionCall',
     ts: ts * 1000,
     dur: duration * 1000,
     pid,

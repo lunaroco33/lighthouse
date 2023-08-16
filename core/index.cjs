@@ -5,38 +5,38 @@
  */
 'use strict';
 
-/** @type {import('./index.js')['default']} */
+/**
+ * @typedef ExportType
+ * @property {import('./index.js')['startFlow']} startFlow
+ * @property {import('./index.js')['navigation']} navigation
+ * @property {import('./index.js')['startTimespan']} startTimespan
+ * @property {import('./index.js')['snapshot']} snapshot
+ */
+
+/** @type {import('./index.js')['default'] & ExportType} */
 const lighthouse = async function lighthouse(...args) {
   const {default: lighthouse} = await import('./index.js');
   return lighthouse(...args);
 };
 
-/** @type {import('./index.js')['startFlow']} */
-const startFlow = async function startFlow(...args) {
+lighthouse.startFlow = async function startFlow(...args) {
   const {startFlow} = await import('./index.js');
   return startFlow(...args);
 };
 
-/** @type {import('./index.js')['navigation']} */
-const navigation = async function navigation(...args) {
+lighthouse.navigation = async function navigation(...args) {
   const {navigation} = await import('./index.js');
   return navigation(...args);
 };
 
-/** @type {import('./index.js')['startTimespan']} */
-const startTimespan = async function startTimespan(...args) {
+lighthouse.startTimespan = async function startTimespan(...args) {
   const {startTimespan} = await import('./index.js');
   return startTimespan(...args);
 };
 
-/** @type {import('./index.js')['snapshot']} */
-const snapshot = async function snapshot(...args) {
+lighthouse.snapshot = async function snapshot(...args) {
   const {snapshot} = await import('./index.js');
   return snapshot(...args);
 };
 
 module.exports = lighthouse;
-module.exports.startFlow = startFlow;
-module.exports.navigation = navigation;
-module.exports.startTimespan = startTimespan;
-module.exports.snapshot = snapshot;

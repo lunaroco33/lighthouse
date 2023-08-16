@@ -13,6 +13,7 @@
 
 import {Audit} from '../audit.js';
 import * as i18n from '../../lib/i18n/i18n.js';
+import {TBTImpactTasks} from '../../computed/tbt-impact-tasks.js';
 
 const UIStrings = {
   /** Title of a diagnostic audit that provides detail on the size of the web page's DOM. The size of a DOM is characterized by the total number of DOM elements and greatest DOM depth. This descriptive title is shown to users when the amount is acceptable and no user action is required. */
@@ -53,7 +54,8 @@ class DOMSize extends Audit {
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
-      requiredArtifacts: ['DOMStats'],
+      requiredArtifacts: ['DOMStats', 'URL', 'GatherContext'],
+      __internalOptionalArtifacts: ['traces', 'devtoolsLogs'],
     };
   }
 
@@ -69,13 +71,53 @@ class DOMSize extends Audit {
     };
   }
 
+  /**
+   * @param {LH.Artifacts} artifacts
+   * @param {LH.Audit.Context} context
+   * @return {Promise<number|undefined>}
+   */
+  static async computeTbtImpact(artifacts, context) {
+    let tbtImpact = 0;
+
+    // We still want to surface this audit in snapshot mode, but since we don't compute TBT
+    // the impact should always be undefined.
+    const {GatherContext, devtoolsLogs, traces} = artifacts;
+    if (GatherContext.gatherMode !== 'navigation') {
+      return undefined;
+    }
+
+    // Since the artifacts are optional, it's still possible for them to be missing in navigation mode.
+    // Navigation mode does compute TBT so we should surface a numerical savings of 0.
+    if (!devtoolsLogs?.[Audit.DEFAULT_PASS] || !traces?.[Audit.DEFAULT_PASS]) {
+      return 0;
+    }
+
+    const metricComputationData = Audit.makeMetricComputationDataInput(artifacts, context);
+
+    try {
+      // The TBT impact of style/layout tasks is correlated to the DOM size.
+      // Even in situations where the page forces a style recalc, the DOM size is partially to blame
+      // for any time spent blocking the main thread.
+      //
+      // `tbtImpact` should be exactly 0 for small DOMs since `selfTbtImpact` accounts for the blocking
+      // time and not the main thread time.
+      const tbtImpactTasks = await TBTImpactTasks.request(metricComputationData, context);
+      for (const task of tbtImpactTasks) {
+        if (task.group.id !== 'styleLayout') continue;
+        tbtImpact += task.selfTbtImpact;
+      }
+    } catch {}
+
+    return Math.round(tbtImpact);
+  }
+
 
   /**
    * @param {LH.Artifacts} artifacts
    * @param {LH.Audit.Context} context
-   * @return {LH.Audit.Product}
+   * @return {Promise<LH.Audit.Product>}
    */
-  static audit(artifacts, context) {
+  static async audit(artifacts, context) {
     const stats = artifacts.DOMStats;
 
     const score = Audit.computeLogNormalScore(
@@ -120,12 +162,17 @@ class DOMSize extends Audit {
       },
     ];
 
+    const tbtImpact = await this.computeTbtImpact(artifacts, context);
+
     return {
       score,
       numericValue: stats.totalBodyElements,
       numericUnit: 'element',
       displayValue: str_(UIStrings.displayValue, {itemCount: stats.totalBodyElements}),
       details: Audit.makeTableDetails(headings, items),
+      metricSavings: {
+        TBT: tbtImpact,
+      },
     };
   }
 }
