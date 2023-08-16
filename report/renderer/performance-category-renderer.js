@@ -175,11 +175,12 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
    * @param {LH.ReportResult.AuditRef} audit
    * @param {LH.ReportResult.AuditRef[]} metricAudits
-   * @return {number}
+   * @return {{overallImpact: number, overallLinearImpact: number}}
    */
   overallImpact(audit, metricAudits) {
     if (audit.result.metricSavings) {
       let overallImpact = 0;
+      let overallLinearImpact = 0;
       for (const [k, savings] of Object.entries(audit.result.metricSavings)) {
         // Get metric savings for individual audit.
         // Don't do anything if we don't have savings for a metric.
@@ -191,12 +192,15 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         if (mAudit.result.score === null) continue;
 
         const mValue = mAudit.result.numericValue;
-        if (mValue === undefined) continue;
+        if (!mValue) continue;
 
         const scoringOptions = mAudit.result.scoringOptions;
         if (!scoringOptions) continue;
 
         const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
+        const linearImpact = savings / mValue * mAudit.weight;
+        overallLinearImpact += linearImpact;
+
         // only if there's a diff between old & new.
         if (newMetricScore !== mAudit.result.score) {
           // console.log(audit.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
@@ -208,9 +212,10 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         }
       }
       // console.log('overall impact: ', overallImpact);
-      return overallImpact;
+      return {overallImpact, overallLinearImpact};
     }
-    return 0;
+
+    return {overallImpact: 0, overallLinearImpact: 0};
   }
 
   /**
@@ -320,8 +325,32 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         .filter(audit => this._classifyPerformanceAudit(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
-          // sort by higher impact.
-          return this.overallImpact(b, metricAudits) - this.overallImpact(a, metricAudits);
+          const {
+            overallImpact: aOverallImpact,
+            overallLinearImpact: aOverallLinearImpact,
+          } = this.overallImpact(a, metricAudits);
+          const {
+            overallImpact: bOverallImpact,
+            overallLinearImpact: bOverallLinearImpact,
+          } = this.overallImpact(b, metricAudits);
+
+          if (a.id === 'unsized-images') {
+            console.log('######');
+            console.log(aOverallImpact, aOverallLinearImpact);
+            console.log(bOverallImpact, bOverallLinearImpact);
+            console.log(aOverallImpact === bOverallImpact, bOverallLinearImpact);
+          }
+          if (aOverallImpact !== bOverallImpact) return bOverallImpact - aOverallImpact;
+          if (
+            aOverallImpact === 0 && bOverallImpact === 0 &&
+            aOverallLinearImpact !== bOverallLinearImpact
+          ) {
+            return bOverallLinearImpact - aOverallLinearImpact;
+          }
+
+          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
+          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
+          return scoreA - scoreB;
         });
 
     // TODO: rm this. just for console logging purposes.
