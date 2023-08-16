@@ -527,6 +527,10 @@
 /* Score */
 
 .lh-audit__score-icon {
+  opacity: 0;
+}
+
+.lh-audit__score-icon {
   width: var(--score-icon-size);
   height: var(--score-icon-size);
   margin: var(--score-icon-margin);
@@ -542,7 +546,8 @@
 }
 
 .lh-audit--average .lh-audit__display-text {
-  color: var(--color-average-secondary);
+  /* color: var(--color-average-secondary); */
+  color: gray;
 }
 .lh-audit--average .lh-audit__score-icon,
 .lh-scorescale-range--average::before {
@@ -552,7 +557,8 @@
 }
 
 .lh-audit--fail .lh-audit__display-text {
-  color: var(--color-fail-secondary);
+  /* color: var(--color-fail-secondary); */
+  color: gray;
 }
 .lh-audit--fail .lh-audit__score-icon,
 .lh-audit--error .lh-audit__score-icon,

@@ -334,12 +334,12 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
             overallLinearImpact: bOverallLinearImpact,
           } = this.overallImpact(b, metricAudits);
 
-          if (a.id === 'unsized-images') {
-            console.log('######');
-            console.log(aOverallImpact, aOverallLinearImpact);
-            console.log(bOverallImpact, bOverallLinearImpact);
-            console.log(aOverallImpact === bOverallImpact, bOverallLinearImpact);
-          }
+          // if (a.id === 'unsized-images') {
+          //   console.log('######');
+          //   console.log(aOverallImpact, aOverallLinearImpact);
+          //   console.log(bOverallImpact, bOverallLinearImpact);
+          //   console.log(aOverallImpact === bOverallImpact, bOverallLinearImpact);
+          // }
           if (aOverallImpact !== bOverallImpact) return bOverallImpact - aOverallImpact;
           if (
             aOverallImpact === 0 && bOverallImpact === 0 &&
