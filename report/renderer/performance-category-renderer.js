@@ -361,49 +361,56 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
             aOverallImpact === 0 && bOverallImpact === 0 &&
             aOverallLinearImpact !== bOverallLinearImpact
           ) {
-            // If there's no impact, just use Guidance Level.
-            return this.rank(1, b.result.guidanceLevel) - this.rank(1, a.result.guidanceLevel);
+            // try sorting by linear impact + gl.
+            return this.rank(bOverallLinearImpact, b.result.guidanceLevel) -
+              this.rank(aOverallLinearImpact, a.result.guidanceLevel);
           }
 
-          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
-          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
-          console.log('sorting', a.id, 'by score...');
-          return scoreA - scoreB;
+          // If there's no impact at all, just use Guidance Level.
+          // const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
+          // const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
+          // console.log('sorting', a.id, 'by score...');
+          // return scoreA - scoreB;
+          return this.rank(1, b.result.guidanceLevel) -
+              this.rank(1, a.result.guidanceLevel);
         });
 
+    console.log('in order audits:', diagnosticAudits);
     // TODO: rm this. just for console logging purposes.
     diagnosticAudits.forEach(a => {
       if (a.result.metricSavings) {
         let overallImpact = 0;
+        let overallLinearImpact = 0;
         for (const [k, savings] of Object.entries(a.result.metricSavings)) {
           // Get metric savings for individual audit.
           // Don't do anything if we don't have savings for a metric.
           if (savings === undefined) continue;
 
           // Get the metric data.
-          const mAudit = metricAudits.find(a => a.acronym === k);
+          const mAudit = metricAudits.find(audit => audit.acronym === k);
           if (!mAudit) continue;
           if (mAudit.result.score === null) continue;
 
           const mValue = mAudit.result.numericValue;
-          if (mValue === undefined) continue;
+          if (!mValue) continue;
 
           const scoringOptions = mAudit.result.scoringOptions;
           if (!scoringOptions) continue;
 
-          const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
-          // only if there's a diff between old & new.
-          if (newMetricScore !== mAudit.result.score) {
-            console.log(a.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
-            // This is the impact on the metric. how do you find the impact on the score (how to calculate overall impact score)?
-            const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
-            overallImpact += weightedMetricImpact;
+          const linearImpact = savings / mValue * mAudit.weight;
+          overallLinearImpact += linearImpact;
 
-            console.log('Weighted', k, 'impact: ', weightedMetricImpact);
-          }
+          // only if there's a diff between old & new.
+          // if (newMetricScore !== mAudit.result.score) {
+          // console.log(audit.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
+          const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
+          const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
+          overallImpact += weightedMetricImpact;
+
+          // eslint-disable-next-line max-len
+          console.log(a.id, 'impact: ', overallImpact, 'linear impact:', overallLinearImpact, 'guidance level:', a.result.guidanceLevel);
+          // }
         }
-        const gl = a.result.guidanceLevel ? a.result.guidanceLevel : 0;
-        console.log(a.id, 'overall impact:', overallImpact, 'guidance level:', gl);
       }
     });
 
