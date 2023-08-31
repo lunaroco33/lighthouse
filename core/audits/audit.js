@@ -407,6 +407,7 @@ class Audit {
       metricSavings: product.metricSavings,
 
       details: product.details,
+      guidanceLevel: audit.meta.guidanceLevel,
     };
   }
 

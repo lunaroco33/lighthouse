@@ -72,4 +72,5 @@ export interface Result {
     p10: number;
     median: number;
   };
+  guidanceLevel?: number;
 }

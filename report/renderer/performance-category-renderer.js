@@ -219,6 +219,17 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
+   * @param {number} impact
+   * @param {number | undefined} guidanceLevel
+   * @return {number}
+   */
+  rank(impact, guidanceLevel) {
+    const glKnob = 1;
+    const impactKnob = 1;
+    return guidanceLevel ? (guidanceLevel ** glKnob) * (impact ** impactKnob) : impact;
+  }
+
+  /**
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} groups
    * @param {{gatherMode: LH.Result.GatherMode}=} options
@@ -340,16 +351,23 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
           //   console.log(bOverallImpact, bOverallLinearImpact);
           //   console.log(aOverallImpact === bOverallImpact, bOverallLinearImpact);
           // }
-          if (aOverallImpact !== bOverallImpact) return bOverallImpact - aOverallImpact;
+          // higher impact is first.
+          // LH.Audit()
+          const aRank = this.rank(aOverallImpact, a.result.guidanceLevel);
+          const bRank = this.rank(bOverallImpact, b.result.guidanceLevel);
+
+          if (aOverallImpact !== bOverallImpact) return bRank - aRank;
           if (
             aOverallImpact === 0 && bOverallImpact === 0 &&
             aOverallLinearImpact !== bOverallLinearImpact
           ) {
-            return bOverallLinearImpact - aOverallLinearImpact;
+            // If there's no impact, just use Guidance Level.
+            return this.rank(1, b.result.guidanceLevel) - this.rank(1, a.result.guidanceLevel);
           }
 
           const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
           const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
+          console.log('sorting', a.id, 'by score...');
           return scoreA - scoreB;
         });
 
@@ -384,7 +402,8 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
             console.log('Weighted', k, 'impact: ', weightedMetricImpact);
           }
         }
-        console.log(a.id, 'overall impact:', overallImpact);
+        const gl = a.result.guidanceLevel ? a.result.guidanceLevel : 0;
+        console.log(a.id, 'overall impact:', overallImpact, 'guidance level:', gl);
       }
     });
 

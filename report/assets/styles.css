@@ -526,9 +526,10 @@
 
 /* Score */
 
-.lh-audit__score-icon {
+/* to remove color indicators - test */
+/* .lh-audit__score-icon {
   opacity: 0;
-}
+} */
 
 .lh-audit__score-icon {
   width: var(--score-icon-size);
@@ -546,8 +547,9 @@
 }
 
 .lh-audit--average .lh-audit__display-text {
-  /* color: var(--color-average-secondary); */
-  color: gray;
+  color: var(--color-average-secondary);
+  /* to remove color indicators - test */
+  /* color: gray; */
 }
 .lh-audit--average .lh-audit__score-icon,
 .lh-scorescale-range--average::before {
@@ -557,8 +559,9 @@
 }
 
 .lh-audit--fail .lh-audit__display-text {
-  /* color: var(--color-fail-secondary); */
-  color: gray;
+  color: var(--color-fail-secondary);
+  /* to remove color indicators - test */
+  /* color: gray; */
 }
 .lh-audit--fail .lh-audit__score-icon,
 .lh-audit--error .lh-audit__score-icon,
