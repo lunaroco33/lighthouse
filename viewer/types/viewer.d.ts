@@ -25,6 +25,7 @@ declare global {
   interface Window {
     viewer: _LighthouseReportViewer;
     ga: UniversalAnalytics.ga;
+    __hash?: string;
 
     // Inserted by viewer build.
     LH_CURRENT_VERSION: string;

@@ -118,6 +118,7 @@ class LegacyJavascript extends ByteEfficiencyAudit {
       scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
       description: str_(UIStrings.description),
       title: str_(UIStrings.title),
+      guidanceLevel: 2,
       requiredArtifacts: ['devtoolsLogs', 'traces', 'Scripts', 'SourceMaps',
         'GatherContext', 'URL'],
     };

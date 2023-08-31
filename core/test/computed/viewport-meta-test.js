@@ -52,6 +52,14 @@ describe('ViewportMeta computed artifact', () => {
     assert.equal(parserWarnings[1], 'Invalid values found: {"initial-scale":"microscopic"}');
   });
 
+  // eslint-disable-next-line max-len
+  it('is not mobile optimized when a viewport contains an initial-scale value lower than 1', async () => {
+    const viewport = 'width=device-width, initial-scale=0.9';
+    const {isMobileOptimized} =
+      await ViewportMeta.compute_(makeMetaElements(viewport));
+    assert.equal(isMobileOptimized, false);
+  });
+
   it('is mobile optimized when a valid viewport is provided', async () => {
     const viewports = [
       'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1',

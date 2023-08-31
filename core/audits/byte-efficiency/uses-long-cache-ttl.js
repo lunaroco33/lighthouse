@@ -45,6 +45,7 @@ class CacheHeaders extends Audit {
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      guidanceLevel: 3,
       requiredArtifacts: ['devtoolsLogs'],
     };
   }

@@ -33,6 +33,7 @@ class LargestContentfulPaintLazyLoaded extends Audit {
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
       supportedModes: ['navigation'],
+      guidanceLevel: 3,
       requiredArtifacts: ['TraceElements', 'ViewportDimensions', 'ImageElements',
         'traces', 'devtoolsLogs', 'GatherContext', 'URL'],
     };

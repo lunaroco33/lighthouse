@@ -141,7 +141,7 @@ export class I18nFormatter {
    *                              If undefined, the number will be displayed in full.
    * @return {string}
    */
-  formatBytesWithBestUnit(size, granularity = undefined) {
+  formatBytesWithBestUnit(size, granularity = 0.1) {
     if (size >= MiB) return this.formatBytesToMiB(size, granularity);
     if (size >= KiB) return this.formatBytesToKiB(size, granularity);
     return this._formatNumberWithGranularity(size, granularity, {

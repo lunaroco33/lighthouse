@@ -36,6 +36,7 @@ class PassiveEventsAudit extends ViolationAudit {
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
+      guidanceLevel: 3,
       requiredArtifacts: ['ConsoleMessages', 'SourceMaps', 'Scripts'],
     };
   }

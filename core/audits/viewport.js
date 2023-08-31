@@ -34,6 +34,7 @@ class Viewport extends Audit {
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
+      guidanceLevel: 3,
       requiredArtifacts: ['MetaElements'],
     };
   }

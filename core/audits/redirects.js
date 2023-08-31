@@ -31,6 +31,7 @@ class Redirects extends Audit {
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
       supportedModes: ['navigation'],
+      guidanceLevel: 2,
       requiredArtifacts: ['URL', 'GatherContext', 'devtoolsLogs', 'traces'],
     };
   }
@@ -144,10 +145,7 @@ class Redirects extends Audit {
       {overallSavingsMs: totalWastedMs});
 
     return {
-      // We award a passing grade if you only have 1 redirect
-      // TODO(phulce): reconsider if cases like the example in https://github.com/GoogleChrome/lighthouse/issues/8984
-      // should fail this audit.
-      score: documentRequests.length <= 2 ? 1 : ByteEfficiencyAudit.scoreForWastedMs(totalWastedMs),
+      score: ByteEfficiencyAudit.scoreForWastedMs(totalWastedMs),
       numericValue: totalWastedMs,
       numericUnit: 'millisecond',
       displayValue: totalWastedMs ?

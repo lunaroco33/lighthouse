@@ -11,7 +11,7 @@ import * as assetSaver from '../../lib/asset-saver.js';
 import {MetricTraceEvents} from '../../lib/traces/metric-trace-events.js';
 import {LighthouseError} from '../../lib/lh-error.js';
 import {LH_ROOT} from '../../../root.js';
-import {getModuleDirectory} from '../../../esm-utils.js';
+import {getModuleDirectory} from '../../../shared/esm-utils.js';
 import {readJson} from '../test-utils.js';
 
 const traceEvents = readJson('../fixtures/traces/progressive-app.json', import.meta);

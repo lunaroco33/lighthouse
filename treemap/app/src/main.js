@@ -929,8 +929,9 @@ async function main() {
   const app = new LighthouseTreemap();
   const queryParams = new URLSearchParams(window.location.search);
   const gzip = queryParams.get('gzip') === '1';
-  const hashParams = location.hash ?
-    JSON.parse(TextEncoding.fromBase64(location.hash.substr(1), {gzip})) :
+  const hash = window.__hash ?? location.hash;
+  const hashParams = hash ?
+    JSON.parse(TextEncoding.fromBase64(hash.substr(1), {gzip})) :
     {};
   /** @type {Record<string, any>} */
   const params = {

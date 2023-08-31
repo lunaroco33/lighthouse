@@ -52,6 +52,7 @@ declare global {
   interface Window {
     logger: _Logger;
     __treemapOptions?: LH.Treemap.Options;
+    __hash?: string;
     ga: UniversalAnalytics.ga;
   }
 

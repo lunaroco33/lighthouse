@@ -14,6 +14,7 @@ import {
   mockDriverModule,
   mockRunnerModule,
 } from './mock-driver.js';
+import {flushAllTimersAndMicrotasks, timers} from '../test-utils.js';
 
 const mockSubmodules = await mockDriverSubmodules();
 const mockRunner = await mockRunnerModule();
@@ -39,6 +40,9 @@ describe('Timespan Runner', () => {
   let gathererB;
   /** @type {LH.Config} */
   let config;
+
+  before(() => timers.useFakeTimers());
+  after(() => timers.dispose());
 
   beforeEach(() => {
     mockSubmodules.reset();
@@ -179,5 +183,18 @@ describe('Timespan Runner', () => {
         ImageElements: 'Artifact A',
       },
     });
+  });
+
+  it('should warn if a navigation was detected', async () => {
+    mockDriver._session.on.mockEvent('Page.frameNavigated', {});
+
+    const timespan = await startTimespanGather(page, {config});
+    await flushAllTimersAndMicrotasks();
+    await timespan.endTimespanGather();
+
+    const artifacts = await mockRunner.gather.mock.calls[0][0]();
+    expect(artifacts.LighthouseRunWarnings).toHaveLength(1);
+    expect(artifacts.LighthouseRunWarnings[0])
+      .toBeDisplayString(/A page navigation was detected during the run. Using timespan mode/);
   });
 });

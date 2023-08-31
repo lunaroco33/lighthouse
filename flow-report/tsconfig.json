@@ -21,7 +21,6 @@
     "./types",
     "../types/internal/test.d.ts",
     "../root.js",
-    "../esm-utils.js",
     "../core/test/test-env/fake-timers.js",
   ],
 }

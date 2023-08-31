@@ -8,7 +8,7 @@ import fs from 'fs';
 
 import IntlMessageFormat from 'intl-messageformat';
 
-import {getModuleDirectory} from '../../esm-utils.js';
+import {getModuleDirectory} from '../esm-utils.js';
 import {isObjectOfUnknownValues, isObjectOrArrayOfUnknownValues} from '../type-verifiers.js';
 import {locales} from './locales.js';
 

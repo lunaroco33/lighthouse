@@ -53,8 +53,15 @@ const expectations = {
   artifacts: {
     InstallabilityErrors: {
       errors: [
+        // Icon errors were consolidated in M118
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1476999
         {
-          errorId: /no-icon-available/,
+          _minChromiumVersion: '118',
+          errorId: 'no-acceptable-icon',
+        },
+        {
+          _maxChromiumVersion: '117',
+          errorId: 'no-icon-available',
         },
       ],
     },

@@ -62,6 +62,7 @@ class UsesHTTP2Audit extends Audit {
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      guidanceLevel: 3,
       supportedModes: ['timespan', 'navigation'],
       requiredArtifacts: ['URL', 'devtoolsLogs', 'traces', 'GatherContext'],
     };

@@ -7,7 +7,7 @@
 
 import fs from 'fs';
 
-import {getModuleDirectory} from '../../esm-utils.js';
+import {getModuleDirectory} from '../../shared/esm-utils.js';
 
 const moduleDir = getModuleDirectory(import.meta);
 

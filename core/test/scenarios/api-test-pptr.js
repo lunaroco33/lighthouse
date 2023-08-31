@@ -80,6 +80,10 @@ describe('Individual modes API', function() {
         finalDisplayedUrl: `${state.serverBaseUrl}/onclick.html#done`,
       });
 
+      expect(lhr.runWarnings).toHaveLength(1);
+      expect(lhr.runWarnings[0])
+        .toMatch(/A page navigation was detected during the run. Using timespan mode/);
+
       const bestPractices = lhr.categories['best-practices'];
       expect(bestPractices.score).toBeLessThan(1);
 

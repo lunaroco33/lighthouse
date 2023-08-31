@@ -42,6 +42,7 @@ class MainThreadWorkBreakdown extends Audit {
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      guidanceLevel: 1,
       requiredArtifacts: ['traces'],
     };
   }

@@ -35,7 +35,17 @@ class ViewportMeta {
     }
 
     const viewportProps = parsedProps.validProperties;
-    const isMobileOptimized = Boolean(viewportProps.width || viewportProps['initial-scale']);
+    const initialScale = Number(viewportProps['initial-scale']);
+
+    if (!isNaN(initialScale) && initialScale < 1) {
+      return {
+        hasViewportTag: true,
+        isMobileOptimized: false,
+        parserWarnings: warnings,
+      };
+    }
+
+    const isMobileOptimized = Boolean(viewportProps.width || initialScale);
 
     return {
       hasViewportTag: true,

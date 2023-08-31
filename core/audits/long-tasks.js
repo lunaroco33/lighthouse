@@ -66,6 +66,7 @@ class LongTasks extends Audit {
       scoreDisplayMode: Audit.SCORING_MODES.INFORMATIVE,
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
+      guidanceLevel: 1,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'URL'],
     };
   }

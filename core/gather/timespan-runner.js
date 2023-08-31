@@ -12,6 +12,16 @@ import {getEmptyArtifactState, collectPhaseArtifacts, awaitArtifacts} from './ru
 import {enableAsyncStacks, prepareTargetForTimespanMode} from './driver/prepare.js';
 import {initializeConfig} from '../config/config.js';
 import {getBaseArtifacts, finalizeArtifacts} from './base-artifacts.js';
+import * as i18n from '../lib/i18n/i18n.js';
+
+/* eslint-disable max-len */
+const UIStrings = {
+  /** A warning that indicates page navigations should be audited using navigation mode, as opposed to timespan mode. "navigation mode" refers to a Lighthouse mode that analyzes a page navigation. "timespan mode" refers to a Lighthouse mode that analyzes user interactions over an arbitrary period of time. */
+  warningNavigationDetected: 'A page navigation was detected during the run. Using timespan mode to audit page navigations is not recommended. Use navigation mode to audit page navigations for better third-party attribution and main thread detection.',
+};
+/* eslint-enable max-len */
+
+const str_ = i18n.createIcuMessageFn(import.meta.url, UIStrings);
 
 /**
  * @param {LH.Puppeteer.Page} page
@@ -45,6 +55,13 @@ async function startTimespanGather(page, options = {}) {
 
   await prepareTargetForTimespanMode(driver, resolvedConfig.settings);
 
+  let pageNavigationDetected = false;
+  function onFrameNavigated() {
+    pageNavigationDetected = true;
+  }
+
+  driver.defaultSession.on('Page.frameNavigated', onFrameNavigated);
+
   const disableAsyncStacks = await enableAsyncStacks(driver.defaultSession);
 
   await collectPhaseArtifacts({phase: 'startInstrumentation', ...phaseOptions});
@@ -67,6 +84,11 @@ async function startTimespanGather(page, options = {}) {
           // We should disable our `Page.frameNavigated` handlers before that.
           await disableAsyncStacks();
 
+          driver.defaultSession.off('Page.frameNavigated', onFrameNavigated);
+          if (pageNavigationDetected) {
+            baseArtifacts.LighthouseRunWarnings.push(str_(UIStrings.warningNavigationDetected));
+          }
+
           await collectPhaseArtifacts({phase: 'getArtifact', ...phaseOptions});
           await driver.disconnect();
 
@@ -82,4 +104,5 @@ async function startTimespanGather(page, options = {}) {
 
 export {
   startTimespanGather,
+  UIStrings,
 };

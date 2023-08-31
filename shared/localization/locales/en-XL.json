@@ -1856,6 +1856,9 @@
   "core/gather/gatherers/link-elements.js | headerParseWarning": {
     "message": "Êŕr̂ór̂ ṕâŕŝín̂ǵ `link` ĥéâd́êŕ ({error}): `{header}`"
   },
+  "core/gather/timespan-runner.js | warningNavigationDetected": {
+    "message": "Â ṕâǵê ńâv́îǵât́îón̂ ẃâś d̂ét̂éĉt́êd́ d̂úr̂ín̂ǵ t̂h́ê ŕûń. Ûśîńĝ t́îḿêśp̂án̂ ḿôd́ê t́ô áûd́ît́ p̂áĝé n̂áv̂íĝát̂íôńŝ íŝ ńôt́ r̂éĉóm̂ḿêńd̂éd̂. Úŝé n̂áv̂íĝát̂íôń m̂ód̂é t̂ó âúd̂ít̂ ṕâǵê ńâv́îǵât́îón̂ś f̂ór̂ b́êt́t̂ér̂ t́ĥír̂d́-p̂ár̂t́ŷ át̂t́r̂íb̂út̂íôń âńd̂ ḿâín̂ t́ĥŕêád̂ d́êt́êćt̂íôń."
+  },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "P̂áĝéŝ t́ĥát̂ ŕêq́ûéŝt́êd́ âń Âṕp̂B́âńn̂ér̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },

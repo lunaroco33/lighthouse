@@ -60,6 +60,7 @@ class WorkDuringInteraction extends Audit {
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
       supportedModes: ['timespan'],
+      guidanceLevel: 1,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'TraceElements'],
     };
   }

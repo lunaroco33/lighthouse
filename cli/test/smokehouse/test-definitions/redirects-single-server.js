@@ -45,7 +45,7 @@ const expectations = {
         numericValue: '>=2000',
       },
       'redirects': {
-        score: 1,
+        score: 0.29,
         numericValue: '>=2000',
         details: {
           items: [

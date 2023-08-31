@@ -218,14 +218,12 @@ describe('Performance: Redirects audit', () => {
     });
   });
 
-  it('passes when one redirect detected', () => {
+  it('fails when 1 redirect detected', () => {
     const artifacts = mockArtifacts(SUCCESS_ONE_REDIRECT, 'https://www.lisairish.com/');
     const context = {settings: {}, computedCache: new Map()};
     return RedirectsAudit.audit(artifacts, context).then(output => {
-      // If === 1 redirect, perfect score is expected, regardless of latency
-      // We will still generate a table and show wasted time
       expect(output.details.items).toHaveLength(2);
-      expect(output.score).toEqual(1);
+      expect(output.score).toEqual(0.48);
       expect(output.numericValue).toMatchInlineSnapshot(`1000`);
       expect(output.metricSavings).toEqual({LCP: 1000, FCP: 1000});
     });

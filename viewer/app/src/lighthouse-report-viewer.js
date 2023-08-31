@@ -110,9 +110,10 @@ export class LighthouseReportViewer {
     const jsonurl = params.get('jsonurl');
     const gzip = params.get('gzip') === '1';
 
-    if (location.hash) {
+    const hash = window.__hash ?? location.hash;
+    if (hash) {
       try {
-        const hashParams = JSON.parse(TextEncoding.fromBase64(location.hash.substr(1), {gzip}));
+        const hashParams = JSON.parse(TextEncoding.fromBase64(hash.substr(1), {gzip}));
         if (hashParams.lhr) {
           this._replaceReportHtml(hashParams.lhr);
           return Promise.resolve();

@@ -222,17 +222,12 @@ function getTestFiles() {
 }
 
 /**
- * @param {{numberFailures: number, numberMochaInvocations: number}} params
+ * @param {{numberFailures: number}} params
  */
-function exit({numberFailures, numberMochaInvocations}) {
+function exit({numberFailures}) {
   if (!numberFailures) {
     console.log('Tests passed');
     process.exit(0);
-  }
-
-  if (numberMochaInvocations === 1) {
-    console.log('Tests failed');
-    process.exit(1);
   }
 
   // If running many instances of mocha, failed results can get lost in the output.
@@ -277,33 +272,65 @@ function exit({numberFailures, numberMochaInvocations}) {
  * @param {number} invocationNumber
  */
 async function runMocha(tests, mochaArgs, invocationNumber) {
-  process.env.LH_FAILED_TESTS_FILE = `${failedTestsDir}/output-${invocationNumber}.json`;
+  const failedTestsFile = `${failedTestsDir}/output-${invocationNumber}.json`;
+  const notRunnableTestsFile = `${failedTestsDir}/output-${invocationNumber}-not-runnable.json`;
+  process.env.LH_FAILED_TESTS_FILE = failedTestsFile;
 
   const rootHooksPath = mochaArgs.require || '../test-env/mocha-setup.js';
   const {rootHooks} = await import(rootHooksPath);
 
-  try {
-    const mocha = new Mocha({
-      rootHooks,
-      timeout: 20_000,
-      bail: mochaArgs.bail,
-      grep: mochaArgs.grep,
-      forbidOnly: mochaArgs.forbidOnly,
-      // TODO: not working
-      // parallel: tests.length > 1 && mochaArgs.parallel,
-      parallel: false,
-      retries: mochaArgs.retries,
-    });
+  const mocha = new Mocha({
+    rootHooks,
+    timeout: 20_000,
+    bail: mochaArgs.bail,
+    grep: mochaArgs.grep,
+    forbidOnly: mochaArgs.forbidOnly,
+    // TODO: not working
+    // parallel: parsableTests.length > 1 && mochaArgs.parallel,
+    parallel: false,
+    retries: mochaArgs.retries,
+  });
 
-    // @ts-expect-error - not in types.
-    mocha.lazyLoadFiles(true);
-    for (const test of tests) mocha.addFile(test);
-    await mocha.loadFilesAsync();
-    return await new Promise(resolve => mocha.run(resolve));
-  } catch (err) {
-    console.error(err);
-    return 1;
+  // Load a single test module at a time, so we know which ones fail to even import.
+  const notRunnableTests = [];
+  const parsableTests = [];
+  for (const test of tests) {
+    try {
+      mocha.files = [test];
+      await mocha.loadFilesAsync();
+      parsableTests.push(test);
+    } catch (e) {
+      notRunnableTests.push({
+        file: path.relative(LH_ROOT, test),
+        title: '',
+        error: `Failed to parse module: ${e}`,
+      });
+    }
   }
+  mocha.files = [];
+
+  let failingTestCount = 0;
+  if (parsableTests.length) {
+    try {
+      failingTestCount = await new Promise(resolve => mocha.run(resolve));
+    } catch (err) {
+      // Something awful happened, and maybe no tests ran at all.
+      const errorMessage = `Mocha failed to run: ${err}`;
+      notRunnableTests.push(...parsableTests.map((test, i) => {
+        return {
+          file: path.relative(LH_ROOT, test),
+          title: '',
+          error: i === 0 ? errorMessage : '(see above failure)',
+        };
+      }));
+    }
+  }
+
+  if (notRunnableTests.length) {
+    fs.writeFileSync(notRunnableTestsFile, JSON.stringify(notRunnableTests, null, 2));
+  }
+
+  return failingTestCount + notRunnableTests.length;
 }
 
 async function main() {
@@ -348,7 +375,7 @@ async function main() {
     if (testsToRunTogether.length) {
       numberFailures += await runMocha(testsToRunTogether, mochaArgs, numberMochaInvocations);
       numberMochaInvocations += 1;
-      if (numberFailures && argv.bail) exit({numberFailures, numberMochaInvocations});
+      if (numberFailures && argv.bail) exit({numberFailures});
     }
 
     for (const test of testsToRunIsolated) {
@@ -371,13 +398,13 @@ async function main() {
       }
 
       numberMochaInvocations += 1;
-      if (numberFailures && argv.bail) exit({numberFailures, numberMochaInvocations});
+      if (numberFailures && argv.bail) exit({numberFailures});
     }
   } finally {
     mochaGlobalTeardown();
   }
 
-  exit({numberFailures, numberMochaInvocations});
+  exit({numberFailures});
 }
 
 await main();

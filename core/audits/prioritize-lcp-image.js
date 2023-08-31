@@ -38,6 +38,7 @@ class PrioritizeLcpImage extends Audit {
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
       supportedModes: ['navigation'],
+      guidanceLevel: 3,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'GatherContext', 'URL', 'TraceElements'],
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
     };

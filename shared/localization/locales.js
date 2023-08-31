@@ -23,7 +23,7 @@
 
 import fs from 'fs';
 
-import {getModuleDirectory} from '../../esm-utils.js';
+import {getModuleDirectory} from '../esm-utils.js';
 
 /** @typedef {import('../../types/lhr/settings').Locale} Locale */
 /** @typedef {Record<string, {message: string}>} LhlMessages */

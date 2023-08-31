@@ -114,7 +114,7 @@ describe('Navigation', async function() {
       devicePixelRatio: 1.75,
     });
 
-    const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
+    const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, ['max-potential-fid']);
     assert.strictEqual(auditResults.length, 188);
     assert.deepStrictEqual(erroredAudits, []);
     assert.deepStrictEqual(failedAudits.map(audit => audit.id), [

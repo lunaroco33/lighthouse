@@ -16,7 +16,7 @@ import {LH_ROOT} from '../../root.js';
 import * as mockCommands from './gather/mock-commands.js';
 import {NetworkRecorder} from '../lib/network-recorder.js';
 import {timers} from './test-env/fake-timers.js';
-import {getModuleDirectory} from '../../esm-utils.js';
+import {getModuleDirectory} from '../../shared/esm-utils.js';
 
 const require = createRequire(import.meta.url);
 

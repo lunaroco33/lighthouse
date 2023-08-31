@@ -29,6 +29,7 @@ class LayoutShiftElements extends Audit {
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.INFORMATIVE,
+      guidanceLevel: 2,
       requiredArtifacts: ['traces', 'TraceElements'],
     };
   }

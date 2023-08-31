@@ -6,7 +6,7 @@
 
 import fs from 'fs';
 
-import {getModuleDirectory} from './esm-utils.js';
+import {getModuleDirectory} from './shared/esm-utils.js';
 
 const LH_ROOT = getModuleDirectory(import.meta);
 const pkg = JSON.parse(fs.readFileSync(`${LH_ROOT}/package.json`, 'utf-8'));

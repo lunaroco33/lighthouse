@@ -54,6 +54,8 @@ declare module Audit {
     scoreDisplayMode?: AuditResult.ScoreDisplayMode;
     /** A list of gather modes that this audit is applicable to. */
     supportedModes?: Gatherer.GatherMode[],
+    /** A number indicating how much guidance Lighthouse provides to solve the problem in this audit on a 1-3 scale. Higher means more guidance. */
+    guidanceLevel?: number;
   }
 
   interface ByteEfficiencyItem extends AuditDetails.OpportunityItem {

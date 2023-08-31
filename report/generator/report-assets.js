@@ -8,7 +8,7 @@
 import fs from 'fs';
 
 import {flowReportAssets} from './flow-report-assets.js';
-import {getModuleDirectory} from '../../esm-utils.js';
+import {getModuleDirectory} from '../../shared/esm-utils.js';
 
 const moduleDir = getModuleDirectory(import.meta);
 
