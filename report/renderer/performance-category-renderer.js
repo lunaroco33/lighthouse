@@ -220,13 +220,13 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
 
   /**
    * @param {number} impact
-   * @param {number | undefined} guidanceLevel
+   * @param {number} guidanceLevel
    * @return {number}
    */
   rank(impact, guidanceLevel) {
     const glKnob = 1;
     const impactKnob = 1;
-    return guidanceLevel ? (guidanceLevel ** glKnob) * (impact ** impactKnob) : impact;
+    return (guidanceLevel ** glKnob) * (impact ** impactKnob);
   }
 
   /**
@@ -345,6 +345,9 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
             overallLinearImpact: bOverallLinearImpact,
           } = this.overallImpact(b, metricAudits);
 
+          const aGuidanceLevel = a.result.guidanceLevel || 1;
+          const bGuidanceLevel = b.result.guidanceLevel || 1;
+
           // if (a.id === 'unsized-images') {
           //   console.log('######');
           //   console.log(aOverallImpact, aOverallLinearImpact);
@@ -353,26 +356,25 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
           // }
           // higher impact is first.
           // LH.Audit()
-          const aRank = this.rank(aOverallImpact, a.result.guidanceLevel);
-          const bRank = this.rank(bOverallImpact, b.result.guidanceLevel);
-
+          const aRank = this.rank(aOverallImpact, aGuidanceLevel);
+          const bRank = this.rank(bOverallImpact, bGuidanceLevel);
           if (aOverallImpact !== bOverallImpact) return bRank - aRank;
+
           if (
             aOverallImpact === 0 && bOverallImpact === 0 &&
             aOverallLinearImpact !== bOverallLinearImpact
           ) {
             // try sorting by linear impact + gl.
-            return this.rank(bOverallLinearImpact, b.result.guidanceLevel) -
-              this.rank(aOverallLinearImpact, a.result.guidanceLevel);
+            return this.rank(bOverallLinearImpact, bGuidanceLevel) -
+              this.rank(aOverallLinearImpact, bGuidanceLevel);
           }
 
+          if (aGuidanceLevel !== bGuidanceLevel) return bGuidanceLevel - aGuidanceLevel;
+
           // If there's no impact at all, just use Guidance Level.
-          // const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
-          // const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
-          // console.log('sorting', a.id, 'by score...');
-          // return scoreA - scoreB;
-          return this.rank(1, b.result.guidanceLevel) -
-              this.rank(1, a.result.guidanceLevel);
+          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
+          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
+          return scoreA - scoreB;
         });
 
     console.log('in order audits:', diagnosticAudits);
