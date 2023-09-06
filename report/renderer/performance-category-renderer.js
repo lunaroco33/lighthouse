@@ -201,32 +201,13 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         const linearImpact = savings / mValue * mAudit.weight;
         overallLinearImpact += linearImpact;
 
-        // only if there's a diff between old & new.
-        if (newMetricScore !== mAudit.result.score) {
-          // console.log(audit.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
-          // This is the impact on the metric. how do you find the impact on the score (how to calculate overall impact score)?
-          const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
-          overallImpact += weightedMetricImpact;
-
-          // console.log('Weighted', k, 'impact: ', weightedMetricImpact);
-        }
+        const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
+        overallImpact += weightedMetricImpact;
       }
-      // console.log('overall impact: ', overallImpact);
       return {overallImpact, overallLinearImpact};
     }
 
     return {overallImpact: 0, overallLinearImpact: 0};
-  }
-
-  /**
-   * @param {number} impact
-   * @param {number} guidanceLevel
-   * @return {number}
-   */
-  rank(impact, guidanceLevel) {
-    const glKnob = 1;
-    const impactKnob = 1;
-    return (guidanceLevel ** glKnob) * (impact ** impactKnob);
   }
 
   /**
@@ -296,46 +277,13 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       filmstripEl && timelineEl.append(filmstripEl);
     }
 
-    // Opportunities
-    /* const opportunityAudits = category.auditRefs
-        .filter(audit => this._classifyPerformanceAudit(audit) === 'load-opportunity')
-        .filter(audit => !ReportUtils.showAsPassed(audit.result))
-        .sort((auditA, auditB) => this._getWastedMs(auditB) - this._getWastedMs(auditA));
-
-    const filterableMetrics = metricAudits.filter(a => !!a.relevantAudits);
-    // TODO: only add if there are opportunities & diagnostics rendered.
-    if (filterableMetrics.length) {
-      this.renderMetricAuditFilter(filterableMetrics, element);
-    }
-
-    if (opportunityAudits.length) {
-      // Scale the sparklines relative to savings, minimum 2s to not overstate small savings
-      const minimumScale = 2000;
-      const wastedMsValues = opportunityAudits.map(audit => this._getWastedMs(audit));
-      const maxWaste = Math.max(...wastedMsValues);
-      const scale = Math.max(Math.ceil(maxWaste / 1000) * 1000, minimumScale);
-      const [groupEl, footerEl] = this.renderAuditGroup(groups['load-opportunities']);
-      const tmpl = this.dom.createComponent('opportunityHeader');
-
-      this.dom.find('.lh-load-opportunity__col--one', tmpl).textContent =
-        strings.opportunityResourceColumnLabel;
-      this.dom.find('.lh-load-opportunity__col--two', tmpl).textContent =
-        strings.opportunitySavingsColumnLabel;
-
-      const headerEl = this.dom.find('.lh-load-opportunity__header', tmpl);
-      groupEl.insertBefore(headerEl, footerEl);
-      opportunityAudits.forEach(item =>
-        groupEl.insertBefore(this._renderOpportunity(item, scale), footerEl));
-      groupEl.classList.add('lh-audit-group--load-opportunities');
-      element.append(groupEl);
-    } */
-
     // Diagnostics
     const diagnosticAudits = category.auditRefs
         // All audits here.
         .filter(audit => this._classifyPerformanceAudit(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
+          // Sort by impact.
           const {
             overallImpact: aOverallImpact,
             overallLinearImpact: aOverallLinearImpact,
@@ -348,73 +296,21 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
           const aGuidanceLevel = a.result.guidanceLevel || 1;
           const bGuidanceLevel = b.result.guidanceLevel || 1;
 
-          // if (a.id === 'unsized-images') {
-          //   console.log('######');
-          //   console.log(aOverallImpact, aOverallLinearImpact);
-          //   console.log(bOverallImpact, bOverallLinearImpact);
-          //   console.log(aOverallImpact === bOverallImpact, bOverallLinearImpact);
-          // }
-          // higher impact is first.
-          // LH.Audit()
-          const aRank = this.rank(aOverallImpact, aGuidanceLevel);
-          const bRank = this.rank(bOverallImpact, bGuidanceLevel);
-          if (aOverallImpact !== bOverallImpact) return bRank - aRank;
+          if (aOverallImpact !== bOverallImpact) return bOverallImpact - aOverallImpact;
 
           if (
             aOverallImpact === 0 && bOverallImpact === 0 &&
             aOverallLinearImpact !== bOverallLinearImpact
           ) {
-            // try sorting by linear impact + gl.
-            return this.rank(bOverallLinearImpact, bGuidanceLevel) -
-              this.rank(aOverallLinearImpact, bGuidanceLevel);
+            return bOverallLinearImpact - aOverallLinearImpact;
           }
 
           if (aGuidanceLevel !== bGuidanceLevel) return bGuidanceLevel - aGuidanceLevel;
 
-          // If there's no impact at all, just use Guidance Level.
           const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
           const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
           return scoreA - scoreB;
         });
-
-    console.log('in order audits:', diagnosticAudits);
-    // TODO: rm this. just for console logging purposes.
-    diagnosticAudits.forEach(a => {
-      if (a.result.metricSavings) {
-        let overallImpact = 0;
-        let overallLinearImpact = 0;
-        for (const [k, savings] of Object.entries(a.result.metricSavings)) {
-          // Get metric savings for individual audit.
-          // Don't do anything if we don't have savings for a metric.
-          if (savings === undefined) continue;
-
-          // Get the metric data.
-          const mAudit = metricAudits.find(audit => audit.acronym === k);
-          if (!mAudit) continue;
-          if (mAudit.result.score === null) continue;
-
-          const mValue = mAudit.result.numericValue;
-          if (!mValue) continue;
-
-          const scoringOptions = mAudit.result.scoringOptions;
-          if (!scoringOptions) continue;
-
-          const linearImpact = savings / mValue * mAudit.weight;
-          overallLinearImpact += linearImpact;
-
-          // only if there's a diff between old & new.
-          // if (newMetricScore !== mAudit.result.score) {
-          // console.log(audit.id, 'New:', newMetricScore, 'Old:', mAudit.result.score);
-          const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
-          const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
-          overallImpact += weightedMetricImpact;
-
-          // eslint-disable-next-line max-len
-          console.log(a.id, 'impact: ', overallImpact, 'linear impact:', overallLinearImpact, 'guidance level:', a.result.guidanceLevel);
-          // }
-        }
-      }
-    });
 
     if (diagnosticAudits.length) {
       const [groupEl, footerEl] = this.renderAuditGroup(groups['diagnostics']);
