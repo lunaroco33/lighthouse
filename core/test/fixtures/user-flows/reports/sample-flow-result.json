@@ -41,7 +41,8 @@
             "warnings": [],
             "metricSavings": {
               "INP": 0
-            }
+            },
+            "guidanceLevel": 3
           },
           "first-contentful-paint": {
             "id": "first-contentful-paint",
@@ -253,7 +254,8 @@
                 }
               ],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 1
           },
           "interactive": {
             "id": "interactive",
@@ -322,7 +324,8 @@
                   "timingType": "Mark"
                 }
               ]
-            }
+            },
+            "guidanceLevel": 2
           },
           "critical-request-chains": {
             "id": "critical-request-chains",
@@ -349,7 +352,8 @@
                 "length": 1,
                 "transferSize": 3558
               }
-            }
+            },
+            "guidanceLevel": 1
           },
           "redirects": {
             "id": "redirects",
@@ -369,7 +373,8 @@
               "headings": [],
               "items": [],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 2
           },
           "installable-manifest": {
             "id": "installable-manifest",
@@ -560,7 +565,8 @@
               "sortedBy": [
                 "duration"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "bootup-time": {
             "id": "bootup-time",
@@ -624,7 +630,8 @@
               "sortedBy": [
                 "total"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "uses-rel-preload": {
             "id": "uses-rel-preload",
@@ -637,7 +644,8 @@
               "headings": [],
               "items": [],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-rel-preconnect": {
             "id": "uses-rel-preconnect",
@@ -661,7 +669,8 @@
               "sortedBy": [
                 "wastedMs"
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "font-display": {
             "id": "font-display",
@@ -674,7 +683,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "diagnostics": {
             "id": "diagnostics",
@@ -1406,6 +1416,9 @@
             "score": 1,
             "scoreDisplayMode": "binary",
             "displayValue": "Third-party code blocked the main thread for 0 ms",
+            "metricSavings": {
+              "TBT": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -1470,14 +1483,19 @@
                 "wastedMs": 0
               },
               "isEntityGrouped": true
-            }
+            },
+            "guidanceLevel": 1
           },
           "third-party-facades": {
             "id": "third-party-facades",
             "title": "Lazy load third-party resources with facades",
             "description": "Some third-party embeds can be lazy loaded. Consider replacing them with a facade until they are required. [Learn how to defer third-parties with a facade](https://developer.chrome.com/docs/lighthouse/performance/third-party-facades/).",
             "score": null,
-            "scoreDisplayMode": "notApplicable"
+            "scoreDisplayMode": "notApplicable",
+            "metricSavings": {
+              "TBT": 0
+            },
+            "guidanceLevel": 3
           },
           "largest-contentful-paint-element": {
             "id": "largest-contentful-paint-element",
@@ -1486,6 +1504,9 @@
             "score": null,
             "scoreDisplayMode": "informative",
             "displayValue": "1,370 ms",
+            "metricSavings": {
+              "LCP": 0
+            },
             "details": {
               "type": "list",
               "items": [
@@ -1562,7 +1583,8 @@
                   ]
                 }
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "lcp-lazy-loaded": {
             "id": "lcp-lazy-loaded",
@@ -1570,6 +1592,9 @@
             "description": "Above-the-fold images that are lazily loaded render later in the page lifecycle, which can delay the largest contentful paint. [Learn more about optimal lazy loading](https://web.dev/lcp-lazy-loading/).",
             "score": 1,
             "scoreDisplayMode": "binary",
+            "metricSavings": {
+              "LCP": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -1599,7 +1624,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "layout-shift-elements": {
             "id": "layout-shift-elements",
@@ -1723,7 +1749,8 @@
                   "score": 0.00036762719987422577
                 }
               ]
-            }
+            },
+            "guidanceLevel": 2
           },
           "long-tasks": {
             "id": "long-tasks",
@@ -1807,7 +1834,8 @@
                   }
                 ]
               }
-            }
+            },
+            "guidanceLevel": 1
           },
           "no-unload-listeners": {
             "id": "no-unload-listeners",
@@ -1829,7 +1857,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "unsized-images": {
             "id": "unsized-images",
@@ -1875,7 +1904,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "valid-source-maps": {
             "id": "valid-source-maps",
@@ -1923,7 +1953,8 @@
                 ],
                 "pathLength": 2
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "csp-xss": {
             "id": "csp-xss",
@@ -2747,7 +2778,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "total-byte-weight": {
             "id": "total-byte-weight",
@@ -2817,7 +2849,8 @@
               "sortedBy": [
                 "totalBytes"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "offscreen-images": {
             "id": "offscreen-images",
@@ -2849,7 +2882,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "render-blocking-resources": {
             "id": "render-blocking-resources",
@@ -2868,7 +2902,8 @@
               "headings": [],
               "items": [],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 2
           },
           "unminified-css": {
             "id": "unminified-css",
@@ -2899,7 +2934,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "unminified-javascript": {
             "id": "unminified-javascript",
@@ -2931,7 +2967,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "unused-css-rules": {
             "id": "unused-css-rules",
@@ -2962,7 +2999,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "unused-javascript": {
             "id": "unused-javascript",
@@ -2993,7 +3031,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "modern-image-formats": {
             "id": "modern-image-formats",
@@ -3025,7 +3064,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-optimized-images": {
             "id": "uses-optimized-images",
@@ -3057,7 +3097,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "uses-text-compression": {
             "id": "uses-text-compression",
@@ -3088,7 +3129,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-responsive-images": {
             "id": "uses-responsive-images",
@@ -3119,7 +3161,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "efficient-animated-content": {
             "id": "efficient-animated-content",
@@ -3150,7 +3193,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "duplicated-javascript": {
             "id": "duplicated-javascript",
@@ -3181,7 +3225,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "legacy-javascript": {
             "id": "legacy-javascript",
@@ -3256,7 +3301,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "doctype": {
             "id": "doctype",
@@ -3281,6 +3327,9 @@
             "numericValue": 70,
             "numericUnit": "element",
             "displayValue": "70 elements",
+            "metricSavings": {
+              "TBT": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -3358,7 +3407,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "geolocation-on-start": {
             "id": "geolocation-on-start",
@@ -3394,7 +3444,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "js-libraries": {
             "id": "js-libraries",
@@ -3481,7 +3532,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "meta-description": {
             "id": "meta-description",
@@ -3653,7 +3705,8 @@
             "title": "Page didn't prevent back/forward cache restoration",
             "description": "Many navigations are performed by going back to a previous page, or forwards again. The back/forward cache (bfcache) can speed up these return navigations. [Learn more about the bfcache](https://developer.chrome.com/docs/lighthouse/performance/bf-cache/)",
             "score": 1,
-            "scoreDisplayMode": "binary"
+            "scoreDisplayMode": "binary",
+            "guidanceLevel": 2
           }
         },
         "configSettings": {
@@ -8578,7 +8631,8 @@
                   "timingType": "Mark"
                 }
               ]
-            }
+            },
+            "guidanceLevel": 2
           },
           "image-aspect-ratio": {
             "id": "image-aspect-ratio",
@@ -8810,7 +8864,8 @@
               "sortedBy": [
                 "duration"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "bootup-time": {
             "id": "bootup-time",
@@ -8874,7 +8929,8 @@
               "sortedBy": [
                 "total"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "network-requests": {
             "id": "network-requests",
@@ -9472,6 +9528,9 @@
             "score": 1,
             "scoreDisplayMode": "binary",
             "displayValue": "Third-party code blocked the main thread for 0 ms",
+            "metricSavings": {
+              "TBT": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -9529,7 +9588,8 @@
                 "wastedMs": 0
               },
               "isEntityGrouped": true
-            }
+            },
+            "guidanceLevel": 1
           },
           "layout-shift-elements": {
             "id": "layout-shift-elements",
@@ -9577,7 +9637,8 @@
                   "score": 0.13125
                 }
               ]
-            }
+            },
+            "guidanceLevel": 2
           },
           "long-tasks": {
             "id": "long-tasks",
@@ -9637,7 +9698,8 @@
                   }
                 ]
               }
-            }
+            },
+            "guidanceLevel": 1
           },
           "no-unload-listeners": {
             "id": "no-unload-listeners",
@@ -9659,7 +9721,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "unsized-images": {
             "id": "unsized-images",
@@ -9705,7 +9768,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "valid-source-maps": {
             "id": "valid-source-maps",
@@ -9896,7 +9960,8 @@
               "skipSumming": [
                 "cacheLifetimeMs"
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "total-byte-weight": {
             "id": "total-byte-weight",
@@ -9966,7 +10031,8 @@
               "sortedBy": [
                 "totalBytes"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "unminified-css": {
             "id": "unminified-css",
@@ -9997,7 +10063,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "unminified-javascript": {
             "id": "unminified-javascript",
@@ -10029,7 +10096,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "unused-css-rules": {
             "id": "unused-css-rules",
@@ -10060,7 +10128,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "unused-javascript": {
             "id": "unused-javascript",
@@ -10091,7 +10160,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "modern-image-formats": {
             "id": "modern-image-formats",
@@ -10123,7 +10193,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-optimized-images": {
             "id": "uses-optimized-images",
@@ -10155,7 +10226,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "uses-text-compression": {
             "id": "uses-text-compression",
@@ -10186,7 +10258,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-responsive-images": {
             "id": "uses-responsive-images",
@@ -10217,7 +10290,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "efficient-animated-content": {
             "id": "efficient-animated-content",
@@ -10248,7 +10322,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "duplicated-javascript": {
             "id": "duplicated-javascript",
@@ -10279,7 +10354,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "legacy-javascript": {
             "id": "legacy-javascript",
@@ -10310,7 +10386,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "inspector-issues": {
             "id": "inspector-issues",
@@ -10334,7 +10411,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "uses-passive-event-listeners": {
             "id": "uses-passive-event-listeners",
@@ -10346,7 +10424,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "work-during-interaction": {
             "id": "work-during-interaction",
@@ -10539,14 +10618,16 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "bf-cache": {
             "id": "bf-cache",
             "title": "Page didn't prevent back/forward cache restoration",
             "description": "Many navigations are performed by going back to a previous page, or forwards again. The back/forward cache (bfcache) can speed up these return navigations. [Learn more about the bfcache](https://developer.chrome.com/docs/lighthouse/performance/bf-cache/)",
             "score": 1,
-            "scoreDisplayMode": "binary"
+            "scoreDisplayMode": "binary",
+            "guidanceLevel": 2
           }
         },
         "configSettings": {
@@ -12326,7 +12407,8 @@
             "warnings": [],
             "metricSavings": {
               "INP": 0
-            }
+            },
+            "guidanceLevel": 3
           },
           "image-aspect-ratio": {
             "id": "image-aspect-ratio",
@@ -12519,7 +12601,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "accesskeys": {
             "id": "accesskeys",
@@ -14327,7 +14410,8 @@
                   "actualDimensions": "1000x450"
                 }
               ]
-            }
+            },
+            "guidanceLevel": 2
           },
           "doctype": {
             "id": "doctype",
@@ -14345,6 +14429,7 @@
             "numericValue": 361,
             "numericUnit": "element",
             "displayValue": "361 elements",
+            "metricSavings": {},
             "details": {
               "type": "table",
               "headings": [
@@ -14422,7 +14507,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "js-libraries": {
             "id": "js-libraries",
@@ -17555,7 +17641,8 @@
             "warnings": [],
             "metricSavings": {
               "INP": 0
-            }
+            },
+            "guidanceLevel": 3
           },
           "first-contentful-paint": {
             "id": "first-contentful-paint",
@@ -17767,7 +17854,8 @@
                 }
               ],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 1
           },
           "interactive": {
             "id": "interactive",
@@ -17836,7 +17924,8 @@
                   "timingType": "Mark"
                 }
               ]
-            }
+            },
+            "guidanceLevel": 2
           },
           "critical-request-chains": {
             "id": "critical-request-chains",
@@ -17863,7 +17952,8 @@
                 "length": 1,
                 "transferSize": 3596
               }
-            }
+            },
+            "guidanceLevel": 1
           },
           "redirects": {
             "id": "redirects",
@@ -17883,7 +17973,8 @@
               "headings": [],
               "items": [],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 2
           },
           "installable-manifest": {
             "id": "installable-manifest",
@@ -18074,7 +18165,8 @@
               "sortedBy": [
                 "duration"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "bootup-time": {
             "id": "bootup-time",
@@ -18144,7 +18236,8 @@
               "sortedBy": [
                 "total"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "uses-rel-preload": {
             "id": "uses-rel-preload",
@@ -18157,7 +18250,8 @@
               "headings": [],
               "items": [],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-rel-preconnect": {
             "id": "uses-rel-preconnect",
@@ -18181,7 +18275,8 @@
               "sortedBy": [
                 "wastedMs"
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "font-display": {
             "id": "font-display",
@@ -18194,7 +18289,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "diagnostics": {
             "id": "diagnostics",
@@ -18884,6 +18980,9 @@
             "score": 1,
             "scoreDisplayMode": "binary",
             "displayValue": "Third-party code blocked the main thread for 0 ms",
+            "metricSavings": {
+              "TBT": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -18929,14 +19028,19 @@
                 }
               ],
               "isEntityGrouped": true
-            }
+            },
+            "guidanceLevel": 1
           },
           "third-party-facades": {
             "id": "third-party-facades",
             "title": "Lazy load third-party resources with facades",
             "description": "Some third-party embeds can be lazy loaded. Consider replacing them with a facade until they are required. [Learn how to defer third-parties with a facade](https://developer.chrome.com/docs/lighthouse/performance/third-party-facades/).",
             "score": null,
-            "scoreDisplayMode": "notApplicable"
+            "scoreDisplayMode": "notApplicable",
+            "metricSavings": {
+              "TBT": 0
+            },
+            "guidanceLevel": 3
           },
           "largest-contentful-paint-element": {
             "id": "largest-contentful-paint-element",
@@ -18945,6 +19049,9 @@
             "score": null,
             "scoreDisplayMode": "informative",
             "displayValue": "1,800 ms",
+            "metricSavings": {
+              "LCP": 0
+            },
             "details": {
               "type": "list",
               "items": [
@@ -19021,7 +19128,8 @@
                   ]
                 }
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "lcp-lazy-loaded": {
             "id": "lcp-lazy-loaded",
@@ -19029,6 +19137,9 @@
             "description": "Above-the-fold images that are lazily loaded render later in the page lifecycle, which can delay the largest contentful paint. [Learn more about optimal lazy loading](https://web.dev/lcp-lazy-loading/).",
             "score": 1,
             "scoreDisplayMode": "binary",
+            "metricSavings": {
+              "LCP": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -19058,7 +19169,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "layout-shift-elements": {
             "id": "layout-shift-elements",
@@ -19073,7 +19185,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "long-tasks": {
             "id": "long-tasks",
@@ -19144,7 +19257,8 @@
                   }
                 ]
               }
-            }
+            },
+            "guidanceLevel": 1
           },
           "no-unload-listeners": {
             "id": "no-unload-listeners",
@@ -19166,7 +19280,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "unsized-images": {
             "id": "unsized-images",
@@ -19231,7 +19346,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 3
           },
           "valid-source-maps": {
             "id": "valid-source-maps",
@@ -19279,7 +19395,8 @@
                 ],
                 "pathLength": 2
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "csp-xss": {
             "id": "csp-xss",
@@ -20140,7 +20257,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "total-byte-weight": {
             "id": "total-byte-weight",
@@ -20190,7 +20308,8 @@
               "sortedBy": [
                 "totalBytes"
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "offscreen-images": {
             "id": "offscreen-images",
@@ -20222,7 +20341,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "render-blocking-resources": {
             "id": "render-blocking-resources",
@@ -20241,7 +20361,8 @@
               "headings": [],
               "items": [],
               "overallSavingsMs": 0
-            }
+            },
+            "guidanceLevel": 2
           },
           "unminified-css": {
             "id": "unminified-css",
@@ -20272,7 +20393,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "unminified-javascript": {
             "id": "unminified-javascript",
@@ -20304,7 +20426,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "unused-css-rules": {
             "id": "unused-css-rules",
@@ -20335,7 +20458,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "unused-javascript": {
             "id": "unused-javascript",
@@ -20366,7 +20490,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "modern-image-formats": {
             "id": "modern-image-formats",
@@ -20444,7 +20569,8 @@
                   "LCP": 330
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-optimized-images": {
             "id": "uses-optimized-images",
@@ -20476,7 +20602,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "uses-text-compression": {
             "id": "uses-text-compression",
@@ -20507,7 +20634,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "uses-responsive-images": {
             "id": "uses-responsive-images",
@@ -20582,7 +20710,8 @@
                   "LCP": 300
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "efficient-animated-content": {
             "id": "efficient-animated-content",
@@ -20613,7 +20742,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 3
           },
           "duplicated-javascript": {
             "id": "duplicated-javascript",
@@ -20644,7 +20774,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "legacy-javascript": {
             "id": "legacy-javascript",
@@ -20719,7 +20850,8 @@
                   "LCP": 0
                 }
               }
-            }
+            },
+            "guidanceLevel": 2
           },
           "doctype": {
             "id": "doctype",
@@ -20744,6 +20876,9 @@
             "numericValue": 81,
             "numericUnit": "element",
             "displayValue": "81 elements",
+            "metricSavings": {
+              "TBT": 0
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -20821,7 +20956,8 @@
                   }
                 }
               ]
-            }
+            },
+            "guidanceLevel": 1
           },
           "geolocation-on-start": {
             "id": "geolocation-on-start",
@@ -20857,7 +20993,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 2
           },
           "js-libraries": {
             "id": "js-libraries",
@@ -20944,7 +21081,8 @@
               "type": "table",
               "headings": [],
               "items": []
-            }
+            },
+            "guidanceLevel": 3
           },
           "meta-description": {
             "id": "meta-description",
@@ -21173,7 +21311,8 @@
             "title": "Page didn't prevent back/forward cache restoration",
             "description": "Many navigations are performed by going back to a previous page, or forwards again. The back/forward cache (bfcache) can speed up these return navigations. [Learn more about the bfcache](https://developer.chrome.com/docs/lighthouse/performance/bf-cache/)",
             "score": 1,
-            "scoreDisplayMode": "binary"
+            "scoreDisplayMode": "binary",
+            "guidanceLevel": 2
           }
         },
         "configSettings": {
