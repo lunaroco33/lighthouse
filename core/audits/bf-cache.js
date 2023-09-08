@@ -71,7 +71,7 @@ class BFCache extends Audit {
    */
   static async audit(artifacts) {
     const failures = artifacts.BFCacheFailures;
-    if (!failures.length) return {score: 1, notApplicable: true};
+    if (!failures.length) return {score: 1};
 
     // TODO: Analyze more than one bf cache failure.
     const {notRestoredReasonsTree} = failures[0];
