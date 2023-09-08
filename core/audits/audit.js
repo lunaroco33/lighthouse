@@ -330,7 +330,7 @@ class Audit {
     }
 
     if (scoreDisplayMode === Audit.SCORING_MODES.METRIC_SAVINGS) {
-      if (score && score >= 0.9) {
+      if (score && score >= Util.PASS_THRESHOLD) {
         score = 1;
       } else if (Object.values(product.metricSavings || {}).some(v => v)) {
         score = 0;
@@ -388,7 +388,7 @@ class Audit {
     }
 
     const score = Audit._normalizeAuditScore(product, scoreDisplayMode, audit.meta.id);
-    if (scoreDisplayMode === Audit.SCORING_MODES.METRIC_SAVINGS && score === 1) {
+    if (audit.meta.informativeOnPass && score && score >= Util.PASS_THRESHOLD) {
       scoreDisplayMode = Audit.SCORING_MODES.INFORMATIVE;
     }
 

@@ -57,6 +57,7 @@ class DOMSize extends Audit {
       guidanceLevel: 1,
       requiredArtifacts: ['DOMStats', 'URL', 'GatherContext'],
       __internalOptionalArtifacts: ['traces', 'devtoolsLogs'],
+      informativeOnPass: true,
     };
   }
 

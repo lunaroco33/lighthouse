@@ -103,7 +103,6 @@ class LargestContentfulPaintLazyLoaded extends Audit {
 
     return {
       score: wasLazyLoaded ? 0 : 1,
-      notApplicable: !wasLazyLoaded,
       metricSavings: {
         LCP: lcpSavings,
       },

@@ -30,6 +30,7 @@ class LayoutShiftElements extends Audit {
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 2,
       requiredArtifacts: ['traces', 'TraceElements'],
+      informativeOnPass: true,
     };
   }
 

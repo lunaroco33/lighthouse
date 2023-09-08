@@ -47,6 +47,7 @@ class MainThreadWorkBreakdown extends Audit {
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 1,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'URL', 'GatherContext'],
+      informativeOnPass: true,
     };
   }
 

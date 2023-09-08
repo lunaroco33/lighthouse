@@ -77,7 +77,6 @@ class NoDocWriteAudit extends ViolationAudit {
 
     return {
       score: Number(results.length === 0),
-      notApplicable: !results.length,
       details,
     };
   }

@@ -299,7 +299,6 @@ class UsesHTTP2Audit extends Audit {
       displayValue,
       numericValue: wastedMsTti,
       numericUnit: 'millisecond',
-      notApplicable: !resources.length,
       score: resources.length ? 0 : 1,
       details,
       metricSavings: {LCP: wasteLcp.savings, FCP: wasteFcp.savings},

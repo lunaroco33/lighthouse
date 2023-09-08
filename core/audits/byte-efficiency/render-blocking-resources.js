@@ -296,7 +296,6 @@ class RenderBlockingResources extends Audit {
     return {
       displayValue,
       score: results.length ? 0 : 1,
-      notApplicable: !results.length,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
       details,

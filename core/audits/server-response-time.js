@@ -40,6 +40,7 @@ class ServerResponseTime extends Audit {
       guidanceLevel: 1,
       requiredArtifacts: ['devtoolsLogs', 'URL', 'GatherContext'],
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
+      informativeOnPass: true,
     };
   }
 

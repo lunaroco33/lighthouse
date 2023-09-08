@@ -185,7 +185,6 @@ class FontDisplay extends Audit {
 
     return {
       score: Number(results.length === 0),
-      notApplicable: !results.length,
       details,
       warnings: FontDisplay.getWarningsForFontUrls(warningURLs),
     };

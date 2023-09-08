@@ -163,7 +163,6 @@ class LargestContentfulPaintElement extends Audit {
 
     return {
       score: lcpSavings ? 0 : 1,
-      notApplicable: !items.length,
       displayValue,
       details,
       metricSavings: {

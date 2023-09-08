@@ -145,7 +145,6 @@ class Redirects extends Audit {
 
     return {
       score: tableRows.length ? 0 : 1,
-      notApplicable: !tableRows.length,
       numericValue: totalWastedMs,
       numericUnit: 'millisecond',
       displayValue: totalWastedMs ?

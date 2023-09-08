@@ -244,7 +244,6 @@ class UsesRelPreloadAudit extends Audit {
 
     return {
       score: results.length ? 0 : 1,
-      notApplicable: !results.length,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
       displayValue: wastedMs ?

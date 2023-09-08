@@ -65,7 +65,6 @@ class Viewport extends Audit {
 
     return {
       score: Number(viewportMeta.isMobileOptimized),
-      notApplicable: viewportMeta.isMobileOptimized,
       metricSavings: {
         INP: inpSavings,
       },

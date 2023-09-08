@@ -281,7 +281,6 @@ class CacheHeaders extends Audit {
 
     return {
       score: results.length ? 0 : 1,
-      notApplicable: !results.length,
       numericValue: totalWastedBytes,
       numericUnit: 'byte',
       displayValue: str_(UIStrings.displayValue, {itemCount: results.length}),

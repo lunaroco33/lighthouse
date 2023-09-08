@@ -37,6 +37,7 @@ class TotalByteWeight extends Audit {
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 1,
       requiredArtifacts: ['devtoolsLogs'],
+      informativeOnPass: true,
     };
   }
 

@@ -116,7 +116,6 @@ class BFCache extends Audit {
 
     return {
       score: results.length ? 0 : 1,
-      notApplicable: !results.length,
       displayValue,
       details,
     };

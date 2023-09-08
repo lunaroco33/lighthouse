@@ -77,6 +77,7 @@ class ThirdPartySummary extends Audit {
       guidanceLevel: 1,
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'URL', 'GatherContext'],
+      informativeOnPass: true,
     };
   }
 

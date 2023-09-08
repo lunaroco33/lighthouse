@@ -282,7 +282,6 @@ class PrioritizeLcpImage extends Audit {
 
     return {
       score: results.length ? 0 : 1,
-      notApplicable: !results.length,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
       displayValue: wastedMs ? str_(i18n.UIStrings.displayValueMsSavings, {wastedMs}) : '',
