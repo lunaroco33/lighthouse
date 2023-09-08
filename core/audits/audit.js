@@ -49,6 +49,7 @@ class Audit {
   static get SCORING_MODES() {
     return {
       NUMERIC: 'numeric',
+      METRIC_SAVINGS: 'metricSavings',
       BINARY: 'binary',
       MANUAL: 'manual',
       INFORMATIVE: 'informative',
@@ -314,15 +315,28 @@ class Audit {
   }
 
   /**
-   * @param {number|null} score
+   * @param {LH.Audit.Product} product
    * @param {LH.Audit.ScoreDisplayMode} scoreDisplayMode
    * @param {string} auditId
    * @return {number|null}
    */
-  static _normalizeAuditScore(score, scoreDisplayMode, auditId) {
+  static _normalizeAuditScore(product, scoreDisplayMode, auditId) {
+    let score = product.score;
+
     if (scoreDisplayMode !== Audit.SCORING_MODES.BINARY &&
-        scoreDisplayMode !== Audit.SCORING_MODES.NUMERIC) {
+        scoreDisplayMode !== Audit.SCORING_MODES.NUMERIC &&
+        scoreDisplayMode !== Audit.SCORING_MODES.METRIC_SAVINGS) {
       return null;
+    }
+
+    if (scoreDisplayMode === Audit.SCORING_MODES.METRIC_SAVINGS) {
+      if (score && score >= 0.9) {
+        score = 1;
+      } else if (Object.values(product.metricSavings || {}).some(v => v)) {
+        score = 0;
+      } else {
+        score = 0.5;
+      }
     }
 
     // Otherwise, score must be a number in [0, 1].
@@ -373,7 +387,10 @@ class Audit {
       scoreDisplayMode = Audit.SCORING_MODES.NOT_APPLICABLE;
     }
 
-    const score = Audit._normalizeAuditScore(product.score, scoreDisplayMode, audit.meta.id);
+    const score = Audit._normalizeAuditScore(product, scoreDisplayMode, audit.meta.id);
+    if (scoreDisplayMode === Audit.SCORING_MODES.METRIC_SAVINGS && score === 1) {
+      scoreDisplayMode = Audit.SCORING_MODES.INFORMATIVE;
+    }
 
     let auditTitle = audit.meta.title;
     if (audit.meta.failureTitle) {

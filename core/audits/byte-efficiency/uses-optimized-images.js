@@ -34,7 +34,7 @@ class UsesOptimizedImages extends ByteEfficiencyAudit {
       id: 'uses-optimized-images',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 2,
       requiredArtifacts: ['OptimizedImages', 'ImageElements', 'GatherContext', 'devtoolsLogs',
         'traces', 'URL'],

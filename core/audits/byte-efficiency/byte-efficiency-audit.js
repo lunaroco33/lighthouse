@@ -306,10 +306,11 @@ class ByteEfficiencyAudit extends Audit {
     return {
       explanation: result.explanation,
       warnings: result.warnings,
+      notApplicable: !results.length,
       displayValue,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
-      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
+      score: results.length ? 0 : 1,
       details,
       metricSavings,
     };

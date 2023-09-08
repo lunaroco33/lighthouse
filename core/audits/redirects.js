@@ -5,7 +5,6 @@
  */
 
 import {Audit} from './audit.js';
-import {ByteEfficiencyAudit} from './byte-efficiency/byte-efficiency-audit.js';
 import * as i18n from '../lib/i18n/i18n.js';
 import {ProcessedTrace} from '../computed/processed-trace.js';
 import {NetworkRecords} from '../computed/network-records.js';
@@ -29,7 +28,7 @@ class Redirects extends Audit {
       id: 'redirects',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       supportedModes: ['navigation'],
       guidanceLevel: 2,
       requiredArtifacts: ['URL', 'GatherContext', 'devtoolsLogs', 'traces'],
@@ -145,7 +144,8 @@ class Redirects extends Audit {
       {overallSavingsMs: totalWastedMs});
 
     return {
-      score: ByteEfficiencyAudit.scoreForWastedMs(totalWastedMs),
+      score: tableRows.length ? 0 : 1,
+      notApplicable: !tableRows.length,
       numericValue: totalWastedMs,
       numericUnit: 'millisecond',
       displayValue: totalWastedMs ?

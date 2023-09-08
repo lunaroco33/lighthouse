@@ -61,6 +61,7 @@ class BFCache extends Audit {
       supportedModes: ['navigation', 'timespan'],
       guidanceLevel: 2,
       requiredArtifacts: ['BFCacheFailures'],
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 
@@ -70,7 +71,7 @@ class BFCache extends Audit {
    */
   static async audit(artifacts) {
     const failures = artifacts.BFCacheFailures;
-    if (!failures.length) return {score: 1};
+    if (!failures.length) return {score: 1, notApplicable: true};
 
     // TODO: Analyze more than one bf cache failure.
     const {notRestoredReasonsTree} = failures[0];
@@ -115,6 +116,7 @@ class BFCache extends Audit {
 
     return {
       score: results.length ? 0 : 1,
+      notApplicable: !results.length,
       displayValue,
       details,
     };

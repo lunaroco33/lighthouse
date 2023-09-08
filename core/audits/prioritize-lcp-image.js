@@ -10,7 +10,6 @@ import {NetworkRequest} from '../lib/network-request.js';
 import {MainResource} from '../computed/main-resource.js';
 import {LanternLargestContentfulPaint} from '../computed/metrics/lantern-largest-contentful-paint.js';
 import {LoadSimulator} from '../computed/load-simulator.js';
-import {ByteEfficiencyAudit} from './byte-efficiency/byte-efficiency-audit.js';
 import {LCPImageRecord} from '../computed/lcp-image-record.js';
 
 const UIStrings = {
@@ -40,7 +39,7 @@ class PrioritizeLcpImage extends Audit {
       supportedModes: ['navigation'],
       guidanceLevel: 3,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'GatherContext', 'URL', 'TraceElements'],
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 
@@ -282,7 +281,8 @@ class PrioritizeLcpImage extends Audit {
     }
 
     return {
-      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
+      score: results.length ? 0 : 1,
+      notApplicable: !results.length,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
       displayValue: wastedMs ? str_(i18n.UIStrings.displayValueMsSavings, {wastedMs}) : '',

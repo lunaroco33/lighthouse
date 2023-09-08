@@ -12,7 +12,6 @@
 import {Audit} from '../audit.js';
 import * as i18n from '../../lib/i18n/i18n.js';
 import {BaseNode} from '../../lib/dependency-graph/base-node.js';
-import {ByteEfficiencyAudit} from './byte-efficiency-audit.js';
 import {UnusedCSS} from '../../computed/unused-css.js';
 import {NetworkRequest} from '../../lib/network-request.js';
 import {ProcessedNavigation} from '../../computed/processed-navigation.js';
@@ -113,7 +112,7 @@ class RenderBlockingResources extends Audit {
       id: 'render-blocking-resources',
       title: str_(UIStrings.title),
       supportedModes: ['navigation'],
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       description: str_(UIStrings.description),
       guidanceLevel: 2,
       // TODO: look into adding an `optionalArtifacts` property that captures the non-required nature
@@ -296,7 +295,8 @@ class RenderBlockingResources extends Audit {
 
     return {
       displayValue,
-      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
+      score: results.length ? 0 : 1,
+      notApplicable: !results.length,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
       details,

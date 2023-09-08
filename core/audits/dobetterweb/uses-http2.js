@@ -15,7 +15,6 @@
 import {Audit} from '../audit.js';
 import {EntityClassification} from '../../computed/entity-classification.js';
 import UrlUtils from '../../lib/url-utils.js';
-import {ByteEfficiencyAudit} from '../byte-efficiency/byte-efficiency-audit.js';
 import {LanternInteractive} from '../../computed/metrics/lantern-interactive.js';
 import {NetworkRequest} from '../../lib/network-request.js';
 import {NetworkRecords} from '../../computed/network-records.js';
@@ -61,7 +60,7 @@ class UsesHTTP2Audit extends Audit {
       id: 'uses-http2',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 3,
       supportedModes: ['timespan', 'navigation'],
       requiredArtifacts: ['URL', 'devtoolsLogs', 'traces', 'GatherContext'],
@@ -300,7 +299,8 @@ class UsesHTTP2Audit extends Audit {
       displayValue,
       numericValue: wastedMsTti,
       numericUnit: 'millisecond',
-      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMsTti),
+      notApplicable: !resources.length,
+      score: resources.length ? 0 : 1,
       details,
       metricSavings: {LCP: wasteLcp.savings, FCP: wasteFcp.savings},
     };

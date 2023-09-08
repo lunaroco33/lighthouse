@@ -7,7 +7,6 @@
 import UrlUtils from '../lib/url-utils.js';
 import {NetworkRequest} from '../lib/network-request.js';
 import {Audit} from './audit.js';
-import {ByteEfficiencyAudit} from './byte-efficiency/byte-efficiency-audit.js';
 import {CriticalRequestChains} from '../computed/critical-request-chains.js';
 import * as i18n from '../lib/i18n/i18n.js';
 import {MainResource} from '../computed/main-resource.js';
@@ -45,7 +44,7 @@ class UsesRelPreloadAudit extends Audit {
       supportedModes: ['navigation'],
       guidanceLevel: 3,
       requiredArtifacts: ['devtoolsLogs', 'traces', 'URL'],
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 
@@ -244,7 +243,8 @@ class UsesRelPreloadAudit extends Audit {
       {overallSavingsMs: wastedMs, sortedBy: ['wastedMs']});
 
     return {
-      score: ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
+      score: results.length ? 0 : 1,
+      notApplicable: !results.length,
       numericValue: wastedMs,
       numericUnit: 'millisecond',
       displayValue: wastedMs ?

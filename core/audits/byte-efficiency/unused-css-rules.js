@@ -32,7 +32,7 @@ class UnusedCSSRules extends ByteEfficiencyAudit {
       id: 'unused-css-rules',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 2,
       requiredArtifacts: ['CSSUsage', 'URL', 'devtoolsLogs', 'traces', 'GatherContext'],
     };

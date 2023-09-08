@@ -42,7 +42,7 @@ class UnminifiedJavaScript extends ByteEfficiencyAudit {
       id: 'unminified-javascript',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 3,
       requiredArtifacts: ['Scripts', 'devtoolsLogs', 'traces', 'GatherContext', 'URL'],
     };

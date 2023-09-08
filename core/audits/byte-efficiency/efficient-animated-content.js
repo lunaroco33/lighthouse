@@ -36,7 +36,7 @@ class EfficientAnimatedContent extends ByteEfficiencyAudit {
       id: 'efficient-animated-content',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 3,
       requiredArtifacts: ['devtoolsLogs', 'traces', 'GatherContext', 'URL'],
     };

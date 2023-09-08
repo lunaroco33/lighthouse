@@ -44,7 +44,7 @@ class CacheHeaders extends Audit {
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 3,
       requiredArtifacts: ['devtoolsLogs'],
     };
@@ -266,11 +266,6 @@ class CacheHeaders extends Audit {
         a.url.localeCompare(b.url);
     });
 
-    const score = Audit.computeLogNormalScore(
-      {p10: context.options.p10, median: context.options.median},
-      totalWastedBytes
-    );
-
     /** @type {LH.Audit.Details.Table['headings']} */
     const headings = [
       {key: 'url', valueType: 'url', label: str_(i18n.UIStrings.columnURL)},
@@ -285,7 +280,8 @@ class CacheHeaders extends Audit {
       {wastedBytes: totalWastedBytes, sortedBy: ['totalBytes'], skipSumming: ['cacheLifetimeMs']});
 
     return {
-      score,
+      score: results.length ? 0 : 1,
+      notApplicable: !results.length,
       numericValue: totalWastedBytes,
       numericUnit: 'byte',
       displayValue: str_(UIStrings.displayValue, {itemCount: results.length}),

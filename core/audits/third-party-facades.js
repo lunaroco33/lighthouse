@@ -88,6 +88,7 @@ class ThirdPartyFacades extends Audit {
       supportedModes: ['navigation'],
       guidanceLevel: 3,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'URL', 'GatherContext'],
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 

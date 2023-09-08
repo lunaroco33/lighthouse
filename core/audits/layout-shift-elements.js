@@ -27,7 +27,7 @@ class LayoutShiftElements extends Audit {
       id: 'layout-shift-elements',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      scoreDisplayMode: Audit.SCORING_MODES.INFORMATIVE,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 2,
       requiredArtifacts: ['traces', 'TraceElements'],
     };
@@ -67,7 +67,7 @@ class LayoutShiftElements extends Audit {
       await CumulativeLayoutShift.request(artifacts.traces[Audit.DEFAULT_PASS], context);
 
     return {
-      score: 1,
+      score: clsSavings > 0.1 ? 0 : 1,
       metricSavings: {
         CLS: clsSavings,
       },

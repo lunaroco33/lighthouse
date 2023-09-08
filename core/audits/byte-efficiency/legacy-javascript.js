@@ -115,7 +115,7 @@ class LegacyJavascript extends ByteEfficiencyAudit {
   static get meta() {
     return {
       id: 'legacy-javascript',
-      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: ByteEfficiencyAudit.SCORING_MODES.METRIC_SAVINGS,
       description: str_(UIStrings.description),
       title: str_(UIStrings.title),
       guidanceLevel: 2,

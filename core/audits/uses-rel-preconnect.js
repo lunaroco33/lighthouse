@@ -5,7 +5,6 @@
  */
 
 import {Audit} from './audit.js';
-import {ByteEfficiencyAudit} from './byte-efficiency/byte-efficiency-audit.js';
 import UrlUtils from '../lib/url-utils.js';
 import * as i18n from '../lib/i18n/i18n.js';
 import {NetworkRecords} from '../computed/network-records.js';
@@ -64,7 +63,7 @@ class UsesRelPreconnectAudit extends Audit {
       supportedModes: ['navigation'],
       guidanceLevel: 3,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'URL', 'LinkElements'],
-      scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 
@@ -268,7 +267,8 @@ class UsesRelPreconnectAudit extends Audit {
       {overallSavingsMs: maxWastedLcp, sortedBy: ['wastedMs']});
 
     return {
-      score: ByteEfficiencyAudit.scoreForWastedMs(maxWastedLcp),
+      score: results.length ? 0 : 1,
+      notApplicable: !results.length,
       numericValue: maxWastedLcp,
       numericUnit: 'millisecond',
       displayValue: maxWastedLcp ?

@@ -51,6 +51,7 @@ class FontDisplay extends Audit {
       supportedModes: ['navigation'],
       guidanceLevel: 3,
       requiredArtifacts: ['devtoolsLogs', 'CSSUsage', 'URL'],
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 
@@ -184,6 +185,7 @@ class FontDisplay extends Audit {
 
     return {
       score: Number(results.length === 0),
+      notApplicable: !results.length,
       details,
       warnings: FontDisplay.getWarningsForFontUrls(warningURLs),
     };

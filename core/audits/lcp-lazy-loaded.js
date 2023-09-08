@@ -33,6 +33,7 @@ class LargestContentfulPaintLazyLoaded extends Audit {
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
       supportedModes: ['navigation'],
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       guidanceLevel: 3,
       requiredArtifacts: ['TraceElements', 'ViewportDimensions', 'ImageElements',
         'traces', 'devtoolsLogs', 'GatherContext', 'URL'],
@@ -102,6 +103,7 @@ class LargestContentfulPaintLazyLoaded extends Audit {
 
     return {
       score: wasLazyLoaded ? 0 : 1,
+      notApplicable: !wasLazyLoaded,
       metricSavings: {
         LCP: lcpSavings,
       },

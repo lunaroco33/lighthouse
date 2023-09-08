@@ -38,6 +38,7 @@ class PassiveEventsAudit extends ViolationAudit {
       description: str_(UIStrings.description),
       guidanceLevel: 3,
       requiredArtifacts: ['ConsoleMessages', 'SourceMaps', 'Scripts'],
+      scoreDisplayMode: ViolationAudit.SCORING_MODES.METRIC_SAVINGS,
     };
   }
 
@@ -59,6 +60,7 @@ class PassiveEventsAudit extends ViolationAudit {
 
     return {
       score: Number(results.length === 0),
+      notApplicable: !results.length,
       details,
     };
   }

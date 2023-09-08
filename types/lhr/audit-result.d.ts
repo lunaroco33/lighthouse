@@ -12,6 +12,7 @@ interface ScoreDisplayModes {
   NUMERIC: 'numeric';
   /** Pass/fail audit (0 and 1 are only possible scores). */
   BINARY: 'binary';
+  METRIC_SAVINGS: 'metricSavings';
   /** The audit exists only to tell you to review something yourself. Score is null and should be ignored. */
   MANUAL: 'manual';
   /** The audit is an FYI only, and can't be interpreted as pass/fail. Score is null and should be ignored. */

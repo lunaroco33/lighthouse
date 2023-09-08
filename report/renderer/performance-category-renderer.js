@@ -221,8 +221,12 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         .filter(audit => this._isPerformanceInsight(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
-          // Sort audits by impact, prioritizing those with a higher overallImpact first,
-          // then falling back to linearImpact, guidance level and score.
+          // Sort audits by score, then impact prioritizing those with a higher overallImpact first,
+          // then falling back to linearImpact, guidance level.
+          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
+          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
+          if (scoreA !== scoreB) return scoreA - scoreB;
+
           const {
             overallImpact: aOverallImpact,
             overallLinearImpact: aOverallLinearImpact,
@@ -244,11 +248,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
             return bOverallLinearImpact - aOverallLinearImpact;
           }
 
-          if (aGuidanceLevel !== bGuidanceLevel) return bGuidanceLevel - aGuidanceLevel;
-
-          const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
-          const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
-          return scoreA - scoreB;
+          return bGuidanceLevel - aGuidanceLevel;
         });
 
     if (diagnosticAudits.length) {
