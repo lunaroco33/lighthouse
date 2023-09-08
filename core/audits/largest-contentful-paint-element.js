@@ -47,6 +47,7 @@ class LargestContentfulPaintElement extends Audit {
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
+      informativeOnPass: true,
       guidanceLevel: 1,
       supportedModes: ['navigation'],
       requiredArtifacts:
