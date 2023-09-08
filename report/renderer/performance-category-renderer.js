@@ -183,7 +183,6 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       let overallLinearImpact = 0;
       for (const [k, savings] of Object.entries(audit.result.metricSavings)) {
         // Get metric savings for individual audit.
-        // Don't do anything if we don't have savings for a metric.
         if (savings === undefined) continue;
 
         // Get the metric data.
@@ -275,6 +274,12 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       timelineEl.id = thumbnailResult.id;
       const filmstripEl = this.detailsRenderer.render(thumbnailResult.details);
       filmstripEl && timelineEl.append(filmstripEl);
+    }
+
+    const filterableMetrics = metricAudits.filter(a => !!a.relevantAudits);
+    // TODO: only add if there are opportunities & diagnostics rendered.
+    if (filterableMetrics.length) {
+      this.renderMetricAuditFilter(filterableMetrics, element);
     }
 
     // Diagnostics
