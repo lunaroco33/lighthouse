@@ -218,9 +218,10 @@ describe('Long tasks audit', () => {
       URL,
       traces: {defaultPass: trace},
       devtoolsLogs: {defaultPass: devtoolsLog},
+      GatherContext: {gatherMode: 'navigation'},
     };
 
-    const result = await LongTasks.audit(artifacts, {computedCache: new Map()});
+    const result = await LongTasks.audit(artifacts, context);
     expect(result.details.items).toHaveLength(20);
     expect(result.score).toBe(0);
     expect(result.displayValue).toBeDisplayString('20 long tasks found');
@@ -249,8 +250,9 @@ describe('Long tasks audit', () => {
       URL,
       traces: {defaultPass: trace},
       devtoolsLogs: {defaultPass: devtoolsLog},
+      GatherContext: {gatherMode: 'navigation'},
     };
-    const result = await LongTasks.audit(artifacts, {computedCache: new Map()});
+    const result = await LongTasks.audit(artifacts, context);
 
     expect(result).toMatchObject({
       score: 0,
@@ -281,8 +283,9 @@ describe('Long tasks audit', () => {
       URL,
       traces: {defaultPass: redirectTrace},
       devtoolsLogs: {defaultPass: redirectDevtoolsLog},
+      GatherContext: {gatherMode: 'navigation'},
     };
-    const result = await LongTasks.audit(artifacts, {computedCache: new Map()});
+    const result = await LongTasks.audit(artifacts, context);
 
     expect(result).toMatchObject({
       score: 0,
