@@ -21,7 +21,7 @@ const expectations = {
     finalDisplayedUrl: 'http://localhost:10200/perf/unsized-images.html',
     audits: {
       'unsized-images': {
-        score: 0,
+        score: 0.5,
         details: {
           items: [
             {

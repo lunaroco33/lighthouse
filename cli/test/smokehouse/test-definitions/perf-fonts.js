@@ -67,7 +67,7 @@ const expectations = {
     finalDisplayedUrl: 'http://localhost:10200/perf/fonts.html',
     audits: {
       'font-display': {
-        score: 0,
+        score: 0.5,
         details: {
           items: [
             {

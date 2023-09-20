@@ -21,7 +21,7 @@ const expectations = {
     finalDisplayedUrl: 'http://localhost:10200/perf/third-party.html',
     audits: {
       'third-party-facades': {
-        score: 0,
+        score: 0.5,
         displayValue: '1 facade alternative available',
         details: {
           items: [
