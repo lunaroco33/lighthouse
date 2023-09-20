@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -217,8 +217,18 @@ async function runLighthouse() {
     );
   });
 
-  const button = panel.contentElement.querySelector('button');
-  button.click();
+  // In CI clicking the start button just once is flaky and can cause a timeout.
+  // Therefore, keep clicking the button until we detect that the run started.
+  const intervalHandle = setInterval(() => {
+    const button = panel.contentElement.querySelector('button');
+    button.click();
+  }, 100);
+
+  addSniffer(
+    panel.__proto__,
+    'handleCompleteRun',
+    () => clearInterval(intervalHandle),
+  );
 
   return resultPromise;
 }
@@ -296,7 +306,11 @@ async function testUrlFromDevtools(url, options = {}) {
     executablePath: getChromePath(),
     args: chromeFlags,
     devtools: true,
+    defaultViewport: null,
   });
+
+  /** @type {puppeteer.CDPSession|undefined} */
+  let inspectorSession;
 
   try {
     if ((await browser.version()).startsWith('Headless')) {
@@ -306,7 +320,7 @@ async function testUrlFromDevtools(url, options = {}) {
     const page = (await browser.pages())[0];
 
     const inspectorTarget = await browser.waitForTarget(t => t.url().includes('devtools'));
-    const inspectorSession = await inspectorTarget.createCDPSession();
+    inspectorSession = await inspectorTarget.createCDPSession();
 
     /** @type {string[]} */
     const logs = [];
@@ -327,6 +341,16 @@ async function testUrlFromDevtools(url, options = {}) {
     const result = await evaluateInSession(inspectorSession, runLighthouse, [addSniffer]);
 
     return {...result, logs};
+  } catch (err) {
+    if (inspectorSession) {
+      const {data} = await inspectorSession.send('Page.captureScreenshot', {format: 'webp'});
+      const image = `data:image/webp;base64,${data}`;
+      throw new Error(
+        `Lighthouse in DevTool failed. DevTools screenshot:\n${image}`,
+        {cause: err}
+      );
+    }
+    throw err;
   } finally {
     await browser.close();
   }

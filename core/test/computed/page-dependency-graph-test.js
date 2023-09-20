@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import assert from 'assert/strict';
@@ -19,10 +19,19 @@ function createRequest(
   url,
   networkRequestTime = 0,
   initiator = null,
-  resourceType = NetworkRequest.TYPES.Document
+  resourceType = NetworkRequest.TYPES.Document,
+  sessionTargetType = 'page'
 ) {
   const networkEndTime = networkRequestTime + 50;
-  return {requestId, url, networkRequestTime, networkEndTime, initiator, resourceType};
+  return {
+    requestId,
+    url,
+    networkRequestTime,
+    networkEndTime,
+    initiator,
+    resourceType,
+    sessionTargetType,
+  };
 }
 
 const TOPLEVEL_TASK_NAME = 'TaskQueueManager::ProcessTaskFromWorkQueue';
@@ -103,6 +112,19 @@ describe('PageDependencyGraph computed artifact:', () => {
         assert.equal(node.type, 'network');
         assert.equal(node.record, networkRecords[i]);
       }
+    });
+
+    it('should ignore worker requests', () => {
+      const workerRequest = createRequest(4, 'https://example.com/worker.js', 0, null, 'Script', 'worker');
+      const recordsWithWorker = [
+        ...networkRecords,
+        workerRequest,
+      ];
+
+      const networkNodeOutput = PageDependencyGraph.getNetworkNodeOutput(recordsWithWorker);
+
+      expect(networkNodeOutput.nodes).toHaveLength(3);
+      expect(networkNodeOutput.nodes.map(node => node.record)).not.toContain(workerRequest);
     });
 
     it('should index nodes by ID', () => {

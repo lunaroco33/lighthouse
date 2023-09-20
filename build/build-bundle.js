@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -23,7 +23,7 @@ import SoftNavPlugin from 'lighthouse-plugin-soft-navigation';
 
 import * as plugins from './esbuild-plugins.js';
 import {Runner} from '../core/runner.js';
-import {LH_ROOT} from '../root.js';
+import {LH_ROOT} from '../shared/root.js';
 import {readJson} from '../core/test/test-utils.js';
 import {nodeModulesPolyfillPlugin} from '../third-party/esbuild-plugins-polyfills/esbuild-polyfills.js';
 
@@ -58,6 +58,7 @@ const today = (() => {
   const day = new Intl.DateTimeFormat('en', {day: '2-digit'}).format(date);
   return `${month} ${day} ${year}`;
 })();
+/* eslint-disable max-len */
 const pkg = readJson(`${LH_ROOT}/package.json`);
 const banner = `
 /**
@@ -66,10 +67,14 @@ const banner = `
  * ${pkg.description}
  *
  * @homepage ${pkg.homepage}
- * @author   ${pkg.author}
+ * @author   Copyright 2023 ${pkg.author}
  * @license  ${pkg.license}
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 `.trim();
+/* eslint-enable max-len */
 
 /**
  * Bundle starting at entryPath, writing the minified result to distPath.

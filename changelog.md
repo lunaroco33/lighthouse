@@ -1,3 +1,85 @@
+<a name="11.1.0"></a>
+# 11.1.0 (2023-09-06)
+[Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v11.0.0...v11.1.0)
+
+We expect this release to ship in the DevTools of [Chrome 119](https://chromiumdash.appspot.com/schedule), and to PageSpeed Insights within 2 weeks.
+
+## New Contributors
+
+Thanks to our new contributors 👽🐷🐰🐯🐻!
+
+- Tortitas @TortitasT
+- Ian Kilpatrick @bfgeek
+- GLI @tobyglei
+
+## Core
+
+* add TBT savings to `bootup-time` ([#15431](https://github.com/GoogleChrome/lighthouse/pull/15431))
+* add guidance level to performance audits ([#15025](https://github.com/GoogleChrome/lighthouse/pull/15025))
+* add TBT impact to third party audits ([#15385](https://github.com/GoogleChrome/lighthouse/pull/15385))
+* fix `index.cjs` types ([#15387](https://github.com/GoogleChrome/lighthouse/pull/15387))
+* asset-saver: use new `DevtoolsLog` and `Trace` artifacts ([#15345](https://github.com/GoogleChrome/lighthouse/pull/15345))
+* crawlable-anchors: consider empty `rawHref` crawlable ([#15406](https://github.com/GoogleChrome/lighthouse/pull/15406))
+* dom-size: add TBT savings ([#15307](https://github.com/GoogleChrome/lighthouse/pull/15307))
+* image-aspect-ratio: loosen aspect ratio threshold ([#15328](https://github.com/GoogleChrome/lighthouse/pull/15328))
+* installable-manifest: update available installability errors ([#15388](https://github.com/GoogleChrome/lighthouse/pull/15388))
+* largest-contentful-paint-element: add LCP savings ([#15178](https://github.com/GoogleChrome/lighthouse/pull/15178))
+* lcp-lazy-loaded: add LCP savings estimate ([#15064](https://github.com/GoogleChrome/lighthouse/pull/15064))
+* main-resource: fix protocol error when page is reloaded ([#14520](https://github.com/GoogleChrome/lighthouse/pull/14520))
+* redirects: score only on wasted ms ([#15401](https://github.com/GoogleChrome/lighthouse/pull/15401))
+* timespan-runner: warn if a navigation is detected ([#15407](https://github.com/GoogleChrome/lighthouse/pull/15407))
+* viewport-meta: include initial-scale value condition ([#15394](https://github.com/GoogleChrome/lighthouse/pull/15394))
+
+## Report
+
+* fix category highlight in DevTools ([#15413](https://github.com/GoogleChrome/lighthouse/pull/15413))
+
+## Deps
+
+* upgrade `third-party-web` to 0.24.0 ([#15354](https://github.com/GoogleChrome/lighthouse/pull/15354))
+* upgrade `axe-core` to 4.8.0 ([#15430](https://github.com/GoogleChrome/lighthouse/pull/15430))
+* upgrade puppeteer to 21.1.1 ([#15403](https://github.com/GoogleChrome/lighthouse/pull/15403))
+* upgrade puppeteer to 20.0.3 ([#15375](https://github.com/GoogleChrome/lighthouse/pull/15375))
+
+## Clients
+
+* extension: update some properties for manifest v3 ([#15347](https://github.com/GoogleChrome/lighthouse/pull/15347))
+
+## I18n
+
+* import ([#15443](https://github.com/GoogleChrome/lighthouse/pull/15443))
+
+## Docs
+
+* update explainer for devtools build ([#15414](https://github.com/GoogleChrome/lighthouse/pull/15414))
+* add a guide to running Lighthouse at scale ([#10511](https://github.com/GoogleChrome/lighthouse/pull/10511))
+* readme: fix chrome-launcher import example ([#15428](https://github.com/GoogleChrome/lighthouse/pull/15428))
+* readme: add Lighthouse Metrics China to services list ([#15256](https://github.com/GoogleChrome/lighthouse/pull/15256))
+* releasing: update cadence section ([#15392](https://github.com/GoogleChrome/lighthouse/pull/15392))
+* releasing: remove instructions covered by automated tests ([#15353](https://github.com/GoogleChrome/lighthouse/pull/15353))
+
+## Tests
+
+* better error handling when test modules fail to load ([#15421](https://github.com/GoogleChrome/lighthouse/pull/15421))
+* do not allow hashes in mock dt log ([#15363](https://github.com/GoogleChrome/lighthouse/pull/15363))
+* dbw: remove upper bound for LCP load start/end ([#15432](https://github.com/GoogleChrome/lighthouse/pull/15432))
+* dbw: increase threshold for LCP load start/end ([#15393](https://github.com/GoogleChrome/lighthouse/pull/15393))
+* devtools: sync e2e ([#15389](https://github.com/GoogleChrome/lighthouse/pull/15389))
+* smoke: update installability icon error for ToT ([#15422](https://github.com/GoogleChrome/lighthouse/pull/15422))
+* unit: retry failures and upload failure artifacts ([#15378](https://github.com/GoogleChrome/lighthouse/pull/15378))
+
+## Misc
+
+* move root.js to shared/ ([#15439](https://github.com/GoogleChrome/lighthouse/pull/15439))
+* remove url hash to avoid gtm hang in treemap, viewer ([#15425](https://github.com/GoogleChrome/lighthouse/pull/15425))
+* move esm-utils.js to shared/ ([#15418](https://github.com/GoogleChrome/lighthouse/pull/15418))
+* move dependabot.yml to correct folder ([#15417](https://github.com/GoogleChrome/lighthouse/pull/15417))
+* add dependabot.yml ([#15341](https://github.com/GoogleChrome/lighthouse/pull/15341))
+* build: do not minify browser extension ([#15381](https://github.com/GoogleChrome/lighthouse/pull/15381))
+* build: output source map when building bundles ([#15348](https://github.com/GoogleChrome/lighthouse/pull/15348))
+* readme: use note for Node version callout ([#15410](https://github.com/GoogleChrome/lighthouse/pull/15410))
+* treemap: reduce granularity for byte values ([#15415](https://github.com/GoogleChrome/lighthouse/pull/15415))
+
 <a name="11.0.0"></a>
 # 11.0.0 (2023-08-03)
 [Full Changelog](https://github.com/GoogleChrome/lighthouse/compare/v10.4.0...v11.0.0)

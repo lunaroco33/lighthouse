@@ -57,13 +57,14 @@ A Lighthouse plugin is just a node module with a name that starts with `lighthou
 
 ```json
 {
-  "name": "lighthouse-plugin-cats",
+  "name": "lighthouse-plugin-example",
+  "type": "module",
   "main": "plugin.js",
   "peerDependencies": {
-    "lighthouse": "^11.0.0"
+    "lighthouse": "^11.1.0"
   },
   "devDependencies": {
-    "lighthouse": "^11.0.0"
+    "lighthouse": "^11.1.0"
   }
 }
 ```
@@ -77,7 +78,7 @@ This file contains the configuration for your plugin. It can be called anything 
 ```js
 export default {
   // Additional audits to run on information Lighthouse gathered.
-  audits: [{path: 'lighthouse-plugin-cats/audits/has-cat-images.js'}],
+  audits: [{path: 'lighthouse-plugin-example/audits/has-cat-images.js'}],
 
   // A new category in the report for the plugin output.
   category: {
@@ -136,7 +137,7 @@ export default CatAudit;
 
 ```sh
 # be in your plugin directory, and have lighthouse as a devDependency.
-NODE_PATH=.. yarn lighthouse https://example.com --plugins=lighthouse-plugin-example --only-categories=lighthouse-plugin-example --view
+NODE_PATH=.. npx lighthouse -- https://example.com --plugins=lighthouse-plugin-example --only-categories=lighthouse-plugin-example --view
 # Note: we add the parent directory to NODE_PATH as a hack to allow Lighthouse to find this plugin.
 # This is useful for local development, but is not necessary when your plugin consuming from NPM as
 # a node module.

@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -484,7 +484,7 @@ const expectations = {
         },
       },
       'duplicate-id-aria': {
-        score: 0,
+        score: null,
         details: {
           items: [
             {
@@ -937,10 +937,20 @@ const expectations = {
             {
               node: {
                 'type': 'node',
+                'selector': 'body > section > button#target-size-1',
+                'snippet': '<button id="target-size-1">',
+                // Exact target size can vary depending on the device.
+                'explanation': /^Fix any of the following:\n {2}Target has insufficient size \([0-9.]+px by [0-9.]+px, should be at least 24px by 24px\)\n {2}Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of [0-9.]+px instead of at least 24px\.$/,
+                'nodeLabel': '+',
+              },
+            },
+            {
+              node: {
+                'type': 'node',
                 'selector': 'body > section > span#target-size-2',
                 'snippet': '<span role="button" tabindex="0" id="target-size-2">',
                 // Exact target size can vary depending on the device.
-                'explanation': /^Fix any of the following:\n {2}Target has insufficient size \([0-9.]+px by [0-9.]+px, should be at least 24px by 24px\)\n {2}Target has insufficient offset from its closest neighbor \([0-9.]+px should be at least 24px\)$/,
+                'explanation': /^Fix any of the following:\n {2}Target has insufficient size \([0-9.]+px by [0-9.]+px, should be at least 24px by 24px\)\n {2}Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of [0-9.]+px instead of at least 24px\.$/,
                 'nodeLabel': 'o',
               },
             },

@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2016 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2016 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import assert from 'assert/strict';
@@ -10,7 +10,7 @@ import fs from 'fs';
 import * as assetSaver from '../../lib/asset-saver.js';
 import {MetricTraceEvents} from '../../lib/traces/metric-trace-events.js';
 import {LighthouseError} from '../../lib/lh-error.js';
-import {LH_ROOT} from '../../../root.js';
+import {LH_ROOT} from '../../../shared/root.js';
 import {getModuleDirectory} from '../../../shared/esm-utils.js';
 import {readJson} from '../test-utils.js';
 
@@ -33,14 +33,14 @@ describe('asset-saver helper', () => {
   describe('saves files', function() {
     const tmpDir = `${LH_ROOT}/.tmp/asset-saver-test`;
 
-    before(() => {
+    before(async () => {
       fs.mkdirSync(tmpDir, {recursive: true});
       const artifacts = {
         DevtoolsLog: [{message: 'first'}, {message: 'second'}],
         Trace: {traceEvents},
       };
 
-      return assetSaver.saveAssets(artifacts, dbwResults.audits, `${tmpDir}/the_file`);
+      await assetSaver.saveAssets(artifacts, dbwResults.audits, `${tmpDir}/the_file`);
     });
 
     it('trace file saved to disk with trace events and extra fakeEvents', () => {
@@ -57,8 +57,34 @@ describe('asset-saver helper', () => {
     it('devtools log file saved to disk with data', () => {
       const filename = tmpDir + '/the_file-0.devtoolslog.json';
       const fileContents = fs.readFileSync(filename, 'utf8');
-      assert.ok(fileContents.includes('"message": "first"'));
+      assert.ok(fileContents.includes('"message":"first"'));
       fs.unlinkSync(filename);
+    });
+
+    it('skips trace when undefined', async () => {
+      const noTracePrefix = tmpDir + '/the_file_no_trace';
+      const artifacts = {
+        DevtoolsLog: [{message: 'first'}, {message: 'second'}],
+      };
+      await assetSaver.saveAssets(artifacts, dbwResults.audits, noTracePrefix);
+
+      assert.ok(fs.existsSync(noTracePrefix + '-0.devtoolslog.json'));
+      fs.unlinkSync(noTracePrefix + '-0.devtoolslog.json');
+
+      assert.ok(!fs.existsSync(noTracePrefix + '-0.trace.json'));
+    });
+
+    it('skips dt log when undefined', async () => {
+      const noDtLogPrefix = tmpDir + '/the_file_no_dt';
+      const artifacts = {
+        Trace: {traceEvents},
+      };
+      await assetSaver.saveAssets(artifacts, dbwResults.audits, noDtLogPrefix);
+
+      assert.ok(!fs.existsSync(noDtLogPrefix + '-0.devtoolslog.json'));
+
+      assert.ok(fs.existsSync(noDtLogPrefix + '-0.trace.json'));
+      fs.unlinkSync(noDtLogPrefix + '-0.trace.json');
     });
   });
 

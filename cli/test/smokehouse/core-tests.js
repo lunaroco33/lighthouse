@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2019 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import a11y from './test-definitions/a11y.js';
@@ -62,6 +62,7 @@ import seoFailing from './test-definitions/seo-failing.js';
 import seoPassing from './test-definitions/seo-passing.js';
 import seoStatus403 from './test-definitions/seo-status-403.js';
 import seoTapTargets from './test-definitions/seo-tap-targets.js';
+import serviceWorkerReloaded from './test-definitions/service-worker-reloaded.js';
 import sourceMaps from './test-definitions/source-maps.js';
 import timing from './test-definitions/timing.js';
 
@@ -78,8 +79,8 @@ const smokeTests = [
   errorsInfiniteLoop,
   formsAutoComplete,
   fpsMax,
-  fpsScaled,
   fpsMaxPassive,
+  fpsScaled,
   issuesMixedContent,
   lanternFetch,
   lanternIdleCallbackLong,
@@ -125,6 +126,7 @@ const smokeTests = [
   seoPassing,
   seoStatus403,
   seoTapTargets,
+  serviceWorkerReloaded,
   sourceMaps,
   timing,
 ];

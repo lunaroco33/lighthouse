@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2022 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /** @type {LH.Config} */
@@ -61,8 +61,13 @@ const expectations = {
               {url: 'http://localhost:10503/simple-script.js', resourceType: 'Fetch'},
               {url: 'http://localhost:10200/simple-worker.js'},
               {url: 'http://localhost:10503/simple-worker.js'},
-              // Several requests are emitted in workers but Lighthouse doesn't capture them.
-              // https://github.com/GoogleChrome/lighthouse/issues/14211
+              // Requests from worker targets
+              {url: 'http://localhost:10200/simple-worker.mjs'},
+              {url: 'http://localhost:10503/simple-worker.mjs'},
+              {url: 'http://localhost:10200/simple-script.js?esm', resourceType: 'Script'},
+              {url: 'http://localhost:10503/simple-script.js?esm', resourceType: 'Script'},
+              {url: 'http://localhost:10200/simple-script.js?importScripts', resourceType: 'Other'},
+              {url: 'http://localhost:10503/simple-script.js?importScripts', resourceType: 'Other'},
             ],
             // Ensure the above is exhaustive (except for favicon, which won't be fetched in devtools/LR).
             _excludes: [

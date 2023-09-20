@@ -25,8 +25,6 @@ If you have a contribution for our [documentation](https://developer.chrome.com/
 1. Ensure that your code adheres to the existing style in the sample to which you are contributing.
 1. Submit a pull request.
 
-If you've submitted a number of significant patches, feel free to add yourself in a PR to the project's `AUTHORS` [file](https://github.com/GoogleChrome/lighthouse/blob/main/AUTHORS) in the root of the repo to be recognized for your contributions!
-
 ## Audit PRs
 
 If proposing a new audit for Lighthouse, see the [new audit proposal guide](./docs/new-audits.md) and open an issue for discussion before starting.
@@ -96,6 +94,7 @@ If there is an error in one of the proto tests (`proto-test.js` or `psi-test.js`
 ## Adding Images to a Readme
 
 If you are adding an image to a readme use the absolute path to the image for the specific commit hash where the image was introduced.  This requires multiple commits.
+
 1. Make the commit to introduce the image.
 1. Get the [absolute path](https://help.github.com/articles/getting-permanent-links-to-files/) to the image with the commit hash e.g. `https://raw.githubusercontent.com/GoogleChrome/lighthouse/e7997b3db01de3553d8cb208a40f3d4fd350195c/assets/example_dev_tools.png`
 1. Add to readme as an absolute reference to that image.
@@ -130,8 +129,7 @@ accept your pull requests.
 
 We track our errors in the wild with Sentry. In general, do not worry about wrapping your audits or gatherers in try/catch blocks and reporting every error that could possibly occur; `core/runner.js` and `core/gather/*-runner.js` already catch and report any errors that occur while running a gatherer or audit, including errors fatal to the entire run. However, there are some situations when you might want to explicitly handle an error and report it to Sentry or wrap it to avoid reporting. Generally, you can interact with Sentry simply by requiring the `core/lib/sentry.js` file and call its methods. The module exports a delegate that will correctly handle the error reporting based on the user's opt-in preference and will simply no-op if they haven't so you don't need to check.
 
-
-#### If you have an expected error that is recoverable but want to track how frequently it happens, *use Sentry.captureException*.
+#### If you have an expected error that is recoverable but want to track how frequently it happens, *use Sentry.captureException*
 
 ```js
 const Sentry = require('./core/lib/sentry');
@@ -147,7 +145,7 @@ try {
 }
 ```
 
-#### If you need to track a code path that doesn't necessarily mean an error occurred, *use Sentry.captureMessage*.
+#### If you need to track a code path that doesn't necessarily mean an error occurred, *use Sentry.captureMessage*
 
 NOTE: If the message you're capturing is dynamic/based on user data or you need a stack trace, then create a fake error instead and use `Sentry.captureException` so that the instances will be grouped together in Sentry.
 

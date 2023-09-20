@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -95,6 +95,16 @@ class TargetManager extends ProtocolEventEmitter {
   }
 
   /**
+   * @param {string} targetType
+   * @return {targetType is LH.Protocol.TargetType}
+   */
+  _isAcceptedTargetType(targetType) {
+    return targetType === 'page' ||
+      targetType === 'iframe' ||
+      targetType === 'worker';
+  }
+
+  /**
    * Returns the root session.
    * @return {LH.Gatherer.ProtocolSession}
    */
@@ -116,19 +126,19 @@ class TargetManager extends ProtocolEventEmitter {
     const newSession = new ProtocolSession(cdpSession);
 
     try {
-      const target = await newSession.sendCommand('Target.getTargetInfo').catch(() => null);
-      const targetType = target?.targetInfo?.type;
-      const hasValidTargetType = targetType === 'page' || targetType === 'iframe';
+      const {targetInfo} = await newSession.sendCommand('Target.getTargetInfo');
+      const targetType = targetInfo.type;
+
       // TODO: should detach from target in this case?
       // See pptr: https://github.com/puppeteer/puppeteer/blob/733cbecf487c71483bee8350e37030edb24bc021/src/common/Page.ts#L495-L526
-      if (!target || !hasValidTargetType) return;
+      if (!this._isAcceptedTargetType(targetType)) return;
 
       // No need to continue if target has already been seen.
-      const targetId = target.targetInfo.targetId;
+      const targetId = targetInfo.targetId;
       if (this._targetIdToTargets.has(targetId)) return;
 
-      newSession.setTargetInfo(target.targetInfo);
-      const targetName = target.targetInfo.url || target.targetInfo.targetId;
+      newSession.setTargetInfo(targetInfo);
+      const targetName = targetInfo.url || targetInfo.targetId;
       log.verbose('target-manager', `target ${targetName} attached`);
 
       const trueProtocolListener = this._getProtocolEventListener(targetType, newSession.id());
@@ -139,7 +149,7 @@ class TargetManager extends ProtocolEventEmitter {
       cdpSession.on('sessionattached', this._onSessionAttached);
 
       const targetWithSession = {
-        target: target.targetInfo,
+        target: targetInfo,
         cdpSession,
         session: newSession,
         protocolListener,

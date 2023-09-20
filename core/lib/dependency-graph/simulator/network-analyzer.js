@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import UrlUtils from '../../url-utils.js';
@@ -507,8 +507,24 @@ class NetworkAnalyzer {
   }
 
   /**
+   * @param {Array<LH.Artifacts.NetworkRequest>} records
+   * @param {string} resourceUrl
+   * @return {LH.Artifacts.NetworkRequest|undefined}
+   */
+  static findLastDocumentForUrl(records, resourceUrl) {
+    // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
+    const matchingRequests = records.filter(request =>
+      request.resourceType === 'Document' &&
+      // Note: `request.url` should never have a fragment, else this optimization gives wrong results.
+      resourceUrl.startsWith(request.url) &&
+      UrlUtils.equalWithExcludedFragments(request.url, resourceUrl)
+    );
+    return matchingRequests[matchingRequests.length - 1];
+  }
+
+  /**
    * Resolves redirect chain given a main document.
-   * See: {@link NetworkAnalyzer.findResourceForUrl}) for how to retrieve main document.
+   * See: {@link NetworkAnalyzer.findLastDocumentForUrl}) for how to retrieve main document.
    *
    * @param {LH.Artifacts.NetworkRequest} request
    * @return {LH.Artifacts.NetworkRequest}
