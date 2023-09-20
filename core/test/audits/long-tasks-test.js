@@ -226,6 +226,7 @@ describe('Long tasks audit', () => {
     expect(result.details.items).toHaveLength(20);
     expect(result.score).toBe(0);
     expect(result.displayValue).toBeDisplayString('20 long tasks found');
+    expect(result.metricSavings).toEqual({TBT: 249.99}); // (55ms - 50ms) * 50
 
     const debugData = result.details.debugData;
     expect(debugData).toMatchObject({
@@ -303,6 +304,7 @@ describe('Long tasks audit', () => {
         }],
       },
     });
+    expect(result.metricSavings.TBT).toBeApproximately(353.53);
 
     const debugData = result.details.debugData;
     expect(debugData).toStrictEqual({
