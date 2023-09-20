@@ -10,7 +10,7 @@ assumes you've installed Lighthouse as a dependency (`yarn add --dev lighthouse`
 ```js
 import fs from 'fs';
 import lighthouse from 'lighthouse';
-import chromeLauncher from 'chrome-launcher';
+import * as chromeLauncher from 'chrome-launcher';
 
 const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
 const options = {logLevel: 'info', output: 'html', onlyCategories: ['performance'], port: chrome.port};
@@ -113,8 +113,6 @@ Lighthouse can run against a real mobile device. You can follow the [Remote Debu
 
 You'll likely want to use the CLI flags `--screenEmulation.disabled --throttling.cpuSlowdownMultiplier=1 --throttling-method=provided` to disable any additional emulation.
 
-> **Warning:** If you are running Lighthouse 10.x with any chrome version older than M112 (<=M111) you will need to add the `--legacy-navigation` to the `lighthouse` command. See https://github.com/GoogleChrome/lighthouse/issues/14746 for more info.
-
 ```sh
 $ adb kill-server
 
@@ -130,7 +128,7 @@ $ lighthouse --port=9222 --screenEmulation.disabled --throttling.cpuSlowdownMult
 
 ## Lighthouse as trace processor
 
-Lighthouse can be used to analyze trace and performance data collected from other tools (like WebPageTest and ChromeDriver). The `traces` and `devtoolsLogs` artifact items can be provided using a string for the absolute path on disk if they're saved with `.trace.json` and `.devtoolslog.json` file extensions, respectively. The `devtoolsLogs` array is captured from the `Network` and `Page` domains (a la ChromeDriver's [enableNetwork and enablePage options](https://sites.google.com/a/chromium.org/chromedriver/capabilities#TOC-perfLoggingPrefs-object)).
+Lighthouse can be used to analyze trace and performance data collected from other tools (like WebPageTest and ChromeDriver). The `Trace` and `DevtoolsLog` artifact items can be provided using a string for the absolute path on disk if they're saved with `.trace.json` and `.devtoolslog.json` file extensions, respectively. The `DevtoolsLog` array is captured from the `Network` and `Page` domains (a la ChromeDriver's [enableNetwork and enablePage options](https://sites.google.com/a/chromium.org/chromedriver/capabilities#TOC-perfLoggingPrefs-object)).
 
 As an example, here's a trace-only run that reports on user timings and critical request chains:
 

@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 const pid = 1111;
@@ -13,13 +13,14 @@ const lcpNodeId = 16;
 const lcpImageUrl = 'http://www.example.com/image.png';
 
 /** @typedef {{ts: number, duration: number, children?: Array<ChildTaskDef>}} TopLevelTaskDef */
-/** @typedef {{ts: number, duration: number, url: string | undefined}} ChildTaskDef */
+/** @typedef {{ts: number, duration: number, url: string | undefined, eventName?: string}} ChildTaskDef */
 /** @typedef {{frame: string}} ChildFrame */
 /**
  * @typedef TraceOptions
  * @property {string} [frameUrl]
  * @property {number} [timeOrigin]
  * @property {number} [largestContentfulPaint]
+ * @property {number} [firstContentfulPaint]
  * @property {number} [traceEnd]
  * @property {Array<TopLevelTaskDef>} [topLevelTasks]
  * @property {Array<ChildFrame>} [childFrames] Add a child frame with a known `frame` id for easy insertion of child frame events.
@@ -27,6 +28,7 @@ const lcpImageUrl = 'http://www.example.com/image.png';
 
 /**
  * @param {TopLevelTaskDef} options
+ * @return {LH.TraceEvent}
  */
 function getTopLevelTask({ts, duration}) {
   return {
@@ -43,10 +45,11 @@ function getTopLevelTask({ts, duration}) {
 
 /**
  * @param {ChildTaskDef} options
+ * @return {LH.TraceEvent}
  */
-function getChildTask({ts, duration, url}) {
+function getChildTask({ts, duration, url, eventName}) {
   return {
-    name: 'FunctionCall',
+    name: eventName ?? 'FunctionCall',
     ts: ts * 1000,
     dur: duration * 1000,
     pid,
@@ -67,11 +70,13 @@ function getChildTask({ts, duration, url}) {
  * generation, e.g a trace that will result in particular long-task quiet
  * periods. Input times should be in milliseconds.
  * @param {TraceOptions} options
+ * @return {{traceEvents: LH.TraceEvent[]}}
  */
 function createTestTrace(options) {
   const frameUrl = options.frameUrl ?? defaultUrl;
   const timeOrigin = (options.timeOrigin || 0) * 1000;
 
+  /** @type {LH.TraceEvent[]} */
   const traceEvents = [{
     name: 'TracingStartedInBrowser',
     ts: timeOrigin,
@@ -79,6 +84,7 @@ function createTestTrace(options) {
     tid,
     ph: 'I',
     cat: 'disabled-by-default-devtools.timeline',
+    dur: 0,
     args: {
       data: {
         frameTreeNodeId: 6,
@@ -94,6 +100,7 @@ function createTestTrace(options) {
     tid,
     ph: 'R',
     cat: 'blink.user_timing',
+    dur: 0,
     args: {
       frame: rootFrame,
       data: {
@@ -109,6 +116,7 @@ function createTestTrace(options) {
     tid,
     ph: 'M',
     cat: '__metadata',
+    dur: 0,
     args: {name: 'CrRendererMain'},
   }, {
     // Used for identifying frame tree.
@@ -118,6 +126,7 @@ function createTestTrace(options) {
     tid,
     ph: 'I',
     cat: 'disabled-by-default-devtools.timeline',
+    dur: 0,
     args: {
       data: {frame: rootFrame, url: frameUrl, name: '', processId: pid},
     },
@@ -128,14 +137,16 @@ function createTestTrace(options) {
     tid,
     ph: 'R',
     cat: 'blink.user_timing,rail',
+    dur: 0,
     args: {frame: rootFrame},
   }, {
     name: 'firstContentfulPaint',
-    ts: timeOrigin + 10,
+    ts: options.firstContentfulPaint ? options.firstContentfulPaint * 1000 : timeOrigin + 10,
     pid,
     tid,
     ph: 'R',
     cat: 'loading,rail,devtools.timeline',
+    dur: 0,
     args: {frame: rootFrame},
   }, {
     name: 'firstMeaningfulPaint',
@@ -144,6 +155,7 @@ function createTestTrace(options) {
     tid,
     ph: 'R',
     cat: 'loading,rail,devtools.timeline',
+    dur: 0,
     args: {frame: rootFrame},
   }];
 
@@ -156,6 +168,7 @@ function createTestTrace(options) {
         tid,
         ph: 'I',
         cat: 'disabled-by-default-devtools.timeline',
+        dur: 0,
         args: {
           data: {
             frame: childFrame.frame,
@@ -177,6 +190,7 @@ function createTestTrace(options) {
       tid,
       ph: 'R',
       cat: 'loading,rail,devtools.timeline',
+      dur: 0,
       args: {
         frame: rootFrame,
         data: {
@@ -195,6 +209,7 @@ function createTestTrace(options) {
       tid,
       ph: 'R',
       cat: 'loading',
+      dur: 0,
       args: {
         frame: rootFrame,
         data: {

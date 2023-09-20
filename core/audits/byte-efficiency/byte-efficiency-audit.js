@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {Audit} from '../audit.js';
@@ -10,6 +10,9 @@ import * as i18n from '../../lib/i18n/i18n.js';
 import {NetworkRecords} from '../../computed/network-records.js';
 import {LoadSimulator} from '../../computed/load-simulator.js';
 import {PageDependencyGraph} from '../../computed/page-dependency-graph.js';
+import {LanternLargestContentfulPaint} from '../../computed/metrics/lantern-largest-contentful-paint.js';
+import {LanternFirstContentfulPaint} from '../../computed/metrics/lantern-first-contentful-paint.js';
+import {LCPImageRecord} from '../../computed/lcp-image-record.js';
 
 const str_ = i18n.createIcuMessageFn(import.meta.url, {});
 
@@ -104,9 +107,7 @@ class ByteEfficiencyAudit extends Audit {
    */
   static async audit(artifacts, context) {
     const gatherContext = artifacts.GatherContext;
-    const trace = artifacts.traces[Audit.DEFAULT_PASS];
     const devtoolsLog = artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-    const URL = artifacts.URL;
     const settings = context?.settings || {};
     const simulatorOptions = {
       devtoolsLog,
@@ -125,34 +126,29 @@ class ByteEfficiencyAudit extends Audit {
       };
     }
 
-    const [result, graph, simulator] = await Promise.all([
+    const metricComputationInput = Audit.makeMetricComputationDataInput(artifacts, context);
+
+    const [result, simulator] = await Promise.all([
       this.audit_(artifacts, networkRecords, context),
-      // Page dependency graph is only used in navigation mode.
-      gatherContext.gatherMode === 'navigation' ?
-        PageDependencyGraph.request({trace, devtoolsLog, URL}, context) :
-        null,
       LoadSimulator.request(simulatorOptions, context),
     ]);
 
-    return this.createAuditProduct(result, graph, simulator, gatherContext);
+    return this.createAuditProduct(result, simulator, metricComputationInput, context);
   }
 
   /**
-   * Computes the estimated effect of all the byte savings on the maximum of the following:
-   *
-   * - end time of the last long task in the provided graph
-   * - (if includeLoad is true or not provided) end time of the last node in the graph
+   * Computes the estimated effect of all the byte savings on the provided graph.
    *
    * @param {Array<LH.Audit.ByteEfficiencyItem>} results The array of byte savings results per resource
    * @param {Node} graph
    * @param {Simulator} simulator
-   * @param {{includeLoad?: boolean, label?: string, providedWastedBytesByUrl?: Map<string, number>}=} options
-   * @return {number}
+   * @param {{label?: string, providedWastedBytesByUrl?: Map<string, number>}=} options
+   * @return {{savings: number, simulationBeforeChanges: LH.Gatherer.Simulation.Result, simulationAfterChanges: LH.Gatherer.Simulation.Result}}
    */
-  static computeWasteWithTTIGraph(results, graph, simulator, options) {
-    options = Object.assign({includeLoad: true, label: this.meta.id}, options);
-    const beforeLabel = `${options.label}-before`;
-    const afterLabel = `${options.label}-after`;
+  static computeWasteWithGraph(results, graph, simulator, options) {
+    options = Object.assign({label: ''}, options);
+    const beforeLabel = `${this.meta.id}-${options.label}-before`;
+    const afterLabel = `${this.meta.id}-${options.label}-after`;
 
     const simulationBeforeChanges = simulator.simulate(graph, {label: beforeLabel});
 
@@ -187,7 +183,36 @@ class ByteEfficiencyAudit extends Audit {
       node.record.transferSize = originalTransferSize;
     });
 
-    const savingsOnOverallLoad = simulationBeforeChanges.timeInMs - simulationAfterChanges.timeInMs;
+    const savings = simulationBeforeChanges.timeInMs - simulationAfterChanges.timeInMs;
+
+    return {
+      // Round waste to nearest 10ms
+      savings: Math.round(Math.max(savings, 0) / 10) * 10,
+      simulationBeforeChanges,
+      simulationAfterChanges,
+    };
+  }
+
+  /**
+   * Computes the estimated effect of all the byte savings on the maximum of the following:
+   *
+   * - end time of the last long task in the provided graph
+   * - (if includeLoad is true or not provided) end time of the last node in the graph
+   *
+   * @param {Array<LH.Audit.ByteEfficiencyItem>} results The array of byte savings results per resource
+   * @param {Node} graph
+   * @param {Simulator} simulator
+   * @param {{includeLoad?: boolean, providedWastedBytesByUrl?: Map<string, number>}=} options
+   * @return {number}
+   */
+  static computeWasteWithTTIGraph(results, graph, simulator, options) {
+    options = Object.assign({includeLoad: true}, options);
+    const {savings: savingsOnOverallLoad, simulationBeforeChanges, simulationAfterChanges} =
+      this.computeWasteWithGraph(results, graph, simulator, {
+        ...options,
+        label: 'overallLoad',
+      });
+
     const savingsOnTTI =
       LanternInteractive.getLastLongTaskEndTime(simulationBeforeChanges.nodeTimings) -
       LanternInteractive.getLastLongTaskEndTime(simulationAfterChanges.nodeTimings);
@@ -201,24 +226,63 @@ class ByteEfficiencyAudit extends Audit {
 
   /**
    * @param {ByteEfficiencyProduct} result
-   * @param {Node|null} graph
    * @param {Simulator} simulator
-   * @param {LH.Artifacts['GatherContext']} gatherContext
-   * @return {LH.Audit.Product}
+   * @param {LH.Artifacts.MetricComputationDataInput} metricComputationInput
+   * @param {LH.Audit.Context} context
+   * @return {Promise<LH.Audit.Product>}
    */
-  static createAuditProduct(result, graph, simulator, gatherContext) {
+  static async createAuditProduct(result, simulator, metricComputationInput, context) {
     const results = result.items.sort((itemA, itemB) => itemB.wastedBytes - itemA.wastedBytes);
 
     const wastedBytes = results.reduce((sum, item) => sum + item.wastedBytes, 0);
 
+    /** @type {LH.Audit.MetricSavings} */
+    const metricSavings = {
+      FCP: 0,
+      LCP: 0,
+    };
+
     // `wastedMs` may be negative, if making the opportunity change could be detrimental.
     // This is useful information in the LHR and should be preserved.
     let wastedMs;
-    if (gatherContext.gatherMode === 'navigation') {
-      if (!graph) throw Error('Page dependency graph should always be computed in navigation mode');
+    if (metricComputationInput.gatherContext.gatherMode === 'navigation') {
+      const graph = await PageDependencyGraph.request(metricComputationInput, context);
+      const {
+        pessimisticGraph: pessimisticFCPGraph,
+      } = await LanternFirstContentfulPaint.request(metricComputationInput, context);
+      const {
+        pessimisticGraph: pessimisticLCPGraph,
+      } = await LanternLargestContentfulPaint.request(metricComputationInput, context);
+
       wastedMs = this.computeWasteWithTTIGraph(results, graph, simulator, {
         providedWastedBytesByUrl: result.wastedBytesByUrl,
       });
+
+      const {savings: fcpSavings} = this.computeWasteWithGraph(
+        results,
+        pessimisticFCPGraph,
+        simulator,
+        {providedWastedBytesByUrl: result.wastedBytesByUrl, label: 'fcp'}
+      );
+      const {savings: lcpGraphSavings} = this.computeWasteWithGraph(
+        results,
+        pessimisticLCPGraph,
+        simulator,
+        {providedWastedBytesByUrl: result.wastedBytesByUrl, label: 'lcp'}
+      );
+
+      // The LCP graph can underestimate the LCP savings if there is potential savings on the LCP record itself.
+      let lcpRecordSavings = 0;
+      const lcpRecord = await LCPImageRecord.request(metricComputationInput, context);
+      if (lcpRecord) {
+        const lcpResult = results.find(result => result.url === lcpRecord.url);
+        if (lcpResult) {
+          lcpRecordSavings = simulator.computeWastedMsFromWastedBytes(lcpResult.wastedBytes);
+        }
+      }
+
+      metricSavings.FCP = fcpSavings;
+      metricSavings.LCP = Math.max(lcpGraphSavings, lcpRecordSavings);
     } else {
       wastedMs = simulator.computeWastedMsFromWastedBytes(wastedBytes);
     }
@@ -232,6 +296,13 @@ class ByteEfficiencyAudit extends Audit {
     const details = Audit.makeOpportunityDetails(result.headings, results,
       {overallSavingsMs: wastedMs, overallSavingsBytes: wastedBytes, sortedBy});
 
+    // TODO: Remove from debug data once `metricSavings` is added to the LHR.
+    // For now, add it to debug data for visibility.
+    details.debugData = {
+      type: 'debugdata',
+      metricSavings,
+    };
+
     return {
       explanation: result.explanation,
       warnings: result.warnings,
@@ -240,6 +311,7 @@ class ByteEfficiencyAudit extends Audit {
       numericUnit: 'millisecond',
       score: ByteEfficiencyAudit.scoreForWastedMs(wastedMs),
       details,
+      metricSavings,
     };
   }
 

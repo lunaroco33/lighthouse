@@ -1,27 +1,19 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {Audit} from '../audits/audit.js';
-import BaseFRGatherer from '../gather/base-gatherer.js';
+import BaseGatherer from '../gather/base-gatherer.js';
 import * as i18n from '../lib/i18n/i18n.js';
-
-/**
- * @param {LH.Config.GathererDefn | LH.Config.AnyFRGathererDefn} gathererDefn
- * @return {gathererDefn is LH.Config.AnyFRGathererDefn}
- */
-function isFRGathererDefn(gathererDefn) {
-  return 'meta' in gathererDefn.instance;
-}
 
 /**
  * Determines if the artifact dependency direction is valid. The dependency's minimum supported mode
  * must be less than or equal to the dependent's.
  *
- * @param {LH.Config.AnyFRGathererDefn} dependent The artifact that depends on the other.
- * @param {LH.Config.AnyFRGathererDefn} dependency The artifact that is being depended on by the other.
+ * @param {LH.Config.AnyGathererDefn} dependent The artifact that depends on the other.
+ * @param {LH.Config.AnyGathererDefn} dependency The artifact that is being depended on by the other.
  * @return {boolean}
  */
 function isValidArtifactDependency(dependent, dependency) {
@@ -54,26 +46,25 @@ function assertValidPluginName(config, pluginName) {
 }
 
 /**
- * Throws an error if the provided object does not implement the required Fraggle Rock gatherer interface.
- * @param {LH.Config.AnyFRGathererDefn} gathererDefn
+ * Throws an error if the provided object does not implement the required gatherer interface.
+ * @param {LH.Config.AnyArtifactDefn} artifactDefn
  */
-function assertValidFRGatherer(gathererDefn) {
-  const gatherer = gathererDefn.instance;
-  const gathererName = gatherer.name;
+function assertValidArtifact(artifactDefn) {
+  const gatherer = artifactDefn.gatherer.instance;
 
   if (typeof gatherer.meta !== 'object') {
-    throw new Error(`${gathererName} gatherer did not provide a meta object.`);
+    throw new Error(`Gatherer for ${artifactDefn.id} did not provide a meta object.`);
   }
 
   if (gatherer.meta.supportedModes.length === 0) {
-    throw new Error(`${gathererName} gatherer did not support any gather modes.`);
+    throw new Error(`Gatherer for ${artifactDefn.id} did not support any gather modes.`);
   }
 
   if (
     typeof gatherer.getArtifact !== 'function' ||
-    gatherer.getArtifact === BaseFRGatherer.prototype.getArtifact
+    gatherer.getArtifact === BaseGatherer.prototype.getArtifact
   ) {
-    throw new Error(`${gathererName} gatherer did not define a "getArtifact" method.`);
+    throw new Error(`Gatherer for ${artifactDefn.id} did not define a "getArtifact" method.`);
   }
 }
 
@@ -82,7 +73,7 @@ function assertValidFRGatherer(gathererDefn) {
  * @param {LH.Config.ResolvedConfig['navigations']} navigationsDefn
  * @return {{warnings: string[]}}
  */
-function assertValidFRNavigations(navigationsDefn) {
+function assertValidNavigations(navigationsDefn) {
   if (!navigationsDefn || !navigationsDefn.length) return {warnings: []};
 
   /** @type {string[]} */
@@ -223,6 +214,12 @@ function assertValidSettings(settings) {
       throw new Error(`Screen emulation mobile setting (${settings.screenEmulation.mobile}) does not match formFactor setting (${settings.formFactor}). See https://github.com/GoogleChrome/lighthouse/blob/main/docs/emulation.md`);
     }
   }
+
+  const skippedAndOnlyAuditId =
+    settings.skipAudits?.find(auditId => settings.onlyAudits?.includes(auditId));
+  if (skippedAndOnlyAuditId) {
+    throw new Error(`${skippedAndOnlyAuditId} appears in both skipAudits and onlyAudits`);
+  }
 }
 
 /**
@@ -251,10 +248,16 @@ function assertArtifactTopologicalOrder(navigations) {
  * @return {{warnings: string[]}}
  */
 function assertValidConfig(resolvedConfig) {
-  const {warnings} = assertValidFRNavigations(resolvedConfig.navigations);
+  const {warnings} = assertValidNavigations(resolvedConfig.navigations);
 
+  /** @type {Set<string>} */
+  const artifactIds = new Set();
   for (const artifactDefn of resolvedConfig.artifacts || []) {
-    assertValidFRGatherer(artifactDefn.gatherer);
+    if (artifactIds.has(artifactDefn.id)) {
+      throw new Error(`Config defined multiple artifacts with id '${artifactDefn.id}'`);
+    }
+    artifactIds.add(artifactDefn.id);
+    assertValidArtifact(artifactDefn);
   }
 
   for (const auditDefn of resolvedConfig.audits || []) {
@@ -297,11 +300,10 @@ function throwInvalidArtifactDependency(artifactId, dependencyKey) {
 }
 
 export {
-  isFRGathererDefn,
   isValidArtifactDependency,
   assertValidPluginName,
-  assertValidFRGatherer,
-  assertValidFRNavigations,
+  assertValidArtifact,
+  assertValidNavigations,
   assertValidAudit,
   assertValidCategories,
   assertValidSettings,

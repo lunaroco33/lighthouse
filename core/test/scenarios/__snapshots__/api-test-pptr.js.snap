@@ -1,9 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fraggle Rock API navigation should compute both snapshot & timespan results 1`] = `
+exports[`Individual modes API navigation should compute both snapshot & timespan results 1`] = `
 Array [
   "accesskeys",
   "aria-allowed-attr",
+  "aria-allowed-role",
   "aria-command-name",
   "aria-dialog-name",
   "aria-hidden-body",
@@ -46,6 +47,7 @@ Array [
   "duplicate-id-aria",
   "duplicated-javascript",
   "efficient-animated-content",
+  "empty-heading",
   "errors-in-console",
   "final-screenshot",
   "first-contentful-paint",
@@ -63,8 +65,10 @@ Array [
   "html-lang-valid",
   "html-xml-lang-mismatch",
   "http-status-code",
+  "identical-links-same-purpose",
   "image-alt",
   "image-aspect-ratio",
+  "image-redundant-alt",
   "image-size-responsive",
   "input-button-name",
   "input-image-alt",
@@ -76,6 +80,8 @@ Array [
   "is-on-https",
   "js-libraries",
   "label",
+  "label-content-name-mismatch",
+  "landmark-one-main",
   "largest-contentful-paint",
   "largest-contentful-paint-element",
   "layout-shift-elements",
@@ -118,19 +124,20 @@ Array [
   "pwa-page-transitions",
   "redirects",
   "render-blocking-resources",
-  "resource-summary",
   "robots-txt",
   "screenshot-thumbnails",
   "script-treemap-data",
   "select-name",
   "server-response-time",
-  "service-worker",
+  "skip-link",
   "speed-index",
   "splash-screen",
   "structured-data",
   "tabindex",
+  "table-duplicate-name",
   "table-fake-caption",
   "tap-targets",
+  "target-size",
   "td-has-header",
   "td-headers-attr",
   "th-has-data-cells",
@@ -163,10 +170,11 @@ Array [
 ]
 `;
 
-exports[`Fraggle Rock API navigation should compute results with callback requestor 1`] = `
+exports[`Individual modes API navigation should compute results with callback requestor 1`] = `
 Array [
   "accesskeys",
   "aria-allowed-attr",
+  "aria-allowed-role",
   "aria-command-name",
   "aria-dialog-name",
   "aria-hidden-body",
@@ -209,6 +217,7 @@ Array [
   "duplicate-id-aria",
   "duplicated-javascript",
   "efficient-animated-content",
+  "empty-heading",
   "errors-in-console",
   "final-screenshot",
   "first-contentful-paint",
@@ -226,8 +235,10 @@ Array [
   "html-lang-valid",
   "html-xml-lang-mismatch",
   "http-status-code",
+  "identical-links-same-purpose",
   "image-alt",
   "image-aspect-ratio",
+  "image-redundant-alt",
   "image-size-responsive",
   "input-button-name",
   "input-image-alt",
@@ -239,6 +250,8 @@ Array [
   "is-on-https",
   "js-libraries",
   "label",
+  "label-content-name-mismatch",
+  "landmark-one-main",
   "largest-contentful-paint",
   "largest-contentful-paint-element",
   "layout-shift-elements",
@@ -281,19 +294,20 @@ Array [
   "pwa-page-transitions",
   "redirects",
   "render-blocking-resources",
-  "resource-summary",
   "robots-txt",
   "screenshot-thumbnails",
   "script-treemap-data",
   "select-name",
   "server-response-time",
-  "service-worker",
+  "skip-link",
   "speed-index",
   "splash-screen",
   "structured-data",
   "tabindex",
+  "table-duplicate-name",
   "table-fake-caption",
   "tap-targets",
+  "target-size",
   "td-has-header",
   "td-headers-attr",
   "th-has-data-cells",
@@ -326,10 +340,11 @@ Array [
 ]
 `;
 
-exports[`Fraggle Rock API snapshot should compute accessibility results on the page as-is 1`] = `
+exports[`Individual modes API snapshot should compute accessibility results on the page as-is 1`] = `
 Array [
   "accesskeys",
   "aria-allowed-attr",
+  "aria-allowed-role",
   "aria-command-name",
   "aria-dialog-name",
   "aria-hidden-body",
@@ -360,6 +375,7 @@ Array [
   "dom-size",
   "duplicate-id-active",
   "duplicate-id-aria",
+  "empty-heading",
   "focus-traps",
   "focusable-controls",
   "font-size",
@@ -369,14 +385,18 @@ Array [
   "html-has-lang",
   "html-lang-valid",
   "html-xml-lang-mismatch",
+  "identical-links-same-purpose",
   "image-alt",
   "image-aspect-ratio",
+  "image-redundant-alt",
   "image-size-responsive",
   "input-button-name",
   "input-image-alt",
   "interactive-element-affordance",
   "js-libraries",
   "label",
+  "label-content-name-mismatch",
+  "landmark-one-main",
   "link-in-text-block",
   "link-name",
   "link-text",
@@ -393,10 +413,13 @@ Array [
   "plugins",
   "robots-txt",
   "select-name",
+  "skip-link",
   "structured-data",
   "tabindex",
+  "table-duplicate-name",
   "table-fake-caption",
   "tap-targets",
+  "target-size",
   "td-has-header",
   "td-headers-attr",
   "th-has-data-cells",
@@ -410,7 +433,7 @@ Array [
 ]
 `;
 
-exports[`Fraggle Rock API startTimespan should compute ConsoleMessage results across a span of time 1`] = `
+exports[`Individual modes API startTimespan should compute ConsoleMessage results across a span of time 1`] = `
 Array [
   "bf-cache",
   "bootup-time",
@@ -419,11 +442,11 @@ Array [
   "duplicated-javascript",
   "efficient-animated-content",
   "errors-in-console",
-  "experimental-interaction-to-next-paint",
   "final-screenshot",
   "image-aspect-ratio",
   "image-size-responsive",
   "inspector-issues",
+  "interaction-to-next-paint",
   "is-on-https",
   "layout-shift-elements",
   "legacy-javascript",
@@ -438,7 +461,6 @@ Array [
   "no-unload-listeners",
   "non-composited-animations",
   "preload-fonts",
-  "resource-summary",
   "screenshot-thumbnails",
   "script-treemap-data",
   "third-party-summary",
@@ -461,7 +483,7 @@ Array [
 ]
 `;
 
-exports[`Fraggle Rock API startTimespan should compute ConsoleMessage results across a span of time 2`] = `
+exports[`Individual modes API startTimespan should compute ConsoleMessage results across a span of time 2`] = `
 Array [
   "non-composited-animations",
   "preload-fonts",
@@ -471,7 +493,7 @@ Array [
 ]
 `;
 
-exports[`Fraggle Rock API startTimespan should compute results from timespan after page load 1`] = `
+exports[`Individual modes API startTimespan should compute results from timespan after page load 1`] = `
 Array [
   "bf-cache",
   "bootup-time",
@@ -480,11 +502,11 @@ Array [
   "duplicated-javascript",
   "efficient-animated-content",
   "errors-in-console",
-  "experimental-interaction-to-next-paint",
   "final-screenshot",
   "image-aspect-ratio",
   "image-size-responsive",
   "inspector-issues",
+  "interaction-to-next-paint",
   "is-on-https",
   "layout-shift-elements",
   "legacy-javascript",
@@ -499,7 +521,6 @@ Array [
   "no-unload-listeners",
   "non-composited-animations",
   "preload-fonts",
-  "resource-summary",
   "screenshot-thumbnails",
   "script-treemap-data",
   "third-party-summary",
@@ -522,7 +543,7 @@ Array [
 ]
 `;
 
-exports[`Fraggle Rock API startTimespan should compute results from timespan after page load 2`] = `
+exports[`Individual modes API startTimespan should compute results from timespan after page load 2`] = `
 Array [
   "duplicated-javascript",
   "efficient-animated-content",

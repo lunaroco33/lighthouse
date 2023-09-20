@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import assert from 'assert/strict';
@@ -212,6 +212,16 @@ describe('DependencyGraph/Simulator/NetworkAnalyzer', () => {
       // 600 ms / 4 = 150ms
       const expected = {min: 150, max: 150, avg: 150, median: 150};
       assert.deepStrictEqual(result.get('https://example.com'), expected);
+    });
+
+    it('should use coarse estimates on a per-origin basis', () => {
+      const records = [
+        createRecord({url: 'https://example.com', timing: {connectStart: 1, connectEnd: 100, sendStart: 150}}),
+        createRecord({url: 'https://example2.com', timing: {sendStart: 150}}),
+      ];
+      const result = NetworkAnalyzer.estimateRTTByOrigin(records);
+      assert.deepStrictEqual(result.get('https://example.com'), {min: 99, max: 99, avg: 99, median: 99});
+      assert.deepStrictEqual(result.get('https://example2.com'), {min: 15, max: 15, avg: 15, median: 15});
     });
 
     it('should handle untrustworthy connection information', () => {

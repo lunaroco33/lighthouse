@@ -1,14 +1,14 @@
 /**
- * @license Copyright 2023 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2023 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 // https://docs.google.com/spreadsheets/d/1AaYzpzWnpXQ4JB5IZzOkTO9Zf5Sm0I8dsp7MhBgthMg/edit?usp=sharing
 
 import * as puppeteer from 'puppeteer';
 
-import {LH_ROOT} from '../../../../root.js';
+import {LH_ROOT} from '../../../../shared/root.js';
 import {Server} from '../../../../cli/test/fixtures/static-server.js';
 import {saveTrace, saveDevtoolsLog} from '../../../lib/asset-saver.js';
 
@@ -45,7 +45,7 @@ export async function updateTestFixture(collectMeta) {
       await saveDevtoolsLog(artifacts.DevtoolsLog, `${dir}/devtoolslog.json`);
     }
   } finally {
-    await server.close();
     await browser.close();
+    await server.close();
   }
 }

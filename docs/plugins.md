@@ -57,13 +57,14 @@ A Lighthouse plugin is just a node module with a name that starts with `lighthou
 
 ```json
 {
-  "name": "lighthouse-plugin-cats",
+  "name": "lighthouse-plugin-example",
+  "type": "module",
   "main": "plugin.js",
   "peerDependencies": {
-    "lighthouse": "^10.3.0"
+    "lighthouse": "^11.1.0"
   },
   "devDependencies": {
-    "lighthouse": "^10.3.0"
+    "lighthouse": "^11.1.0"
   }
 }
 ```
@@ -77,7 +78,7 @@ This file contains the configuration for your plugin. It can be called anything 
 ```js
 export default {
   // Additional audits to run on information Lighthouse gathered.
-  audits: [{path: 'lighthouse-plugin-cats/audits/has-cat-images.js'}],
+  audits: [{path: 'lighthouse-plugin-example/audits/has-cat-images.js'}],
 
   // A new category in the report for the plugin output.
   category: {
@@ -99,7 +100,7 @@ These files contain the logic that will generate results for the Lighthouse repo
 **Example `audits/has-cat-images.js`**
 
 ```js
-import {Audit} = from 'lighthouse';
+import {Audit} from 'lighthouse';
 
 class CatAudit extends Audit {
   static get meta() {
@@ -136,7 +137,7 @@ export default CatAudit;
 
 ```sh
 # be in your plugin directory, and have lighthouse as a devDependency.
-NODE_PATH=.. yarn lighthouse https://example.com --plugins=lighthouse-plugin-example --only-categories=lighthouse-plugin-example --view
+NODE_PATH=.. npx lighthouse -- https://example.com --plugins=lighthouse-plugin-example --only-categories=lighthouse-plugin-example --view
 # Note: we add the parent directory to NODE_PATH as a hack to allow Lighthouse to find this plugin.
 # This is useful for local development, but is not necessary when your plugin consuming from NPM as
 # a node module.
@@ -210,10 +211,10 @@ The primary objective of the audit function is to return a `score` from `0` to `
 
 The following artifacts are available for use in the audits of Lighthouse plugins. For more detailed information on their usage and purpose, see the [type information](https://github.com/GoogleChrome/lighthouse/blob/623b789497f6c87f85d366b4038deae5dc701c90/types/artifacts.d.ts#L20-L70).
 
-- `devtoolsLogs`
+- `DevtoolsLog`
 - `fetchTime`
 - `settings`
-- `traces`
+- `Trace`
 - `BenchmarkIndex`
 - `ConsoleMessages`
 - `HostUserAgent`
@@ -235,7 +236,7 @@ If you're interested in other page information not mentioned here, please file a
 
 #### Using Network Requests
 
-You might have noticed that a simple array of network requests is missing from the list above. The source information for network requests made by the page is actually contained in the `devtoolsLogs` artifact, which contains all the of DevTools Protocol traffic recorded during page load. The network request objects are derived from this message log at audit time.
+You might have noticed that a simple array of network requests is missing from the list above. The source information for network requests made by the page is actually contained in the `DevtoolsLog` artifact, which contains all the of DevTools Protocol traffic recorded during page load. The network request objects are derived from this message log at audit time.
 
 See below for an example of an audit that processes network requests.
 
@@ -249,14 +250,14 @@ class HeaderPoliceAudit {
       title: 'All headers stripped of debug data',
       failureTitle: 'Headers contained debug data',
       description: 'Pages should mask debug data in production.',
-      requiredArtifacts: ['devtoolsLogs'],
+      requiredArtifacts: ['DevtoolsLog'],
     };
   }
 
   static async audit(artifacts, context) {
     // Lighthouse loads the page multiple times: while offline, without javascript, etc.
     // Use the devtools log from the default pass of the page.
-    const devtoolsLog = artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+    const devtoolsLog = artifacts.DevtoolsLog;
     // Request the network records from the devtools log.
     // The `context` argument is passed in to allow Lighthouse to cache the result and not re-compute the network requests for every audit that needs them.
     const requests = await NetworkRecords.request(devtoolsLog, context);

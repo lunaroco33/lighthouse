@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import puppeteer from 'puppeteer-core';
@@ -32,7 +32,7 @@ import {NetworkRecords} from '../computed/network-records.js';
  * @property {LH.Config.ResolvedConfig} resolvedConfig
  * @property {LH.Config.NavigationDefn} navigation
  * @property {LH.NavigationRequestor} requestor
- * @property {LH.FRBaseArtifacts} baseArtifacts
+ * @property {LH.BaseArtifacts} baseArtifacts
  * @property {Map<string, LH.ArbitraryEqualityMap>} computedCache
  */
 
@@ -43,7 +43,7 @@ const DEFAULT_PORT = 9222;
 
 /**
  * @param {{driver: Driver, resolvedConfig: LH.Config.ResolvedConfig, requestor: LH.NavigationRequestor}} args
- * @return {Promise<{baseArtifacts: LH.FRBaseArtifacts}>}
+ * @return {Promise<{baseArtifacts: LH.BaseArtifacts}>}
  */
 async function _setup({driver, resolvedConfig, requestor}) {
   await driver.connect();
@@ -188,8 +188,14 @@ async function _computeNavigationResult(
     /** @type {Partial<LH.GathererArtifacts>} */
     const artifacts = {};
     const pageLoadErrorId = `pageLoadError-${navigationContext.navigation.id}`;
-    if (debugData.devtoolsLog) artifacts.devtoolsLogs = {[pageLoadErrorId]: debugData.devtoolsLog};
-    if (debugData.trace) artifacts.traces = {[pageLoadErrorId]: debugData.trace};
+    if (debugData.devtoolsLog) {
+      artifacts.DevtoolsLogError = debugData.devtoolsLog;
+      artifacts.devtoolsLogs = {[pageLoadErrorId]: debugData.devtoolsLog};
+    }
+    if (debugData.trace) {
+      artifacts.TraceError = debugData.trace;
+      artifacts.traces = {[pageLoadErrorId]: debugData.trace};
+    }
 
     return {
       pageLoadError,
@@ -260,8 +266,8 @@ async function _navigation(navigationContext) {
 }
 
 /**
- * @param {{driver: Driver, page: LH.Puppeteer.Page, resolvedConfig: LH.Config.ResolvedConfig, requestor: LH.NavigationRequestor; baseArtifacts: LH.FRBaseArtifacts, computedCache: NavigationContext['computedCache']}} args
- * @return {Promise<{artifacts: Partial<LH.FRArtifacts & LH.FRBaseArtifacts>}>}
+ * @param {{driver: Driver, page: LH.Puppeteer.Page, resolvedConfig: LH.Config.ResolvedConfig, requestor: LH.NavigationRequestor; baseArtifacts: LH.BaseArtifacts, computedCache: NavigationContext['computedCache']}} args
+ * @return {Promise<{artifacts: Partial<LH.Artifacts & LH.BaseArtifacts>}>}
  */
 async function _navigations(args) {
   const {
@@ -277,7 +283,7 @@ async function _navigations(args) {
     throw new Error('No artifacts were defined on the config');
   }
 
-  /** @type {Partial<LH.FRArtifacts & LH.FRBaseArtifacts>} */
+  /** @type {Partial<LH.Artifacts & LH.BaseArtifacts>} */
   const artifacts = {};
   /** @type {Array<LH.IcuMessage>} */
   const LighthouseRunWarnings = [];
@@ -328,7 +334,7 @@ async function _cleanup({requestedUrl, driver, resolvedConfig, lhBrowser, lhPage
  * @param {LH.Puppeteer.Page|undefined} page
  * @param {LH.NavigationRequestor|undefined} requestor
  * @param {{config?: LH.Config, flags?: LH.Flags}} [options]
- * @return {Promise<LH.Gatherer.FRGatherResult>}
+ * @return {Promise<LH.Gatherer.GatherResult>}
  */
 async function navigationGather(page, requestor, options = {}) {
   const {flags = {}, config} = options;

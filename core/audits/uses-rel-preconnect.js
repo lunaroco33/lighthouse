@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {Audit} from './audit.js';
@@ -14,6 +14,7 @@ import {LoadSimulator} from '../computed/load-simulator.js';
 import {ProcessedNavigation} from '../computed/processed-navigation.js';
 import {PageDependencyGraph} from '../computed/page-dependency-graph.js';
 import {LanternLargestContentfulPaint} from '../computed/metrics/lantern-largest-contentful-paint.js';
+import {LanternFirstContentfulPaint} from '../computed/metrics/lantern-first-contentful-paint.js';
 
 // Preconnect establishes a "clean" socket. Chrome's socket manager will keep an unused socket
 // around for 10s. Meaning, the time delta between processing preconnect a request should be <10s,
@@ -61,6 +62,7 @@ class UsesRelPreconnectAudit extends Audit {
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
       supportedModes: ['navigation'],
+      guidanceLevel: 3,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'URL', 'LinkElements'],
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
     };
@@ -125,7 +127,8 @@ class UsesRelPreconnectAudit extends Audit {
     const devtoolsLog = artifacts.devtoolsLogs[UsesRelPreconnectAudit.DEFAULT_PASS];
     const settings = context.settings;
 
-    let maxWasted = 0;
+    let maxWastedLcp = 0;
+    let maxWastedFcp = 0;
     /** @type {Array<LH.IcuMessage>} */
     const warnings = [];
 
@@ -144,7 +147,14 @@ class UsesRelPreconnectAudit extends Audit {
     /** @type {Set<string>} */
     const lcpGraphURLs = new Set();
     lcpGraph.traverse(node => {
-      if (node.type === 'network' ) lcpGraphURLs.add(node.record.url);
+      if (node.type === 'network') lcpGraphURLs.add(node.record.url);
+    });
+
+    const fcpGraph =
+      await LanternFirstContentfulPaint.getPessimisticGraph(pageGraph, processedNavigation);
+    const fcpGraphURLs = new Set();
+    fcpGraph.traverse(node => {
+      if (node.type === 'network') fcpGraphURLs.add(node.record.url);
     });
 
     /** @type {Map<string, LH.Artifacts.NetworkRequest[]>}  */
@@ -216,7 +226,11 @@ class UsesRelPreconnectAudit extends Audit {
         return;
       }
 
-      maxWasted = Math.max(wastedMs, maxWasted);
+      maxWastedLcp = Math.max(wastedMs, maxWastedLcp);
+
+      if (fcpGraphURLs.has(firstRecordOfOrigin.url)) {
+        maxWastedFcp = Math.max(wastedMs, maxWastedLcp);
+      }
       results.push({
         url: securityOrigin,
         wastedMs: wastedMs,
@@ -240,6 +254,7 @@ class UsesRelPreconnectAudit extends Audit {
         score: 1,
         warnings: preconnectLinks.length >= 3 ?
           [...warnings, str_(UIStrings.tooManyPreconnectLinksWarning)] : warnings,
+        metricSavings: {LCP: maxWastedLcp, FCP: maxWastedFcp},
       };
     }
 
@@ -250,17 +265,18 @@ class UsesRelPreconnectAudit extends Audit {
     ];
 
     const details = Audit.makeOpportunityDetails(headings, results,
-      {overallSavingsMs: maxWasted, sortedBy: ['wastedMs']});
+      {overallSavingsMs: maxWastedLcp, sortedBy: ['wastedMs']});
 
     return {
-      score: ByteEfficiencyAudit.scoreForWastedMs(maxWasted),
-      numericValue: maxWasted,
+      score: ByteEfficiencyAudit.scoreForWastedMs(maxWastedLcp),
+      numericValue: maxWastedLcp,
       numericUnit: 'millisecond',
-      displayValue: maxWasted ?
-        str_(i18n.UIStrings.displayValueMsSavings, {wastedMs: maxWasted}) :
+      displayValue: maxWastedLcp ?
+        str_(i18n.UIStrings.displayValueMsSavings, {wastedMs: maxWastedLcp}) :
         '',
       warnings,
       details,
+      metricSavings: {LCP: maxWastedLcp, FCP: maxWastedFcp},
     };
   }
 }

@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {LighthouseError} from './lh-error.js';
@@ -95,6 +95,9 @@ function getNonHtmlError(finalRecord) {
   // If we never requested a document, there's no doctype error, let other cases handle it.
   if (!finalRecord) return undefined;
 
+  // If the document request error'd, we should not complain about a bad mimeType.
+  if (!finalRecord.mimeType || finalRecord.statusCode === -1) return undefined;
+
   // mimeType is determined by the browser, we assume Chrome is determining mimeType correctly,
   // independently of 'Content-Type' response headers, and always sending mimeType if well-formed.
   if (finalRecord.mimeType !== HTML_MIME_TYPE && finalRecord.mimeType !== XHTML_MIME_TYPE) {
@@ -110,7 +113,7 @@ function getNonHtmlError(finalRecord) {
  * Returns an error if the page load should be considered failed, e.g. from a
  * main document request failure, a security issue, etc.
  * @param {LH.LighthouseError|undefined} navigationError
- * @param {{url: string, loadFailureMode: LH.Gatherer.PassContext['passConfig']['loadFailureMode'], networkRecords: Array<LH.Artifacts.NetworkRequest>, warnings: Array<string | LH.IcuMessage>}} context
+ * @param {{url: string, loadFailureMode: LH.Config.SharedPassNavigationJson['loadFailureMode'], networkRecords: Array<LH.Artifacts.NetworkRequest>, warnings: Array<string | LH.IcuMessage>}} context
  * @return {LH.LighthouseError|undefined}
  */
 function getPageLoadError(navigationError, context) {
@@ -163,6 +166,8 @@ function getPageLoadError(navigationError, context) {
   // Navigation errors are rather generic and express some failure of the page to render properly.
   // Use `navigationError` as the last resort.
   // Example: `NO_FCP`, the page never painted content for some unknown reason.
+  // Note that the caller possibly gave this to us as undefined, in which case we have determined
+  // there to be no error with this page load - but there was perhaps a warning.
   return navigationError;
 }
 

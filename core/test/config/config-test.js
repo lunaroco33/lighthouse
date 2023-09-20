@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2020 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import jestMock from 'jest-mock';
@@ -10,13 +10,13 @@ import {Audit as BaseAudit} from '../../audits/audit.js';
 import * as constants from '../../config/constants.js';
 import BaseGatherer from '../../gather/base-gatherer.js';
 import {initializeConfig, getConfigDisplayString} from '../../config/config.js';
-import {LH_ROOT} from '../../../root.js';
+import {LH_ROOT} from '../../../shared/root.js';
 import * as format from '../../../shared/localization/format.js';
 import defaultConfig from '../../config/default-config.js';
 
 const {nonSimulatedPassConfigOverrides} = constants;
 
-describe('Fraggle Rock Config', () => {
+describe('Config', () => {
   /** @type {LH.Gatherer.GatherMode} */
   let gatherMode = 'snapshot';
 
@@ -86,10 +86,10 @@ describe('Fraggle Rock Config', () => {
   });
 
   it('should throw on invalid artifact definitions', async () => {
-    const nonFRGatherer = new BaseGatherer();
-    nonFRGatherer.getArtifact = jestMock.fn();
-    const config = {artifacts: [{id: 'LegacyGather', gatherer: {instance: nonFRGatherer}}]};
-    await expect(initializeConfig(gatherMode, config)).rejects.toThrow(/FRGatherer gatherer/);
+    const badGatherer = new BaseGatherer();
+    badGatherer.getArtifact = jestMock.fn();
+    const config = {artifacts: [{id: 'BadGatherer', gatherer: {instance: badGatherer}}]};
+    await expect(initializeConfig(gatherMode, config)).rejects.toThrow(/Gatherer for BadGather/);
   });
 
   it('should filter configuration by gatherMode', async () => {
@@ -140,10 +140,26 @@ describe('Fraggle Rock Config', () => {
     });
   });
 
+  it('is idempotent when using the resolved config as the config input', async () => {
+    const config = {
+      extends: 'lighthouse:default',
+      settings: {
+        onlyCategories: ['seo'],
+      },
+    };
+
+    const {resolvedConfig} = await initializeConfig('navigation', config);
+    expect(Object.keys(resolvedConfig.categories || {})).toEqual(['seo']);
+    expect(resolvedConfig.settings.onlyCategories).toEqual(['seo']);
+
+    const {resolvedConfig: resolvedConfig2} = await initializeConfig('navigation', resolvedConfig);
+    expect(resolvedConfig2).toEqual(resolvedConfig);
+  });
+
   describe('resolveArtifactDependencies', () => {
-    /** @type {LH.Gatherer.FRGathererInstance} */
+    /** @type {LH.Gatherer.GathererInstance} */
     let dependencyGatherer;
-    /** @type {LH.Gatherer.FRGathererInstance<'ImageElements'>} */
+    /** @type {LH.Gatherer.GathererInstance<'ImageElements'>} */
     let dependentGatherer;
     /** @type {LH.Config} */
     let config;
@@ -237,9 +253,10 @@ describe('Fraggle Rock Config', () => {
 
       expect(resolvedConfig).toMatchObject({
         artifacts: [{id: 'Accessibility', gatherer: {path: 'accessibility'}}],
-        navigations: [
-          {id: 'default', artifacts: [{id: 'Accessibility', gatherer: {path: 'accessibility'}}]},
-        ],
+        navigations: [{
+          id: 'defaultPass',
+          artifacts: [{id: 'Accessibility', gatherer: {path: 'accessibility'}}],
+        }],
       });
     });
 
@@ -253,7 +270,7 @@ describe('Fraggle Rock Config', () => {
       expect(resolvedConfig).toMatchObject({
         navigations: [
           {
-            id: 'default',
+            id: 'defaultPass',
             blankPage: 'about:blank',
             artifacts: [{id: 'Accessibility', gatherer: {path: 'accessibility'}}],
             loadFailureMode: 'fatal',
@@ -350,7 +367,7 @@ describe('Fraggle Rock Config', () => {
           {id: 'Accessibility'},
         ],
         navigations: [
-          {id: 'default', artifacts: [{id: 'Accessibility'}]},
+          {id: 'defaultPass', artifacts: [{id: 'Accessibility'}]},
         ],
       });
     });
@@ -427,6 +444,12 @@ describe('Fraggle Rock Config', () => {
       if (!hasCategory) {
         expect(resolvedConfig.categories.performance.auditRefs).toContain('extra-audit');
       }
+    });
+
+    it('should only accept "lighthouse:default" as the extension method', async () => {
+      extensionConfig.extends = 'something:else';
+      const resolvedConfigPromise = initializeConfig('navigation', extensionConfig);
+      await expect(resolvedConfigPromise).rejects.toThrow(/`lighthouse:default` is the only valid/);
     });
   });
 

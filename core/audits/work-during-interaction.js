@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2022 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {Audit} from './audit.js';
@@ -13,7 +13,7 @@ import {MainThreadTasks} from '../lib/tracehouse/main-thread-tasks.js';
 import {taskGroups} from '../lib/tracehouse/task-groups.js';
 import {TraceProcessor} from '../lib/tracehouse/trace-processor.js';
 import {getExecutionTimingsByURL} from '../lib/tracehouse/task-summary.js';
-import ExperimentalInteractionToNextPaint from './metrics/experimental-interaction-to-next-paint.js';
+import InteractionToNextPaint from './metrics/interaction-to-next-paint.js';
 import {LighthouseError} from '../lib/lh-error.js';
 
 /** @typedef {import('../computed/metrics/responsiveness.js').EventTimingEvent} EventTimingEvent */
@@ -60,6 +60,7 @@ class WorkDuringInteraction extends Audit {
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
       supportedModes: ['timespan'],
+      guidanceLevel: 1,
       requiredArtifacts: ['traces', 'devtoolsLogs', 'TraceElements'],
     };
   }
@@ -273,7 +274,7 @@ class WorkDuringInteraction extends Audit {
     const duration = interactionEvent.args.data.duration;
     const displayValue = str_(UIStrings.displayValue, {timeInMs: duration, interactionType});
     return {
-      score: duration < ExperimentalInteractionToNextPaint.defaultOptions.p10 ? 1 : 0,
+      score: duration < InteractionToNextPaint.defaultOptions.p10 ? 1 : 0,
       displayValue,
       details: {
         type: 'list',

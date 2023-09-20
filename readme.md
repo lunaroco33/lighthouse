@@ -52,7 +52,8 @@ The Chrome extension was available prior to Lighthouse being available in Chrome
 
 The Node CLI provides the most flexibility in how Lighthouse runs can be configured and reported. Users who want more advanced usage, or want to run Lighthouse in an automated fashion should use the Node CLI.
 
-_Lighthouse requires Node 16 LTS (16.x) or later._
+> **Note**
+> Lighthouse requires Node 18 LTS (18.x) or later.
 
 **Installation**:
 
@@ -337,6 +338,8 @@ This section details services that have integrated Lighthouse data. If you're wo
 
 * **[Treo](https://treo.sh)** - Treo is Lighthouse as a Service. It provides regression testing, geographical regions, custom networks, and integrations with GitHub & Slack. Treo is a paid product with plans for solo-developers and teams.
 
+* **[PageVitals](https://pagevitals.com)** - PageVitals combines Lighthouse, CrUX and real-user monitoring data to monitor the performance of websites. See how your website performs over time and get alerted if it gets too slow. Drill down and find the real cause of any performance issue. PageVitals is a paid product with a free 14-day trial.
+
 * **[Alertdesk](https://www.alertdesk.com/)** - Alertdesk is based on Lighthouse and helps you to keep track of your site’s quality & performance. Run daily quality & performance tests from both Mobile and Desktop and dive into the powerful & intuitive reports. You can also monitor your uptime (every minute - 24/7) & domain health. Alertdesk is a paid product with a free 14-day trial.
 
 * **[Screpy](https://screpy.com)** - Screpy is a web analysis tool that can analyze all pages of your websites in one dashboard and monitor them with your team. It's powered by Lighthouse and it also includes some different analysis tools (SERP, W3C, Uptime, etc). Screpy has free and paid plans.
@@ -358,6 +361,8 @@ This section details services that have integrated Lighthouse data. If you're wo
 * **[Lighthouse Metrics](https://lighthouse-metrics.com/)** - Lighthouse Metrics gives you global performance insights with a single test. You can also monitor your websites on a daily or hourly base. Lighthouse Metrics offers free global one-time tests and performance monitoring as a paid feature with a free 14-day trial.
 
 * **[Auditzy](https://auditzy.com)** - Auditzy™ is a robust website auditing & monitoring tool which lets you analyze your web page(s) pre-user journey. Analyze the Competitor Health Metric, Core Web Vitals, and Technology. Compare your web pages with your competitors to understand where you are leading or lagging. Real-time notification with Slack. Have Seamless Collaboration with Multiple Teams. Automate your Audits hourly, daily, weekly, and so on. It has a free trial with pay as you go plans.
+
+* **[Lighthouse Metrics China](http://lighthousemetricschina.com)** - The first Lighthouse metrics tool specifically designed for China. Experience unparalleled website monitoring capabilities with Lighthouse. Gain insights into the fluctuations of your scores and metrics within the realm of the [Great Firewall of China](https://www.chinafirewalltest.co), enabling a comprehensive understanding of the factors influencing each change. Lighthouse Metrics China offers both free and paid plans.
 
 ## Lighthouse Integrations in non-Web Perf services
 

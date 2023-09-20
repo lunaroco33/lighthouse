@@ -21,14 +21,14 @@ jobs:
       run: echo "$DEPOT_TOOLS_PATH" >> $GITHUB_PATH
 
     - name: git clone
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: lighthouse
 
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 18.x
 
     - name: Generate cache hash
       run: bash $GITHUB_WORKSPACE/lighthouse/.github/scripts/generate-devtools-hash.sh > cdt-test-hash.txt
@@ -87,14 +87,14 @@ jobs:
 
     steps:
     - name: git clone
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: lighthouse
 
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 18.x
 
     - run: yarn --frozen-lockfile --network-timeout 1000000
       working-directory: ${{ github.workspace }}/lighthouse
@@ -132,14 +132,14 @@ jobs:
 
     steps:
     - name: git clone
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         path: lighthouse
 
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 18.x
 
     - name: Load build artifacts
       id: devtools-build-artifacts
@@ -168,7 +168,7 @@ jobs:
     - run: mkdir latest-run
       working-directory: ${{ github.workspace }}/lighthouse
     - name: yarn smoke --runner devtools
-      run: xvfb-run --auto-servernum yarn smoke --runner devtools --shard=${{ matrix.smoke-test-shard }}/${{ strategy.job-total }} --jobs=3 --retries=2
+      run: xvfb-run --auto-servernum yarn smoke --runner devtools --shard=${{ matrix.smoke-test-shard }}/${{ strategy.job-total }} --jobs=3 --retries=2 --debug
       working-directory: ${{ github.workspace }}/lighthouse
 
     - name: Upload failures
@@ -176,4 +176,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: Smokehouse (devtools smoke)
-        path: ${{ github.workspace }}/lighthouse/.tmp/smokehouse-ci-failures/
+        path: ${{ github.workspace }}/lighthouse/.tmp/smokehouse-failures/

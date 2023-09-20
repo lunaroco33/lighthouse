@@ -1,11 +1,13 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {Audit} from './audit.js';
 import * as i18n from '../lib/i18n/i18n.js';
+import {LCPBreakdown} from '../computed/metrics/lcp-breakdown.js';
+import {LargestContentfulPaint} from '../computed/metrics/largest-contentful-paint.js';
 
 const UIStrings = {
   /** Title of a Lighthouse audit that provides detail on whether the largest above-the-fold image was loaded with sufficient priority. This descriptive title is shown to users when the image was loaded properly. */
@@ -18,6 +20,8 @@ const UIStrings = {
 
 const str_ = i18n.createIcuMessageFn(import.meta.url, UIStrings);
 
+const ESTIMATED_PERCENT_SAVINGS = 0.15;
+
 class LargestContentfulPaintLazyLoaded extends Audit {
   /**
    * @return {LH.Audit.Meta}
@@ -29,7 +33,9 @@ class LargestContentfulPaintLazyLoaded extends Audit {
       failureTitle: str_(UIStrings.failureTitle),
       description: str_(UIStrings.description),
       supportedModes: ['navigation'],
-      requiredArtifacts: ['TraceElements', 'ViewportDimensions', 'ImageElements'],
+      guidanceLevel: 3,
+      requiredArtifacts: ['TraceElements', 'ViewportDimensions', 'ImageElements',
+        'traces', 'devtoolsLogs', 'GatherContext', 'URL'],
     };
   }
 
@@ -46,9 +52,10 @@ class LargestContentfulPaintLazyLoaded extends Audit {
 
   /**
    * @param {LH.Artifacts} artifacts
-   * @return {LH.Audit.Product}
+   * @param {LH.Audit.Context} context
+   * @return {Promise<LH.Audit.Product>}
    */
-  static audit(artifacts) {
+  static async audit(artifacts, context) {
     const lcpElement = artifacts.TraceElements.find(element => {
       return element.traceEventType === 'largest-contentful-paint' && element.type === 'image';
     });
@@ -59,7 +66,11 @@ class LargestContentfulPaintLazyLoaded extends Audit {
 
     if (!lcpElementImage ||
       !this.isImageInViewport(lcpElementImage, artifacts.ViewportDimensions)) {
-      return {score: null, notApplicable: true};
+      return {
+        score: null,
+        notApplicable: true,
+        metricSavings: {LCP: 0},
+      };
     }
 
     /** @type {LH.Audit.Details.Table['headings']} */
@@ -73,8 +84,27 @@ class LargestContentfulPaintLazyLoaded extends Audit {
       },
     ]);
 
+    const wasLazyLoaded = lcpElementImage.loading === 'lazy';
+
+    const metricComputationData = Audit.makeMetricComputationDataInput(artifacts, context);
+    const {timing: metricLcp} =
+      await LargestContentfulPaint.request(metricComputationData, context);
+    const lcpBreakdown = await LCPBreakdown.request(metricComputationData, context);
+    let lcpSavings = 0;
+    if (wasLazyLoaded && lcpBreakdown.loadStart !== undefined) {
+      // Estimate the LCP savings using a statistical percentage.
+      // https://web.dev/lcp-lazy-loading/#causal-performance
+      //
+      // LCP savings will be at most the LCP load delay.
+      const lcpLoadDelay = lcpBreakdown.loadStart - lcpBreakdown.ttfb;
+      lcpSavings = Math.min(metricLcp * ESTIMATED_PERCENT_SAVINGS, lcpLoadDelay);
+    }
+
     return {
-      score: lcpElementImage.loading === 'lazy' ? 0 : 1,
+      score: wasLazyLoaded ? 0 : 1,
+      metricSavings: {
+        LCP: lcpSavings,
+      },
       details,
     };
   }

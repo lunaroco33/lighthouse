@@ -1,13 +1,17 @@
 /**
- * @license Copyright 2020 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
+
+import log from 'lighthouse-logger';
 
 import {Audit} from './audit.js';
 import * as i18n from '../lib/i18n/i18n.js';
-import {LargestContentfulPaint} from '../computed/metrics/largest-contentful-paint.js';
+import {LargestContentfulPaint as LargestContentfulPaintComputed} from '../computed/metrics/largest-contentful-paint.js';
+import LargestContentfulPaint from './metrics/largest-contentful-paint.js';
 import {LCPBreakdown} from '../computed/metrics/lcp-breakdown.js';
+import {Sentry} from '../lib/sentry.js';
 
 const UIStrings = {
   /** Descriptive title of a diagnostic audit that provides the element that was determined to be the Largest Contentful Paint. */
@@ -43,23 +47,11 @@ class LargestContentfulPaintElement extends Audit {
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
       scoreDisplayMode: Audit.SCORING_MODES.INFORMATIVE,
+      guidanceLevel: 1,
       supportedModes: ['navigation'],
       requiredArtifacts:
         ['traces', 'TraceElements', 'devtoolsLogs', 'GatherContext', 'settings', 'URL'],
     };
-  }
-
-  /**
-   * @param {LH.Artifacts.MetricComputationDataInput} metricComputationData
-   * @param {LH.Audit.Context} context
-   * @return {Promise<number|undefined>}
-   */
-  static async getOptionalLCPMetric(metricComputationData, context) {
-    try {
-      const {timing: metricLcp} =
-        await LargestContentfulPaint.request(metricComputationData, context);
-      return metricLcp;
-    } catch {}
   }
 
   /**
@@ -134,24 +126,48 @@ class LargestContentfulPaintElement extends Audit {
       settings: context.settings, URL: artifacts.URL};
 
     const elementTable = this.makeElementTable(artifacts);
-    if (!elementTable) return {score: null, notApplicable: true};
+    if (!elementTable) {
+      return {
+        score: null,
+        notApplicable: true,
+        metricSavings: {LCP: 0},
+      };
+    }
 
     const items = [elementTable];
     let displayValue;
+    let metricLcp = 0;
 
-    const metricLcp = await this.getOptionalLCPMetric(metricComputationData, context);
-    if (metricLcp) {
+    try {
+      const lcpResult =
+        await LargestContentfulPaintComputed.request(metricComputationData, context);
+      metricLcp = lcpResult.timing;
       displayValue = str_(i18n.UIStrings.ms, {timeInMs: metricLcp});
+
       const phaseTable = await this.makePhaseTable(metricLcp, metricComputationData, context);
       items.push(phaseTable);
+    } catch (err) {
+      Sentry.captureException(err, {
+        tags: {audit: this.meta.id},
+        level: 'error',
+      });
+      log.error(this.meta.id, err.message);
     }
 
     const details = Audit.makeListDetails(items);
+
+    // Conceptually, this doesn't make much sense as "savings" for this audit since there isn't anything to "fix".
+    // However, this audit will always be useful when improving LCP and that should be reflected in our impact calculations.
+    const idealLcp = LargestContentfulPaint.defaultOptions[context.settings.formFactor].scoring.p10;
+    const lcpSavings = Math.max(0, metricLcp - idealLcp);
 
     return {
       score: 1,
       displayValue,
       details,
+      metricSavings: {
+        LCP: lcpSavings,
+      },
     };
   }
 }

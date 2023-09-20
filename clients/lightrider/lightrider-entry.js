@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /* global globalThis */
@@ -26,15 +26,13 @@ const LR_PRESETS = {
   desktop: desktopConfig,
 };
 
-/** @typedef {import('../../core/legacy/gather/connections/connection.js').Connection} Connection */
-
 // Rollup seems to overlook some references to `Buffer`, so it must be made explicit.
 // (`parseSourceMapFromDataUrl` breaks without this)
 /** @type {BufferConstructor} */
 globalThis.Buffer = Buffer;
 
 /**
- * @param {Connection} connection
+ * @param {any} connection
  * @return {Promise<LH.Puppeteer.Page>}
  */
 async function getPageFromConnection(connection) {
@@ -43,7 +41,6 @@ async function getPageFromConnection(connection) {
     await connection.sendCommand('Target.getTargetInfo', undefined);
   const {frameTree} = await connection.sendCommand('Page.getFrameTree', undefined);
 
-  // @ts-expect-error Hack to access the WRS/SRS transport layer.
   const channel = connection.channel_ || connection.rootSessionConnection_;
   const transport = channel.root_.transport_;
 
@@ -57,7 +54,8 @@ async function getPageFromConnection(connection) {
     undefined /* defaultViewport */,
     undefined /* process */,
     undefined /* closeCallback */,
-    targetInfo => targetInfo.targetId === mainTargetInfo.targetId
+    // @ts-expect-error internal property
+    targetInfo => targetInfo._targetId === mainTargetInfo.targetId
   );
 
   const pages = await browser.pages();
@@ -72,10 +70,10 @@ async function getPageFromConnection(connection) {
  * Run lighthouse for connection and provide similar results as in CLI.
  *
  * If configOverride is provided, lrDevice and categoryIDs are ignored.
- * @param {Connection} connection
+ * @param {any} connection
  * @param {string} url
  * @param {LH.Flags} flags Lighthouse flags
- * @param {{lrDevice?: 'desktop'|'mobile', categoryIDs?: Array<string>, logAssets: boolean, configOverride?: LH.Config, useFraggleRock?: boolean}} lrOpts Options coming from Lightrider
+ * @param {{lrDevice?: 'desktop'|'mobile', categoryIDs?: Array<string>, logAssets: boolean, configOverride?: LH.Config}} lrOpts Options coming from Lightrider
  * @return {Promise<string>}
  */
 async function runLighthouseInLR(connection, url, flags, lrOpts) {
@@ -101,13 +99,8 @@ async function runLighthouseInLR(connection, url, flags, lrOpts) {
   }
 
   try {
-    let runnerResult;
-    if (lrOpts.useFraggleRock) {
-      const page = await getPageFromConnection(connection);
-      runnerResult = await lighthouse(url, flags, config, page);
-    } else {
-      runnerResult = await api.legacyNavigation(url, flags, config, connection);
-    }
+    const page = await runLighthouseInLR.getPageFromConnection(connection);
+    const runnerResult = await lighthouse(url, flags, config, page);
 
     if (!runnerResult) throw new Error('Lighthouse finished without a runnerResult');
 
@@ -163,6 +156,8 @@ if (typeof window !== 'undefined') {
 }
 
 const {computeBenchmarkIndex} = pageFunctions;
+
+runLighthouseInLR.getPageFromConnection = getPageFromConnection;
 
 export {
   runLighthouseInLR,

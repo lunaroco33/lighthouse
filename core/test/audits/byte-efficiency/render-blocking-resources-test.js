@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2018 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import assert from 'assert/strict';
@@ -41,6 +41,7 @@ describe('Render blocking resources audit', () => {
     const result = await RenderBlockingResourcesAudit.audit(artifacts, {settings, computedCache});
     assert.equal(result.score, 1);
     assert.equal(result.numericValue, 0);
+    assert.deepStrictEqual(result.metricSavings, {FCP: 0, LCP: 0});
   });
 
   it('evaluates amp page correctly', async () => {
@@ -76,17 +77,18 @@ describe('Render blocking resources audit', () => {
     const settings = {throttlingMethod: 'simulate', throttling: mobileSlow4G};
     const computedCache = new Map();
     const result = await RenderBlockingResourcesAudit.audit(artifacts, {settings, computedCache});
-    expect(result.numericValue).toMatchInlineSnapshot(`450`);
+    expect(result.numericValue).toMatchInlineSnapshot(`469`);
     expect(result.details.items).toMatchObject([
       {
         'totalBytes': 621,
         'url': 'https://fonts.googleapis.com/css?family=Fira+Sans+Condensed%3A400%2C400i%2C600%2C600i&subset=latin%2Clatin-ext&display=swap',
-        'wastedMs': 465,
+        'wastedMs': 440,
       },
       // Due to internal H2 simulation details, parallel HTTP/2 requests are pipelined which makes
       // it look like Montserrat starts after Fira Sans finishes. It would be preferred
       // if eventual simulation improvements list Montserrat here as well.
     ]);
+    expect(result.metricSavings).toEqual({FCP: 469, LCP: 469});
   });
 
   describe('#estimateSavingsWithGraphs', () => {

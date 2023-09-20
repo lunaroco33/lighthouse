@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import {
@@ -18,6 +18,16 @@ const LoadFailureMode = /** @type {const} */ ({
   warn: 'warn',
 });
 
+/**
+ * Unless the test specifies otherwise, all status codes will be 200.
+ * @return {NetworkRequest}
+ */
+function makeNetworkRequest() {
+  const record = new NetworkRequest();
+  record.statusCode = 200;
+  return record;
+}
+
 describe('#getNetworkError', () => {
   /**
    * @param {NetworkRequest=} mainRecord
@@ -30,14 +40,14 @@ describe('#getNetworkError', () => {
 
   it('passes when the page is loaded', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     expect(getNetworkError(mainRecord)).toBeUndefined();
   });
 
   it('fails when page fails to load', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.failed = true;
     mainRecord.localizedFailDescription = 'foobar';
@@ -58,7 +68,7 @@ describe('#getNetworkError', () => {
 
   it('fails when page returns with a 404', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.statusCode = 404;
     const error = getAndExpectError(mainRecord);
@@ -69,7 +79,7 @@ describe('#getNetworkError', () => {
 
   it('fails when page returns with a 500', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.statusCode = 500;
     const error = getAndExpectError(mainRecord);
@@ -80,7 +90,7 @@ describe('#getNetworkError', () => {
 
   it('fails when page domain doesn\'t resolve', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.failed = true;
     mainRecord.localizedFailDescription = 'net::ERR_NAME_NOT_RESOLVED';
@@ -108,14 +118,14 @@ describe('#getInterstitialError', () => {
 
   it('passes when the page is loaded', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     expect(getInterstitialError(mainRecord, [mainRecord])).toBeUndefined();
   });
 
   it('passes when page fails to load normally', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.failed = true;
     mainRecord.localizedFailDescription = 'foobar';
@@ -125,9 +135,9 @@ describe('#getInterstitialError', () => {
   it('passes when page gets a generic interstitial but somehow also loads everything', () => {
     // This case, AFAIK, is impossible, but we'll err on the side of not tanking the run.
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
-    const interstitialRecord = new NetworkRequest();
+    const interstitialRecord = makeNetworkRequest();
     interstitialRecord.url = 'data:text/html;base64,abcdef';
     interstitialRecord.documentURL = 'chrome-error://chromewebdata/';
     const records = [mainRecord, interstitialRecord];
@@ -136,11 +146,11 @@ describe('#getInterstitialError', () => {
 
   it('fails when page gets a generic interstitial', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.failed = true;
     mainRecord.localizedFailDescription = 'ERR_CONNECTION_RESET';
-    const interstitialRecord = new NetworkRequest();
+    const interstitialRecord = makeNetworkRequest();
     interstitialRecord.url = 'data:text/html;base64,abcdef';
     interstitialRecord.documentURL = 'chrome-error://chromewebdata/';
     const records = [mainRecord, interstitialRecord];
@@ -152,11 +162,11 @@ describe('#getInterstitialError', () => {
 
   it('fails when page gets a security interstitial', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.failed = true;
     mainRecord.localizedFailDescription = 'net::ERR_CERT_COMMON_NAME_INVALID';
-    const interstitialRecord = new NetworkRequest();
+    const interstitialRecord = makeNetworkRequest();
     interstitialRecord.url = 'data:text/html;base64,abcdef';
     interstitialRecord.documentURL = 'chrome-error://chromewebdata/';
     const records = [mainRecord, interstitialRecord];
@@ -169,14 +179,14 @@ describe('#getInterstitialError', () => {
 
   it('passes when page iframe gets a generic interstitial', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.failed = false;
-    const iframeRecord = new NetworkRequest();
+    const iframeRecord = makeNetworkRequest();
     iframeRecord.failed = true;
     iframeRecord.url = 'https://the-ad.com';
     iframeRecord.documentURL = 'https://the-ad.com';
-    const interstitialRecord = new NetworkRequest();
+    const interstitialRecord = makeNetworkRequest();
     interstitialRecord.url = 'data:text/html;base64,abcdef';
     interstitialRecord.documentURL = 'chrome-error://chromewebdata/';
     const records = [mainRecord, iframeRecord, interstitialRecord];
@@ -201,7 +211,7 @@ describe('#getNonHtmlError', () => {
 
   it('passes when the page is of MIME type text/html', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const mimeType = 'text/html';
     mainRecord.url = url;
     mainRecord.mimeType = mimeType;
@@ -210,17 +220,26 @@ describe('#getNonHtmlError', () => {
 
   it('passes when the page is of MIME type application/xhtml+xml', () => {
     const url = 'http://the-page.com';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const mimeType = 'application/xhtml+xml';
     mainRecord.url = url;
     mainRecord.mimeType = mimeType;
     expect(getNonHtmlError(mainRecord)).toBeUndefined();
   });
 
+  it('passes when the page document did not load', () => {
+    const url = 'http://the-page.com';
+    const mainRecord = makeNetworkRequest();
+    mainRecord.statusCode = -1;
+    mainRecord.url = url;
+    mainRecord.mimeType = '';
+    expect(getNonHtmlError(mainRecord)).toBeUndefined();
+  });
+
   it('fails when the page is not of MIME type text/html', () => {
     const url = 'http://the-page.com';
     const mimeType = 'application/xml';
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     mainRecord.url = url;
     mainRecord.mimeType = mimeType;
     const error = getAndExpectError(mainRecord);
@@ -249,7 +268,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('passes when the page is loaded', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -263,7 +282,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('passes when the page is loaded, ignoring any fragment', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://example.com/#/page/list',
       networkRecords: [mainRecord],
@@ -277,7 +296,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('passes when the page is expected to fail', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -292,14 +311,14 @@ describe('#getPageLoadError', () => {
   });
 
   it('passes when the page redirects to MIME type text/html', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
       loadFailureMode: LoadFailureMode.fatal,
       warnings: [],
     };
-    const finalRecord = new NetworkRequest();
+    const finalRecord = makeNetworkRequest();
 
     mainRecord.url = context.url;
     mainRecord.redirectDestination = finalRecord;
@@ -311,8 +330,8 @@ describe('#getPageLoadError', () => {
   });
 
   it('fails with interstitial error first', () => {
-    const mainRecord = new NetworkRequest();
-    const interstitialRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
+    const interstitialRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord, interstitialRecord],
@@ -330,7 +349,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('fails with network error second', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -346,7 +365,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('fails with non-HTML error third', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -362,7 +381,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('warns with XHTML type', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -380,7 +399,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('fails with nav error last', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -396,7 +415,7 @@ describe('#getPageLoadError', () => {
   });
 
   it('fails when loadFailureMode is warn', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
@@ -412,18 +431,19 @@ describe('#getPageLoadError', () => {
   });
 
   it('fails with non-HTML when redirect is not HTML', () => {
-    const mainRecord = new NetworkRequest();
+    const mainRecord = makeNetworkRequest();
     const context = {
       url: 'http://the-page.com',
       networkRecords: [mainRecord],
       loadFailureMode: LoadFailureMode.fatal,
       warnings: [],
     };
-    const finalRecord = new NetworkRequest();
+    const finalRecord = makeNetworkRequest();
 
     mainRecord.url = context.url;
     mainRecord.redirectDestination = finalRecord;
     finalRecord.url = 'http://the-redirected-page.com';
+    finalRecord.mimeType = 'text/todo';
 
     const error = getAndExpectError(navigationError, context);
     expect(error.message).toEqual('NOT_HTML');

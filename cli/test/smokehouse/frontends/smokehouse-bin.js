@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * @license Copyright 2019 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -23,8 +23,10 @@ import log from 'lighthouse-logger';
 
 import {runSmokehouse, getShardedDefinitions} from '../smokehouse.js';
 import {updateTestDefnFormat} from './back-compat-util.js';
-import {LH_ROOT} from '../../../../root.js';
+import {LH_ROOT} from '../../../../shared/root.js';
 import exclusions from '../config/exclusions.js';
+import {saveArtifacts} from '../../../../core/lib/asset-saver.js';
+import {saveLhr} from '../../../../core/lib/asset-saver.js';
 
 const coreTestDefnsPath =
   path.join(LH_ROOT, 'cli/test/smokehouse/core-tests.js');
@@ -134,11 +136,6 @@ async function begin() {
         default: false,
         describe: 'Save test artifacts and output verbose logs',
       },
-      'legacy-navigation': {
-        type: 'boolean',
-        default: false,
-        describe: 'Use the legacy navigation runner',
-      },
       'jobs': {
         type: 'number',
         alias: 'j',
@@ -216,7 +213,6 @@ async function begin() {
       jobs,
       retries,
       isDebug: argv.debug,
-      useLegacyNavigation: argv.legacyNavigation,
       lighthouseRunner: runLighthouse,
       takeNetworkRequestUrls,
       setup,
@@ -227,27 +223,47 @@ async function begin() {
     servers?.forEach(s => s.close());
   }
 
+  let smokehouseOutputDir;
+  let testResultsToOutput;
   if (!smokehouseResult.success) {
-    const failedTestResults = smokehouseResult.testResults.filter(r => r.failed);
+    // Save failed runs to directory. In CI, this is uploaded as an artifact.
+    smokehouseOutputDir = `${LH_ROOT}/.tmp/smokehouse-failures`;
+    testResultsToOutput = smokehouseResult.testResults.filter(r => r.failed);
+  } else if (!process.env.CI) {
+    // Otherwise, only write to disk in debug mode.
+    smokehouseOutputDir = `${LH_ROOT}/.tmp/smokehouse-output`;
+    testResultsToOutput = smokehouseResult.testResults;
+  }
 
-    // For CI, save failed runs to directory to be uploaded.
-    if (process.env.CI) {
-      const failuresDir = `${LH_ROOT}/.tmp/smokehouse-ci-failures`;
-      fs.mkdirSync(failuresDir, {recursive: true});
+  if (smokehouseOutputDir && testResultsToOutput) {
+    fs.rmSync(smokehouseOutputDir, {recursive: true, force: true});
+    fs.mkdirSync(smokehouseOutputDir, {recursive: true});
 
-      for (const testResult of failedTestResults) {
-        for (let i = 0; i < testResult.runs.length; i++) {
-          const run = testResult.runs[i];
-          fs.writeFileSync(`${failuresDir}/${testResult.id}-${i}.json`, JSON.stringify({
-            ...run,
-            lighthouseLog: run.lighthouseLog.split('\n'),
-            assertionLog: run.assertionLog.split('\n'),
-          }, null, 2));
+    for (const testResult of testResultsToOutput) {
+      for (let i = 0; i < testResult.runs.length; i++) {
+        const runDir = `${smokehouseOutputDir}/${i}/${testResult.id}`;
+        fs.mkdirSync(runDir, {recursive: true});
+
+        const run = testResult.runs[i];
+        await saveArtifacts(run.artifacts, runDir);
+        await saveLhr(run.lhr, runDir);
+        fs.writeFileSync(`${runDir}/assertionLog.txt`, run.assertionLog);
+        fs.writeFileSync(`${runDir}/lighthouseLog.txt`, run.lighthouseLog);
+        if (run.networkRequests) {
+          fs.writeFileSync(`${runDir}/networkRequests.txt`, run.networkRequests.join('\n'));
+        }
+        const config = testDefns.find(test => test.id === testResult.id)?.config;
+        if (config) {
+          fs.writeFileSync(`${runDir}/config.json`, JSON.stringify(config, null, 2));
         }
       }
     }
 
-    const cmd = `yarn smoke ${failedTestResults.map(r => r.id).join(' ')}`;
+    console.log(`smokehouse artifacts written to ${smokehouseOutputDir}`);
+  }
+
+  if (!smokehouseResult.success && testResultsToOutput) {
+    const cmd = `yarn smoke ${testResultsToOutput.map(r => r.id).join(' ')}`;
     console.log(`rerun failures: ${cmd}`);
   }
 

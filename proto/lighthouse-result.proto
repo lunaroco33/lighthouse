@@ -379,6 +379,9 @@ message AuditResult {
   // The unit of the numeric_value field. Used to format the numeric value for
   // display.
   string numeric_unit = 12;
+
+  // Stacktrace of error, if any occurred while processing the audit.
+  string errorStack = 13;
 }
 
 // Message containing the i18n data for the LHR - Version 1
@@ -602,7 +605,7 @@ message I18n {
     string view_trace_label = 58;
 
     // This label is for a button that will show the user a trace of the page.
-    string view_original_trace_label = 59;
+    string view_original_trace_label = 59 [deprecated = true];
 
     // Label for a row in a table that shows the screen emulation used
     string runtime_settings_screen_emulation = 60;
@@ -615,6 +618,10 @@ message I18n {
 
     // Label for a generic category for all resources that could not be attributed against a 1st or 3rd party entity.
     string unattributable = 63;
+
+    // This label is for a button that will show the user a trace of the page.
+    string dropdown_view_unthrottled_trace = 64;
+
   }
 
   // The message holding all formatted strings used in the renderer.

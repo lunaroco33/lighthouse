@@ -8,7 +8,7 @@ jobs:
   check-links:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         # checks all markdown files from /docs including all subfolders
         with:
@@ -16,7 +16,7 @@ jobs:
           use-verbose-mode: 'yes'
           config-file: '.github/workflows/markdown.links.config.json'
           folder-path: 'docs/'
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         # checks all markdown files from root but ignores subfolders
         with:
@@ -30,11 +30,11 @@ jobs:
 
     steps:
     - name: git clone
-      uses: actions/checkout@v2
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v1
+      uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 18.x
     - run: yarn --frozen-lockfile
 
     - run: yarn mocha --testMatch=third-party/chromium-synchronization/*-test.js

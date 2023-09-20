@@ -1,7 +1,7 @@
 /**
- * @license Copyright 2017 The Lighthouse Authors. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import assert from 'assert/strict';
@@ -100,6 +100,58 @@ describe('ReportUIFeatures', () => {
       };
       const container = render(lhr);
       assert.equal(dom.findAll('.lh-category', container).length, 1);
+    });
+
+    describe('view trace button', () => {
+      it('is shown in report if callback provided and not simulated throttling', () => {
+        const onViewTrace = jestMock.fn();
+        const lhr = JSON.parse(JSON.stringify(sampleResults));
+        lhr.configSettings.throttlingMethod = 'devtools';
+        const container = render(lhr, {onViewTrace});
+
+        const buttons = dom.findAll('.lh-button', container);
+        expect(buttons).toHaveLength(3);
+
+        const viewUnthrottledTraceButton =
+          dom.find('a[data-action="view-unthrottled-trace"]', container);
+        expect(viewUnthrottledTraceButton.classList).toContain('lh-hidden');
+
+        const viewTraceButton = buttons[2];
+        expect(viewTraceButton.textContent).toEqual('View Trace');
+
+        viewTraceButton.click();
+        expect(onViewTrace).toHaveBeenCalled();
+      });
+
+      it('is shown in dropdown if callback provided and using simulated throttling', () => {
+        const onViewTrace = jestMock.fn();
+        const lhr = JSON.parse(JSON.stringify(sampleResults));
+        lhr.configSettings.throttlingMethod = 'simulate';
+        const container = render(lhr, {onViewTrace});
+
+        const buttons = dom.findAll('.lh-button', container);
+        expect(buttons).toHaveLength(2);
+
+        const viewUnthrottledTraceButton =
+          dom.find('a[data-action="view-unthrottled-trace"]', container);
+        expect(viewUnthrottledTraceButton.classList).not.toContain('lh-hidden');
+        expect(viewUnthrottledTraceButton.textContent).toEqual('View Unthrottled Trace');
+
+        viewUnthrottledTraceButton.click();
+        expect(onViewTrace).toHaveBeenCalled();
+      });
+
+      it('is not shown in dropdown or report if callback not provided', () => {
+        const lhr = JSON.parse(JSON.stringify(sampleResults));
+        const container = render(lhr);
+
+        const buttons = dom.findAll('.lh-button', container);
+        expect(buttons).toHaveLength(2);
+
+        const viewUnthrottledTraceButton =
+          dom.find('a[data-action="view-unthrottled-trace"]', container);
+        expect(viewUnthrottledTraceButton.classList).toContain('lh-hidden');
+      });
     });
 
     describe('third-party filtering', () => {
