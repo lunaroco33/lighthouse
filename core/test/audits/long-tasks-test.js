@@ -212,6 +212,7 @@ describe('Long tasks audit', () => {
 
     const trace = createTestTrace({
       timeOrigin: BASE_TS,
+      traceEnd: BASE_TS + 100_000,
       topLevelTasks,
     });
     const artifacts = {
