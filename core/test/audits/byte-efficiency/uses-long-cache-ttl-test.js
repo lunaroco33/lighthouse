@@ -227,7 +227,7 @@ describe('Cache headers audit', () => {
 
     const context = {options, computedCache: new Map()};
     return CacheHeadersAudit.audit(getArtifacts(networkRecords), context).then(result => {
-      assert.equal(result.score, 1);
+      assert.equal(result.score, 0);
       const items = result.details.items;
       assert.equal(items.length, 1);
     });

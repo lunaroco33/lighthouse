@@ -578,11 +578,11 @@ describe('Sized images audit', () => {
     });
   });
 
-  it('is not applicable when there are no images', async () => {
+  it('is applicable and passing when there are no images', async () => {
     const result = await UnsizedImagesAudit.audit({
       ImageElements: [],
     });
-    expect(result.notApplicable).toEqual(true);
+    expect(result.notApplicable).toBeUndefined();
     expect(result.score).toEqual(1);
     expect(result.metricSavings).toEqual({CLS: 0});
   });

@@ -48,7 +48,7 @@ describe('Performance: layout-shift-elements audit', () => {
     };
 
     const auditResult = await LayoutShiftElementsAudit.audit(artifacts, {computedCache: new Map()});
-    expect(auditResult.score).toEqual(1);
+    expect(auditResult.score).toEqual(0);
     expect(auditResult.displayValue).toBeDisplayString('1 element found');
     expect(auditResult.metricSavings).toEqual({CLS: 0.4});
     expect(auditResult.details.items).toHaveLength(1);

@@ -162,7 +162,7 @@ describe('Performance: Redirects audit', () => {
 
     const output = await RedirectsAudit.audit(artifacts, context);
     expect(output.details.items).toHaveLength(3);
-    expect(Math.round(output.score * 100) / 100).toMatchInlineSnapshot(`0.29`);
+    expect(Math.round(output.score * 100) / 100).toMatchInlineSnapshot(`0`);
     expect(output.numericValue).toMatchInlineSnapshot(`2000`);
     expect(output.metricSavings).toEqual({LCP: 2000, FCP: 2000});
   });
@@ -201,7 +201,7 @@ describe('Performance: Redirects audit', () => {
     const context = {settings: {}, computedCache: new Map()};
     return RedirectsAudit.audit(artifacts, context).then(output => {
       expect(output.details.items).toHaveLength(4);
-      expect(Math.round(output.score * 100) / 100).toMatchInlineSnapshot(`0.2`);
+      expect(Math.round(output.score * 100) / 100).toMatchInlineSnapshot(`0`);
       expect(output.numericValue).toMatchInlineSnapshot(`3000`);
       expect(output.metricSavings).toEqual({LCP: 3000, FCP: 3000});
     });
@@ -212,7 +212,7 @@ describe('Performance: Redirects audit', () => {
     const context = {settings: {}, computedCache: new Map()};
     return RedirectsAudit.audit(artifacts, context).then(output => {
       expect(output.details.items).toHaveLength(3);
-      expect(Math.round(output.score * 100) / 100).toMatchInlineSnapshot(`0.29`);
+      expect(Math.round(output.score * 100) / 100).toMatchInlineSnapshot(`0`);
       expect(output.numericValue).toMatchInlineSnapshot(`2000`);
       expect(output.metricSavings).toEqual({LCP: 2000, FCP: 2000});
     });
@@ -223,7 +223,7 @@ describe('Performance: Redirects audit', () => {
     const context = {settings: {}, computedCache: new Map()};
     return RedirectsAudit.audit(artifacts, context).then(output => {
       expect(output.details.items).toHaveLength(2);
-      expect(output.score).toEqual(0.48);
+      expect(output.score).toEqual(0);
       expect(output.numericValue).toMatchInlineSnapshot(`1000`);
       expect(output.metricSavings).toEqual({LCP: 1000, FCP: 1000});
     });
@@ -257,7 +257,7 @@ describe('Performance: Redirects audit', () => {
 
     const output = await RedirectsAudit.audit(artifacts, context);
     expect(output).toMatchObject({
-      score: expect.toBeApproximately(0.2),
+      score: 0,
       numericValue: 3000,
       details: {
         items: [
