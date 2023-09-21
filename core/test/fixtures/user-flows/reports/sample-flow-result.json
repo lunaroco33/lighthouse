@@ -10444,7 +10444,7 @@
             "title": "Minimizes work during key interaction",
             "description": "This is the thread-blocking work occurring during the Interaction to Next Paint measurement. [Learn more about the Interaction to Next Paint metric](https://web.dev/inp/).",
             "score": 1,
-            "scoreDisplayMode": "numeric",
+            "scoreDisplayMode": "informative",
             "displayValue": "60 ms spent on event 'keypress'",
             "metricSavings": {
               "INP": 64
