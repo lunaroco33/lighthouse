@@ -382,6 +382,42 @@ message AuditResult {
 
   // Stacktrace of error, if any occurred while processing the audit.
   string errorStack = 13;
+
+  // Message containing the audit's MetricSavings.
+  message MetricSavings {
+    // Optional numeric value representing the audit's savings for the LCP metric.
+    optional google.protobuf.DoubleValue LCP = 1;
+
+    // Optional numeric value representing the audit's savings for the FCP metric.
+    optional google.protobuf.DoubleValue FCP = 2;
+
+    // Optional numeric value representing the audit's savings for the CLS metric.
+    optional google.protobuf.DoubleValue CLS = 3;
+
+    // Optional numeric value representing the audit's savings for the TBT metric.
+    optional google.protobuf.DoubleValue TBT = 4;
+
+    // Optional numeric value representing the audit's savings for the INP metric.
+    optional google.protobuf.DoubleValue INP = 5;
+  }
+
+  // The audit's MetricSavings.
+  MetricSavings metricSavings = 14;
+
+  // Message containing ScoringOptions.
+  message ScoringOptions {
+    // Scoring option's p10.
+    google.protobuf.DoubleValue p10 = 1;
+
+    // Scoring option's median.
+    google.protobuf.DoubleValue median = 2;
+  }
+
+  // The audit's ScoringOption.
+  ScoringOptions scoringOptions = 15;
+
+  // An audit's guidance level.
+  google.protobuf.DoubleValue guidanceLevel = 16;
 }
 
 // Message containing the i18n data for the LHR - Version 1
