@@ -437,4 +437,168 @@ Array [
       });
     });
   });
+
+  describe('prioritize audits by metricSavings', () => {
+    let metricAudits;
+    let defaultAuditRef;
+    let fakeCategory;
+
+    before(() => {
+      metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
+      defaultAuditRef = {
+        title: '',
+        description: '',
+        scoreDisplayMode: 'numeric',
+        warnings: [],
+      };
+      fakeCategory = {
+        id: 'performance',
+        title: 'Performance',
+        score: 0.5,
+        supportedModes: category.supportedModes,
+      };
+    });
+
+    it('audits in order of most impact metric savings first', () => {
+      fakeCategory = {
+        id: 'performance',
+        title: 'Performance',
+        score: 0.5,
+        supportedModes: category.supportedModes,
+      };
+
+      fakeCategory.auditRefs = [{
+        id: 'audit-1',
+        result: {
+          id: 'audit-1',
+          metricSavings: {'LCP': 50, 'FCP': 5},
+          score: 0,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-2',
+        result: {
+          id: 'audit-2',
+          score: 0.5,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-3',
+        result: {
+          id: 'audit-3',
+          score: 0,
+          metricSavings: {'LCP': 50, 'FCP': 15},
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-4',
+        result: {
+          id: 'audit-4',
+          score: 0,
+          metricSavings: {'FCP': 15},
+          ...defaultAuditRef,
+        },
+      },
+      ...metricAudits];
+
+      const categoryDOM = renderer.render(fakeCategory, sampleResults.categoryGroups);
+      const diagnosticSection = categoryDOM.querySelector(
+        '.lh-category > .lh-audit-group.lh-audit-group--diagnostics');
+      const diagnosticElementIds = [...diagnosticSection.querySelectorAll('.lh-audit')];
+      expect(diagnosticElementIds.map(el => el.id)).toEqual(['audit-3', 'audit-1', 'audit-4', 'audit-2']); // eslint-disable-line max-len
+    });
+
+    it('audits sorted with guidance level', () => {
+      fakeCategory.auditRefs = [{
+        id: 'audit-1',
+        result: {
+          id: 'audit-1',
+          metricSavings: {'LCP': 50, 'FCP': 5},
+          score: 0,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-2',
+        result: {
+          id: 'audit-2',
+          score: 0.5,
+          guidanceLevel: 3,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-3',
+        result: {
+          id: 'audit-3',
+          score: 0,
+          metricSavings: {'LCP': 50, 'FCP': 5},
+          guidanceLevel: 3,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-4',
+        result: {
+          id: 'audit-4',
+          score: 0.5,
+          guidanceLevel: 2,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-5',
+        result: {
+          id: 'audit-5',
+          score: 0.5,
+          ...defaultAuditRef,
+        },
+      },
+      ...metricAudits];
+
+      const categoryDOM = renderer.render(fakeCategory, sampleResults.categoryGroups);
+      const diagnosticSection = categoryDOM.querySelector(
+        '.lh-category > .lh-audit-group.lh-audit-group--diagnostics');
+      const diagnosticElementIds = [...diagnosticSection.querySelectorAll('.lh-audit')];
+      expect(diagnosticElementIds.map(el => el.id)).toEqual(['audit-3', 'audit-1', 'audit-2', 'audit-4', 'audit-5']); // eslint-disable-line max-len
+    });
+
+    it('audits without impact and guidance level sorted', () => {
+      fakeCategory.auditRefs = [{
+        id: 'audit-1',
+        result: {
+          id: 'audit-1',
+          metricSavings: {'LCP': 50, 'FCP': 5},
+          score: 0,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-2',
+        result: {
+          id: 'audit-2',
+          score: 0,
+          weight: 10,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-3',
+        result: {
+          id: 'audit-3',
+          score: 0,
+          guidanceLevel: 2,
+          ...defaultAuditRef,
+        },
+      }, {
+        id: 'audit-4',
+        result: {
+          id: 'audit-4',
+          score: 0.5,
+          ...defaultAuditRef,
+        },
+      },
+      ...metricAudits];
+
+      const categoryDOM = renderer.render(fakeCategory, sampleResults.categoryGroups);
+      const diagnosticSection = categoryDOM.querySelector(
+        '.lh-category > .lh-audit-group.lh-audit-group--diagnostics');
+      const diagnosticElementIds = [...diagnosticSection.querySelectorAll('.lh-audit')];
+      expect(diagnosticElementIds.map(el => el.id)).toEqual(['audit-1', 'audit-3', 'audit-2', 'audit-4']); // eslint-disable-line max-len
+    });
+  });
 });
