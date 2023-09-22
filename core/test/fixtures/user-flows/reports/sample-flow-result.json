@@ -515,6 +515,9 @@
             "numericValue": 959.4240000000008,
             "numericUnit": "millisecond",
             "displayValue": "1.0 s",
+            "metricSavings": {
+              "TBT": 143
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -577,6 +580,9 @@
             "numericValue": 288.41200000000015,
             "numericUnit": "millisecond",
             "displayValue": "0.3 s",
+            "metricSavings": {
+              "TBT": 142.50196940171634
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -8809,6 +8815,9 @@
             "numericValue": 867.7709999999973,
             "numericUnit": "millisecond",
             "displayValue": "0.9 s",
+            "metricSavings": {
+              "TBT": 122.83299999999986
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -8876,6 +8885,9 @@
             "numericValue": 352.6489999999996,
             "numericUnit": "millisecond",
             "displayValue": "0.4 s",
+            "metricSavings": {
+              "TBT": 106.76186411159928
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -18115,6 +18127,9 @@
             "numericValue": 454.39200000000045,
             "numericUnit": "millisecond",
             "displayValue": "0.5 s",
+            "metricSavings": {
+              "TBT": 13
+            },
             "details": {
               "type": "table",
               "headings": [
@@ -18177,6 +18192,9 @@
             "numericValue": 169.10399999999998,
             "numericUnit": "millisecond",
             "displayValue": "0.2 s",
+            "metricSavings": {
+              "TBT": 25.85177364864864
+            },
             "details": {
               "type": "table",
               "headings": [
