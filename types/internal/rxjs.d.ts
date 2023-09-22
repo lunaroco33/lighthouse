@@ -22,5 +22,8 @@ declare module 'rxjs' {
   export const tap: any;
   export const throwIfEmpty: any;
   export const firstValueFrom: any;
+  export const delay: any;
+  export const startWith: any;
+  export const switchMap: any;
 }
 

@@ -9,8 +9,8 @@
 import {Buffer} from 'buffer';
 
 import log from 'lighthouse-logger';
-import {CDPBrowser} from 'puppeteer-core/lib/esm/puppeteer/common/Browser.js';
-import {Connection as PptrConnection} from 'puppeteer-core/lib/esm/puppeteer/common/Connection.js';
+import {CdpBrowser} from 'puppeteer-core/lib/esm/puppeteer/cdp/Browser.js';
+import {Connection as PptrConnection} from 'puppeteer-core/lib/esm/puppeteer/cdp/Connection.js';
 
 import lighthouse, * as api from '../../core/index.js';
 import {LighthouseError} from '../../core/lib/lh-error.js';
@@ -46,7 +46,7 @@ async function getPageFromConnection(connection) {
 
   const pptrConnection = new PptrConnection(mainTargetInfo.url, transport);
 
-  const browser = await CDPBrowser._create(
+  const browser = await CdpBrowser._create(
     'chrome',
     pptrConnection,
     [] /* contextIds */,

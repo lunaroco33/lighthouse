@@ -6,7 +6,7 @@
 
 import {EventEmitter} from 'events';
 
-import {CDPSessionImpl} from 'puppeteer-core/lib/cjs/puppeteer/common/Connection.js';
+import {CdpCDPSession} from 'puppeteer-core/lib/cjs/puppeteer/cdp/CDPSession.js';
 
 import {TargetManager} from '../../../gather/driver/target-manager.js';
 import {createMockCdpSession} from '../mock-driver.js';
@@ -251,9 +251,9 @@ describe('TargetManager', () => {
       }
 
       const mockCdpConnection = new MockCdpConnection();
-      /** @type {LH.Puppeteer.CDPSession} */
+      /** @type {import('puppeteer-core').CDPSession} */
       // @ts-expect-error - close enough to the real thing.
-      const cdpSession = new CDPSessionImpl(mockCdpConnection, '', sessionId);
+      const cdpSession = new CdpCDPSession(mockCdpConnection, '', sessionId);
       return cdpSession;
     }
 

@@ -190,7 +190,6 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
         // resolved eventually.
         plugins.partialLoaders.inlineFs({
           verbose: Boolean(process.env.DEBUG),
-          ignorePaths: [require.resolve('puppeteer-core/lib/esm/puppeteer/common/Page.js')],
         }),
         plugins.partialLoaders.rmGetModuleDirectory,
         plugins.partialLoaders.replaceText({
