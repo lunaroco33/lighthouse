@@ -28,7 +28,7 @@ import {fileURLToPath} from 'url';
 import * as puppeteer from 'puppeteer-core';
 import yargs from 'yargs';
 import * as yargsHelpers from 'yargs/helpers';
-import {getChromePath} from 'chrome-launcher';
+import {launch} from 'chrome-launcher';
 import esMain from 'es-main';
 
 import {parseChromeFlags} from '../../cli/run.js';
@@ -300,17 +300,17 @@ function dismissDialog(dialog) {
  * @return {Promise<{lhr: LH.Result, artifacts: LH.Artifacts, logs: string[]}>}
  */
 async function testUrlFromDevtools(url, options = {}) {
-  const {config, chromeFlags} = options;
+  const {config, chromeFlags = []} = options;
 
-  // Use tab target to ensure bfcache is enabled.
-  // https://github.com/puppeteer/puppeteer/blob/c3bd8eb878eb06ab1c6d4d80c4726bccb0759dac/packages/puppeteer-core/src/node/ChromeLauncher.ts#L178-L181
-  process.env.PUPPETEER_INTERNAL_TAB_TARGET = 'true';
+  const newChromeFlags = [
+    ...chromeFlags,
+    '--auto-open-devtools-for-tabs',
+  ];
 
-  const browser = await puppeteer.launch({
-    executablePath: getChromePath(),
-    args: chromeFlags,
-    devtools: true,
-    defaultViewport: null,
+  const chrome = await launch({chromeFlags: newChromeFlags});
+
+  const browser = await puppeteer.connect({
+    browserURL: `http://127.0.0.1:${chrome.port}`,
   });
 
   /** @type {puppeteer.CDPSession|undefined} */
