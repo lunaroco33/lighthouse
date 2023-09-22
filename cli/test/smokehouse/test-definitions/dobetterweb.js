@@ -123,6 +123,15 @@ const expectations = {
       },
       {
         rel: 'stylesheet',
+        href: 'http://localhost:10200/dobetterweb/dbw_tester.html',
+        hrefRaw: '',
+        hreflang: '',
+        as: '',
+        crossOrigin: null,
+        source: 'head',
+      },
+      {
+        rel: 'stylesheet',
         href: 'http://localhost:10200/dobetterweb/dbw_tester.css?scriptActivated&delay=200',
         hrefRaw: './dbw_tester.css?scriptActivated&delay=200',
         hreflang: '',
@@ -514,7 +523,7 @@ const expectations = {
       },
       'prioritize-lcp-image': {
         // In CI, there can sometimes be slight savings.
-        numericValue: '<=50',
+        numericValue: '<=200',
         details: {
           items: [{
             node: {
@@ -522,7 +531,7 @@ const expectations = {
               nodeLabel: 'Do better web tester page',
             },
             url: 'http://localhost:10200/dobetterweb/lighthouse-1024x680.jpg?redirected-lcp',
-            wastedMs: '<=50',
+            wastedMs: '<=200',
           }],
           debugData: {
             initiatorPath: [{

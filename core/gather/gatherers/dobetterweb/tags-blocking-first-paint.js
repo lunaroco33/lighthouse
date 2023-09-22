@@ -62,6 +62,11 @@ async function collectTagsThatBlockFirstPaint() {
     /** @type {Array<LinkTag>} */
     const linkTags = [...document.querySelectorAll('link')]
       .filter(linkTag => {
+        // Ignore malformed links with no href (e.g. `<link rel="stylesheet" href="">`)
+        // The resolved `linkTag.href` will be the main document, but the main document
+        // should never be render blocking.
+        if (!linkTag.getAttribute('href')) return false;
+
         // Filter stylesheet/HTML imports that block rendering.
         // https://www.igvita.com/2012/06/14/debunking-responsive-css-performance-myths/
         // https://www.w3.org/TR/html-imports/#dfn-import-async-attribute

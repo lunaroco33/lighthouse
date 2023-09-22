@@ -124,6 +124,7 @@ async function begin() {
     await Sentry.init({
       url: urlUnderTest,
       flags: cliFlags,
+      config,
       environmentData: {
         serverName: 'redacted', // prevent sentry from using hostname
         environment: isDev() ? 'development' : 'production',

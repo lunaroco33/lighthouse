@@ -1344,12 +1344,12 @@
 .lh-gauge__percentage {
   width: 100%;
   height: var(--gauge-circle-size);
+  line-height: var(--gauge-circle-size);
   position: absolute;
   font-family: var(--report-font-family-monospace);
   font-size: calc(var(--gauge-circle-size) * 0.34 + 1.3px);
-  line-height: 0;
   text-align: center;
-  top: calc(var(--score-container-padding) + var(--gauge-circle-size) / 2);
+  top: var(--score-container-padding);
 }
 
 .lh-category .lh-gauge__percentage {

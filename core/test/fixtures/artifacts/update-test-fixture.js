@@ -45,7 +45,7 @@ export async function updateTestFixture(collectMeta) {
       await saveDevtoolsLog(artifacts.DevtoolsLog, `${dir}/devtoolslog.json`);
     }
   } finally {
-    await server.close();
     await browser.close();
+    await server.close();
   }
 }

@@ -36,7 +36,7 @@ await updateTestFixture({
   name: 'animation',
   about: 'Page with an animated elements that are composited and non-composited',
   saveTrace: true,
-  saveDevtoolsLog: false,
+  saveDevtoolsLog: true,
   runUserFlow,
   verify,
 });
