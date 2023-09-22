@@ -302,6 +302,10 @@ function dismissDialog(dialog) {
 async function testUrlFromDevtools(url, options = {}) {
   const {config, chromeFlags} = options;
 
+  // Use tab target to ensure bfcache is enabled.
+  // https://github.com/puppeteer/puppeteer/blob/c3bd8eb878eb06ab1c6d4d80c4726bccb0759dac/packages/puppeteer-core/src/node/ChromeLauncher.ts#L178-L181
+  process.env.PUPPETEER_INTERNAL_TAB_TARGET = 'true';
+
   const browser = await puppeteer.launch({
     executablePath: getChromePath(),
     args: chromeFlags,
