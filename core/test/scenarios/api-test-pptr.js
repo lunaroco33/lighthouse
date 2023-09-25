@@ -164,7 +164,7 @@ describe('Individual modes API', function() {
       const run = await api.startTimespan(state.page);
       for (const iframe of page.frames()) {
         if (iframe.url().includes('/oopif-simple-page.html')) {
-          iframe.click('button');
+          await iframe.click('button');
         }
       }
       await page.waitForNetworkIdle().catch(() => {});
@@ -180,10 +180,6 @@ describe('Individual modes API', function() {
         .map((r) => ({url: r.url, sessionTargetType: r.sessionTargetType}))
         // @ts-expect-error
         .sort((a, b) => a.url.localeCompare(b.url));
-      expect(networkRequests).toHaveLength(10);
-      expect(networkRequests.filter(r => r.sessionTargetType === 'page')).toHaveLength(2);
-      expect(networkRequests.filter(r => r.sessionTargetType === 'iframe')).toHaveLength(2);
-      expect(networkRequests.filter(r => r.sessionTargetType === 'worker')).toHaveLength(6);
       expect(networkRequests).toMatchInlineSnapshot(`
 Array [
   Object {
