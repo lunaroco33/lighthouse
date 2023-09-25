@@ -123,6 +123,15 @@ const expectations = {
       },
       {
         rel: 'stylesheet',
+        href: 'http://localhost:10200/dobetterweb/dbw_tester.html',
+        hrefRaw: '',
+        hreflang: '',
+        as: '',
+        crossOrigin: null,
+        source: 'head',
+      },
+      {
+        rel: 'stylesheet',
         href: 'http://localhost:10200/dobetterweb/dbw_tester.css?scriptActivated&delay=200',
         hrefRaw: './dbw_tester.css?scriptActivated&delay=200',
         hreflang: '',
