@@ -1031,7 +1031,7 @@
       "id": "mainthread-work-breakdown",
       "title": "Minimize main-thread work",
       "description": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to minimize main-thread work](https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown/)",
-      "score": 0.5,
+      "score": 0,
       "scoreDisplayMode": "metricSavings",
       "numericValue": 2240.732999999998,
       "numericUnit": "millisecond",
