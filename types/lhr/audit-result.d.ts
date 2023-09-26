@@ -66,7 +66,7 @@ export interface Result {
   numericUnit?: string;
   /** Extra information about the page provided by some types of audits, in one of several possible forms that can be rendered in the HTML report. */
   details?: FormattedIcu<AuditDetails>;
-  /** Metric savings for and audit */
+  /** Estimates of how much this audit affects various performance metrics. Values will be in the unit of the respective metrics. */
   metricSavings?: MetricSavings
   /** Score details including p10 and median for calculating an audit's log-normal score. */
   scoringOptions?: {

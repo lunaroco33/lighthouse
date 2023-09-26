@@ -125,12 +125,13 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       const mValue = mAudit.result.numericValue;
       if (!mValue) continue;
 
+      const linearImpact = savings / mValue * mAudit.weight;
+      overallLinearImpact += linearImpact;
+
       const scoringOptions = mAudit.result.scoringOptions;
       if (!scoringOptions) continue;
 
       const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
-      const linearImpact = savings / mValue * mAudit.weight;
-      overallLinearImpact += linearImpact;
 
       const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
       overallImpact += weightedMetricImpact;
