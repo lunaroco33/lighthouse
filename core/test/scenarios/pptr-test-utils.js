@@ -44,32 +44,19 @@ function createTestState() {
     serverBaseUrl: '',
     secondaryServerBaseUrl: '',
 
-    /**
-     * @param {number=} port
-     * @param {number=} secondaryPort
-     */
-    installServerHooks(port = 10200, secondaryPort = 10503) {
+    installSetupAndTeardownHooks() {
       before(async () => {
-        this.server = new Server(port);
-        this.secondaryServer = new Server(secondaryPort);
-        await this.server.listen(port, '127.0.0.1');
-        await this.secondaryServer.listen(secondaryPort, '127.0.0.1');
+        this.server = new Server(10200);
+        this.secondaryServer = new Server(10503);
+        await this.server.listen(10200, '127.0.0.1');
+        await this.secondaryServer.listen(10503, '127.0.0.1');
         this.serverBaseUrl = `http://localhost:${this.server.getPort()}`;
         this.secondaryServerBaseUrl = `http://localhost:${this.secondaryServer.getPort()}`;
       });
 
-      after(async () => {
-        await this.server.close();
-        await this.secondaryServer.close();
-      });
-    },
-
-    installSetupAndTeardownHooks() {
-      this.installServerHooks();
-
       before(async () => {
         this.browser = await puppeteer.launch({
-          headless: true,
+          headless: 'new',
           executablePath: getChromePath(),
           ignoreDefaultArgs: ['--enable-automation'],
         });
@@ -97,6 +84,11 @@ function createTestState() {
 
       after(async () => {
         await this.browser.close();
+      });
+
+      after(async () => {
+        await this.server.close();
+        await this.secondaryServer.close();
       });
     },
 

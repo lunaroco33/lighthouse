@@ -20,7 +20,7 @@ describe('Lighthouse Flow Report', () => {
 
   before(async () => {
     browser = await puppeteer.launch({
-      headless: true,
+      headless: 'new',
       executablePath: getChromePath(),
     });
     page = await browser.newPage();

@@ -19,6 +19,7 @@ describe('ReportRendererAxe', () => {
 
     before(async () => {
       browser = await puppeteer.launch({
+        headless: 'new',
         executablePath: getChromePath(),
       });
     });
