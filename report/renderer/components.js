@@ -377,53 +377,6 @@ function createMetricComponent(dom) {
 /**
  * @param {DOM} dom
  */
-function createOpportunityComponent(dom) {
-  const el0 = dom.createFragment();
-  const el1 = dom.createElement("div", "lh-audit lh-audit--load-opportunity");
-  const el2 = dom.createElement("details", "lh-expandable-details");
-  const el3 = dom.createElement("summary");
-  const el4 = dom.createElement("div", "lh-audit__header");
-  const el5 = dom.createElement("div", "lh-load-opportunity__cols");
-  const el6 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--one");
-  const el7 = dom.createElement("span", "lh-audit__score-icon");
-  const el8 = dom.createElement("div", "lh-audit__title");
-  el6.append(" ",el7," ",el8," ");
-  const el9 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--two");
-  const el10 = dom.createElement("div", "lh-load-opportunity__sparkline");
-  const el11 = dom.createElement("div", "lh-sparkline");
-  const el12 = dom.createElement("div", "lh-sparkline__bar");
-  el11.append(el12);
-  el10.append(" ",el11," ");
-  const el13 = dom.createElement("div", "lh-audit__display-text");
-  const el14 = dom.createElement("div", "lh-chevron-container");
-  el9.append(" ",el10," ",el13," ",el14," ");
-  el5.append(" ",el6," ",el9," ");
-  el4.append(" ",el5," ");
-  el3.append(" ",el4," ");
-  const el15 = dom.createElement("div", "lh-audit__description");
-  const el16 = dom.createElement("div", "lh-audit__stackpacks");
-  el2.append(" ",el3," ",el15," ",el16," ");
-  el1.append(" ",el2," ");
-  el0.append(el1);
-  return el0;
-}
-
-/**
- * @param {DOM} dom
- */
-function createOpportunityHeaderComponent(dom) {
-  const el0 = dom.createFragment();
-  const el1 = dom.createElement("div", "lh-load-opportunity__header lh-load-opportunity__cols");
-  const el2 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--one");
-  const el3 = dom.createElement("div", "lh-load-opportunity__col lh-load-opportunity__col--two");
-  el1.append(" ",el2," ",el3," ");
-  el0.append(el1);
-  return el0;
-}
-
-/**
- * @param {DOM} dom
- */
 function createScorescaleComponent(dom) {
   const el0 = dom.createFragment();
   const el1 = dom.createElement("div", "lh-scorescale");
@@ -679,7 +632,7 @@ function createWarningsToplevelComponent(dom) {
 }
 
 
-/** @typedef {'3pFilter'|'audit'|'categoryHeader'|'chevron'|'clump'|'crc'|'crcChain'|'elementScreenshot'|'footer'|'fraction'|'gauge'|'gaugePwa'|'heading'|'metric'|'opportunity'|'opportunityHeader'|'scorescale'|'scoresWrapper'|'snippet'|'snippetContent'|'snippetHeader'|'snippetLine'|'styles'|'topbar'|'warningsToplevel'} ComponentName */
+/** @typedef {'3pFilter'|'audit'|'categoryHeader'|'chevron'|'clump'|'crc'|'crcChain'|'elementScreenshot'|'footer'|'fraction'|'gauge'|'gaugePwa'|'heading'|'metric'|'scorescale'|'scoresWrapper'|'snippet'|'snippetContent'|'snippetHeader'|'snippetLine'|'styles'|'topbar'|'warningsToplevel'} ComponentName */
 /**
  * @param {DOM} dom
  * @param {ComponentName} componentName
@@ -701,8 +654,6 @@ export function createComponent(dom, componentName) {
     case 'gaugePwa': return createGaugePwaComponent(dom);
     case 'heading': return createHeadingComponent(dom);
     case 'metric': return createMetricComponent(dom);
-    case 'opportunity': return createOpportunityComponent(dom);
-    case 'opportunityHeader': return createOpportunityHeaderComponent(dom);
     case 'scorescale': return createScorescaleComponent(dom);
     case 'scoresWrapper': return createScoresWrapperComponent(dom);
     case 'snippet': return createSnippetComponent(dom);

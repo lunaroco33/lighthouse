@@ -131,7 +131,6 @@
   --section-padding-vertical: calc(var(--default-padding) * 6);
   --snippet-background-color: var(--color-gray-50);
   --snippet-color: #0938C2;
-  --sparkline-height: 5px;
   --stackpack-padding-horizontal: 10px;
   --sticky-header-background-color: var(--report-background-color);
   --sticky-header-buffer: calc(var(--topbar-height) + var(--sticky-header-height));
@@ -237,11 +236,6 @@
     --score-icon-size: 10px;
     --topbar-height: 28px;
     --topbar-logo-size: 20px;
-  }
-
-  /* Not enough space to adequately show the relative savings bars. */
-  .lh-sparkline {
-    display: none;
   }
 }
 
@@ -865,30 +859,6 @@
 .lh-metric--error .lh-metric__value,
 .lh-metric--error .lh-metric__description {
   color: var(--color-fail-secondary);
-}
-
-/* Sparkline */
-
-.lh-sparkline {
-  height: var(--sparkline-height);
-  width: 100%;
-}
-
-.lh-sparkline__bar {
-  height: 100%;
-  float: right;
-}
-
-.lh-audit--pass .lh-sparkline__bar {
-  background: var(--color-pass);
-}
-
-.lh-audit--average .lh-sparkline__bar {
-  background: var(--color-average);
-}
-
-.lh-audit--fail .lh-sparkline__bar {
-  background: var(--color-fail);
 }
 
 /* Filmstrip */

@@ -45,25 +45,6 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * Get an audit's wastedMs to sort the opportunity by, and scale the sparkline width
-   * Opportunities with an error won't have a details object, so MIN_VALUE is returned to keep any
-   * erroring opportunities last in sort order.
-   * @param {LH.ReportResult.AuditRef} audit
-   * @return {number}
-   */
-  _getWastedMs(audit) {
-    if (audit.result.details) {
-      const details = audit.result.details;
-      if (typeof details.overallSavingsMs !== 'number') {
-        throw new Error('non-opportunity details passed to _getWastedMs');
-      }
-      return details.overallSavingsMs;
-    } else {
-      return Number.MIN_VALUE;
-    }
-  }
-
-  /**
    * Get a link to the interactive scoring calculator with the metric values.
    * @param {LH.ReportResult.AuditRef[]} auditRefs
    * @return {string}
@@ -111,7 +92,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * For performance, audits without.
+   * Returns true if the audit is a general performance insight (i.e. not e metric or hidden audit).
    *
    * @param {LH.ReportResult.AuditRef} audit
    * @return {boolean}
@@ -232,7 +213,6 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
 
     // Diagnostics
     const diagnosticAudits = category.auditRefs
-        // All audits here.
         .filter(audit => this._isPerformanceInsight(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
