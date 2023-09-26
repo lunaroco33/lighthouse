@@ -515,11 +515,6 @@
 
 /* Score */
 
-/* to remove color indicators - test */
-/* .lh-audit__score-icon {
-  opacity: 0;
-} */
-
 .lh-audit__score-icon {
   width: var(--score-icon-size);
   height: var(--score-icon-size);
@@ -537,8 +532,6 @@
 
 .lh-audit--average .lh-audit__display-text {
   color: var(--color-average-secondary);
-  /* to remove color indicators - test */
-  /* color: gray; */
 }
 .lh-audit--average .lh-audit__score-icon,
 .lh-scorescale-range--average::before {
@@ -549,8 +542,6 @@
 
 .lh-audit--fail .lh-audit__display-text {
   color: var(--color-fail-secondary);
-  /* to remove color indicators - test */
-  /* color: gray; */
 }
 .lh-audit--fail .lh-audit__score-icon,
 .lh-audit--error .lh-audit__score-icon,
@@ -620,7 +611,6 @@
 
 
 .lh-audit__display-text,
-.lh-load-opportunity__sparkline,
 .lh-chevron-container {
   margin: 0 var(--audit-margin-horizontal);
 }
@@ -637,13 +627,10 @@
   font-size: var(--report-monospace-font-size);
 }
 
-/* Prepend display text with em dash separator. But not in Opportunities. */
+/* Prepend display text with em dash separator. */
 .lh-audit__display-text:not(:empty):before {
   content: '—';
   margin-right: var(--audit-margin-horizontal);
-}
-.lh-audit-group.lh-audit-group--load-opportunities .lh-audit__display-text:not(:empty):before {
-  display: none;
 }
 
 /* Expandable Details (Audit Groups, Audits) */
@@ -651,10 +638,6 @@
   display: flex;
   align-items: center;
   padding: var(--default-padding);
-}
-
-.lh-audit--load-opportunity .lh-audit__header {
-  display: block;
 }
 
 
@@ -884,45 +867,7 @@
   color: var(--color-fail-secondary);
 }
 
-/* Perf load opportunity */
-
-.lh-load-opportunity__cols {
-  display: flex;
-  align-items: flex-start;
-}
-
-.lh-load-opportunity__header .lh-load-opportunity__col {
-  color: var(--color-gray-600);
-  display: unset;
-  line-height: calc(2.3 * var(--report-font-size));
-}
-
-.lh-load-opportunity__col {
-  display: flex;
-}
-
-.lh-load-opportunity__col--one {
-  flex: 5;
-  align-items: center;
-  margin-right: 2px;
-}
-.lh-load-opportunity__col--two {
-  flex: 4;
-  text-align: right;
-}
-
-.lh-audit--load-opportunity .lh-audit__display-text {
-  text-align: right;
-  flex: 0 0 7.5ch;
-}
-
-
 /* Sparkline */
-
-.lh-load-opportunity__sparkline {
-  flex: 1;
-  margin-top: calc((var(--report-line-height) - var(--sparkline-height)) / 2);
-}
 
 .lh-sparkline {
   height: var(--sparkline-height);
@@ -1087,7 +1032,6 @@
 
 .lh-details,
 .lh-category-header__description,
-.lh-load-opportunity__header,
 .lh-audit-group__footer {
   font-size: var(--report-font-size-secondary);
   line-height: var(--report-line-height-secondary);

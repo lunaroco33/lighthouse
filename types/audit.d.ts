@@ -88,6 +88,7 @@ declare module Audit {
     runWarnings?: Array<IcuMessage>;
     /** [EXPERIMENTAL] Estimates of how much this audit affects various performance metrics. Values will be in the unit of the respective metrics. */
     metricSavings?: MetricSavings;
+    /** Score details including p10 and median for calculating an audit's log-normal score. */
     scoringOptions?: ScoreOptions;
   }
 

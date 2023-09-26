@@ -45,42 +45,6 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * @param {LH.ReportResult.AuditRef} audit
-   * @param {number} scale
-   * @return {!Element}
-   */
-  _renderOpportunity(audit, scale) {
-    const oppTmpl = this.dom.createComponent('opportunity');
-    const element = this.populateAuditValues(audit, oppTmpl);
-    element.id = audit.result.id;
-
-    if (!audit.result.details || audit.result.scoreDisplayMode === 'error') {
-      return element;
-    }
-    const details = audit.result.details;
-    if (details.overallSavingsMs === undefined) {
-      return element;
-    }
-
-    // Overwrite the displayValue with opportunity's wastedMs
-    // TODO: normalize this to one tagName.
-    const displayEl =
-      this.dom.find('span.lh-audit__display-text, div.lh-audit__display-text', element);
-    const sparklineWidthPct = `${details.overallSavingsMs / scale * 100}%`;
-    this.dom.find('div.lh-sparkline__bar', element).style.width = sparklineWidthPct;
-    displayEl.textContent = Globals.i18n.formatSeconds(details.overallSavingsMs, 0.01);
-
-    // Set [title] tooltips
-    if (audit.result.displayValue) {
-      const displayValue = audit.result.displayValue;
-      this.dom.find('div.lh-load-opportunity__sparkline', element).title = displayValue;
-      displayEl.title = displayValue;
-    }
-
-    return element;
-  }
-
-  /**
    * Get an audit's wastedMs to sort the opportunity by, and scale the sparkline width
    * Opportunities with an error won't have a details object, so MIN_VALUE is returned to keep any
    * erroring opportunities last in sort order.
@@ -147,18 +111,13 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * For performance, audits with no group should be a diagnostic or opportunity.
-   * The audit details type will determine which of the two groups an audit is in.
+   * For performance, audits without.
    *
    * @param {LH.ReportResult.AuditRef} audit
-   * @return {'load-opportunity'|'diagnostic'|null}
+   * @return {boolean}
    */
-  _classifyPerformanceAudit(audit) {
-    if (audit.group) return null;
-    if (audit.result.details?.overallSavingsMs !== undefined) {
-      return 'load-opportunity';
-    }
-    return 'diagnostic';
+  _isPerformanceInsight(audit) {
+    return !audit.group;
   }
 
   /**
@@ -167,35 +126,35 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
    * @return {{overallImpact: number, overallLinearImpact: number}}
    */
   overallImpact(audit, metricAudits) {
-    if (audit.result.metricSavings) {
-      let overallImpact = 0;
-      let overallLinearImpact = 0;
-      for (const [k, savings] of Object.entries(audit.result.metricSavings)) {
-        // Get metric savings for individual audit.
-        if (savings === undefined) continue;
-
-        // Get the metric data.
-        const mAudit = metricAudits.find(audit => audit.acronym === k);
-        if (!mAudit) continue;
-        if (mAudit.result.score === null) continue;
-
-        const mValue = mAudit.result.numericValue;
-        if (!mValue) continue;
-
-        const scoringOptions = mAudit.result.scoringOptions;
-        if (!scoringOptions) continue;
-
-        const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
-        const linearImpact = savings / mValue * mAudit.weight;
-        overallLinearImpact += linearImpact;
-
-        const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
-        overallImpact += weightedMetricImpact;
-      }
-      return {overallImpact, overallLinearImpact};
+    if (!audit.result.metricSavings) {
+      return {overallImpact: 0, overallLinearImpact: 0};
     }
 
-    return {overallImpact: 0, overallLinearImpact: 0};
+    let overallImpact = 0;
+    let overallLinearImpact = 0;
+    for (const [k, savings] of Object.entries(audit.result.metricSavings)) {
+      // Get metric savings for individual audit.
+      if (savings === undefined) continue;
+
+      // Get the metric data.
+      const mAudit = metricAudits.find(audit => audit.acronym === k);
+      if (!mAudit) continue;
+      if (mAudit.result.score === null) continue;
+
+      const mValue = mAudit.result.numericValue;
+      if (!mValue) continue;
+
+      const scoringOptions = mAudit.result.scoringOptions;
+      if (!scoringOptions) continue;
+
+      const newMetricScore = Util.computeLogNormalScore(scoringOptions, mValue - savings);
+      const linearImpact = savings / mValue * mAudit.weight;
+      overallLinearImpact += linearImpact;
+
+      const weightedMetricImpact = (newMetricScore - mAudit.result.score) * mAudit.weight;
+      overallImpact += weightedMetricImpact;
+    }
+    return {overallImpact, overallLinearImpact};
   }
 
   /**
@@ -274,7 +233,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     // Diagnostics
     const diagnosticAudits = category.auditRefs
         // All audits here.
-        .filter(audit => this._classifyPerformanceAudit(audit))
+        .filter(audit => this._isPerformanceInsight(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
           // Sort by impact.
@@ -316,7 +275,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
     // Passed audits
     const passedAudits = category.auditRefs
         .filter(audit =>
-          this._classifyPerformanceAudit(audit) && ReportUtils.showAsPassed(audit.result));
+          this._isPerformanceInsight(audit) && ReportUtils.showAsPassed(audit.result));
 
     if (!passedAudits.length) return element;
 

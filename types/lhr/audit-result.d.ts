@@ -68,9 +68,11 @@ export interface Result {
   details?: FormattedIcu<AuditDetails>;
   /** Metric savings for and audit */
   metricSavings?: MetricSavings
+  /** Score details including p10 and median for calculating an audit's log-normal score. */
   scoringOptions?: {
     p10: number;
     median: number;
   };
+  /** A number indicating how much guidance Lighthouse provides to solve the problem in this audit on a 1-3 scale. Higher means more guidance. */
   guidanceLevel?: number;
 }
