@@ -131,6 +131,7 @@ describe('Navigation', async function() {
       'maskable-icon',
       'document-title',
       'html-has-lang',
+      'render-blocking-resources',
       'meta-description',
     ]);
 
