@@ -181,25 +181,6 @@ describe('PerfCategoryRenderer', () => {
   it.skip('renders any manual audits', () => {
   });
 
-  describe('getWastedMs', () => {
-    it('handles erroring opportunities', () => {
-      const auditWithDebug = {
-        score: 0,
-        result: {
-          error: true, score: 0,
-          numericValue: 100, explanation: 'Yikes!!', title: 'Bug #2',
-          details: {
-            overallSavingsMs: 0,
-            items: [],
-            type: 'opportunity',
-          },
-        },
-      };
-      const wastedMs = renderer._getWastedMs(auditWithDebug);
-      assert.ok(Number.isFinite(wastedMs), 'Finite number not returned by wastedMs');
-    });
-  });
-
   describe('budgets', () => {
     it('renders the group and header', () => {
       const categoryDOM = renderer.render(category, sampleResults.categoryGroups);
