@@ -20,6 +20,10 @@ exports[`getAssertionReport works (multiple failing) 1`] = `
         \\"numericValue\\": 0.13570762803819444,
         \\"numericUnit\\": \\"unitless\\",
         \\"displayValue\\": \\"0.136\\",
+        \\"scoringOptions\\": {
+          \\"p10\\": 0.1,
+          \\"median\\": 0.25
+        },
         \\"details\\": {
           \\"type\\": \\"debugdata\\",
           \\"items\\": [
@@ -46,6 +50,10 @@ exports[`getAssertionReport works (trivial failing) 1`] = `
         \\"numericValue\\": 0.13570762803819444,
         \\"numericUnit\\": \\"unitless\\",
         \\"displayValue\\": \\"0.136\\",
+        \\"scoringOptions\\": {
+          \\"p10\\": 0.1,
+          \\"median\\": 0.25
+        },
         \\"details\\": {
           \\"type\\": \\"debugdata\\",
           \\"items\\": [
