@@ -59,7 +59,7 @@ describe('PerfCategoryRenderer', () => {
   it('renders the sections', () => {
     const categoryDOM = renderer.render(category, sampleResults.categoryGroups);
     const sections = categoryDOM.querySelectorAll('.lh-category > .lh-audit-group');
-    assert.equal(sections.length, 5);
+    assert.equal(sections.length, 4);
   });
 
   it('renders the metrics', () => {
@@ -111,7 +111,7 @@ describe('PerfCategoryRenderer', () => {
     const sections = categoryDOM.querySelectorAll('.lh-category > .lh-audit-group');
     const metricSection = categoryDOM.querySelector('.lh-audit-group--metrics');
     assert.ok(!metricSection);
-    assert.equal(sections.length, 4);
+    assert.equal(sections.length, 3);
   });
 
   it('renders the metrics variance disclaimer as markdown', () => {
@@ -150,96 +150,6 @@ describe('PerfCategoryRenderer', () => {
     expect(matchingElements).toHaveLength(0);
   });
 
-  it('renders an audit as an opportunity if overallSavingMs is present', () => {
-    // Make a non-opportunity into an opportunity.
-    const cloneCategory = JSON.parse(JSON.stringify(category));
-    const crcAudit = cloneCategory.auditRefs.find(a => a.id === 'critical-request-chains');
-    expect(crcAudit.result.details.overallSavingsMs).toBe(undefined);
-    crcAudit.result.details.overallSavingsMs = 5555;
-    crcAudit.result.details.score = 0.5;
-
-    const categoryDOM = renderer.render(cloneCategory, sampleResults.categoryGroups);
-
-    const crcElem = categoryDOM.querySelector('.lh-audit-group--load-opportunities #critical-request-chains.lh-audit--load-opportunity'); // eslint-disable-line max-len
-
-    const crcSparklineBarElem = crcElem.querySelector('.lh-sparkline__bar');
-    expect(crcSparklineBarElem).toBeTruthy();
-
-    const crcWastedElem = crcElem.querySelector('.lh-audit__display-text');
-    expect(crcWastedElem.textContent).toBe('5.56s');
-    expect(crcWastedElem.title).toMatch(/\d+ chains found/);
-
-    const crcDetailsElem = crcElem.querySelector('.lh-crc-container.lh-details');
-    expect(crcDetailsElem.textContent).toMatch('Maximum critical path latency');
-  });
-
-  it('renders the failing performance opportunities', () => {
-    const categoryDOM = renderer.render(category, sampleResults.categoryGroups);
-
-    const oppAudits = category.auditRefs.filter(audit =>
-      audit.result.details &&
-      audit.result.details.overallSavingsMs !== undefined &&
-      !ReportUtils.showAsPassed(audit.result));
-    const oppElements = [...categoryDOM.querySelectorAll('.lh-audit--load-opportunity')];
-    expect(oppElements.map(e => e.id).sort()).toEqual(oppAudits.map(a => a.id).sort());
-    expect(oppElements.length).toBeGreaterThan(0);
-    expect(oppElements.length).toMatchInlineSnapshot('6');
-
-    const oppElement = oppElements[0];
-    const oppSparklineBarElement = oppElement.querySelector('.lh-sparkline__bar');
-    const oppSparklineElement = oppElement.querySelector('.lh-load-opportunity__sparkline');
-    const oppTitleElement = oppElement.querySelector('.lh-audit__title');
-    const oppWastedElement = oppElement.querySelector('.lh-audit__display-text');
-    assert.ok(oppTitleElement.textContent, 'did not render title');
-    assert.ok(oppSparklineBarElement.style.width, 'did not set sparkline width');
-    assert.ok(oppWastedElement.textContent, 'did not render stats');
-    assert.ok(oppSparklineElement.title, 'did not set tooltip on sparkline');
-  });
-
-  it('renders performance opportunities with an errorMessage', () => {
-    const auditWithError = {
-      score: 0,
-      result: {
-        score: null, scoreDisplayMode: 'error', errorMessage: 'Yikes!!', title: 'Bug #2',
-        description: '',
-        details: {
-          overallSavingsMs: 0,
-          items: [],
-          type: 'opportunity',
-        },
-      },
-    };
-
-    const fakeCategory = Object.assign({}, category, {auditRefs: [auditWithError]});
-    const categoryDOM = renderer.render(fakeCategory, sampleResults.categoryGroups);
-    const tooltipEl = categoryDOM.querySelector('.lh-audit--load-opportunity .lh-tooltip--error');
-    assert.ok(tooltipEl, 'did not render error message');
-    assert.ok(/Yikes!!/.test(tooltipEl.textContent));
-  });
-
-  it('renders performance opportunities\' explanation', () => {
-    const auditWithExplanation = {
-      score: 0,
-      result: {
-        score: 0, scoreDisplayMode: 'numeric',
-        numericValue: 100, explanation: 'Yikes!!', title: 'Bug #2', description: '',
-        details: {
-          overallSavingsMs: 0,
-          items: [],
-          type: 'opportunity',
-        },
-      },
-    };
-
-    const fakeCategory = Object.assign({}, category, {auditRefs: [auditWithExplanation]});
-    const categoryDOM = renderer.render(fakeCategory, sampleResults.categoryGroups);
-
-    const selector = '.lh-audit--load-opportunity .lh-audit-explanation';
-    const tooltipEl = categoryDOM.querySelector(selector);
-    assert.ok(tooltipEl, 'did not render explanation text');
-    assert.ok(/Yikes!!/.test(tooltipEl.textContent));
-  });
-
   it('renders the failing diagnostics', () => {
     const categoryDOM = renderer.render(category, sampleResults.categoryGroups);
     const diagnosticSection = categoryDOM.querySelector(
@@ -247,7 +157,6 @@ describe('PerfCategoryRenderer', () => {
 
     const diagnosticAuditIds = category.auditRefs.filter(audit => {
       return !audit.group &&
-        !(audit.result.details?.overallSavingsMs !== undefined) &&
         !ReportUtils.showAsPassed(audit.result);
     }).map(audit => audit.id).sort();
     assert.ok(diagnosticAuditIds.length > 0);
