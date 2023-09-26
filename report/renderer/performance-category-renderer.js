@@ -92,7 +92,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * Returns true if the audit is a general performance insight (i.e. not e metric or hidden audit).
+   * Returns true if the audit is a general performance insight (i.e. not a metric or hidden audit).
    *
    * @param {LH.ReportResult.AuditRef} audit
    * @return {boolean}
