@@ -47,6 +47,7 @@ Array [
   "lowTextContrastIssueDetails",
   "mixedContentIssueDetails",
   "navigatorUserAgentIssueDetails",
+  "propertyRuleIssueDetails",
   "quirksModeIssueDetails",
   "sharedArrayBufferIssueDetails",
   "stylesheetLoadingIssueDetails",

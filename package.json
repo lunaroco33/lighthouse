@@ -185,7 +185,7 @@
     "chrome-launcher": "^1.0.0",
     "configstore": "^5.0.1",
     "csp_evaluator": "1.1.1",
-    "devtools-protocol": "0.0.1155343",
+    "devtools-protocol": "0.0.1200039",
     "enquirer": "^2.3.6",
     "http-link-header": "^1.1.1",
     "intl-messageformat": "^4.4.0",
@@ -209,8 +209,8 @@
     "yargs-parser": "^21.0.0"
   },
   "resolutions": {
-    "puppeteer/**/devtools-protocol": "0.0.1155343",
-    "puppeteer-core/**/devtools-protocol": "0.0.1155343"
+    "puppeteer/**/devtools-protocol": "0.0.1200039",
+    "puppeteer-core/**/devtools-protocol": "0.0.1200039"
   },
   "repository": "GoogleChrome/lighthouse",
   "keywords": [

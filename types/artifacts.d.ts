@@ -587,6 +587,7 @@ declare module Artifacts {
     lowTextContrastIssue: Crdp.Audits.LowTextContrastIssueDetails[];
     mixedContentIssue: Crdp.Audits.MixedContentIssueDetails[];
     navigatorUserAgentIssue: Crdp.Audits.NavigatorUserAgentIssueDetails[];
+    propertyRuleIssue: Crdp.Audits.PropertyRuleIssueDetails[],
     quirksModeIssue: Crdp.Audits.QuirksModeIssueDetails[];
     cookieIssue: Crdp.Audits.CookieIssueDetails[];
     sharedArrayBufferIssue: Crdp.Audits.SharedArrayBufferIssueDetails[];
