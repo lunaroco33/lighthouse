@@ -100,7 +100,7 @@ describe('PwaCategoryRenderer', () => {
 
       // Expect results to all be scorable or n/a
       for (const auditRef of auditRefs) {
-        const matcher = expect.stringMatching(/(binary)|(notApplicable)/);
+        const matcher = expect.stringMatching(/(binary|notApplicable|metricSavings)/);
         expect(auditRef.result.scoreDisplayMode).toEqual(matcher);
       }
 
