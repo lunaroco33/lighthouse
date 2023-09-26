@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as statistics from '../../../shared/statistics.js';
+import * as statistics from '../statistics.js';
 
 describe('statistics', () => {
   describe('#getLogNormalScore', () => {
