@@ -159,7 +159,7 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
     const rating = ReportUtils.calculateRating(metric.result.score, metric.result.scoreDisplayMode);
 
     metricGroup.style.setProperty('--metric-rating', rating);
-    metricGroup.style.setProperty('--metric-color', `var(--color-${rating}-secondary)`);
+    metricGroup.style.setProperty('--metric-color', `var(--color-${rating})`);
     metricGroup.style.setProperty('--metric-offset', `${offsetAdder}`);
     metricGroup.style.setProperty('--i', i.toString());
 
