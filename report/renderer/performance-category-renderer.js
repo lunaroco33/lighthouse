@@ -102,6 +102,10 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
+   * Returns overallImpact and linearImpact for an audit.
+   * The overallImpact is determined by the audit saving's effect on the overall performance score.
+   * We use linearImpact to compare audits where their overallImpact is rounded down to 0.
+   *
    * @param {LH.ReportResult.AuditRef} audit
    * @param {LH.ReportResult.AuditRef[]} metricAudits
    * @return {{overallImpact: number, overallLinearImpact: number}}
@@ -217,7 +221,8 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
         .filter(audit => this._isPerformanceInsight(audit))
         .filter(audit => !ReportUtils.showAsPassed(audit.result))
         .sort((a, b) => {
-          // Sort by impact.
+          // Sort audits by impact, prioritizing those with a higher overallImpact first,
+          // then falling back to linearImpact, guidance level and score.
           const {
             overallImpact: aOverallImpact,
             overallLinearImpact: aOverallLinearImpact,
