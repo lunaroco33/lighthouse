@@ -259,6 +259,25 @@ export class DOM {
   }
 
   /**
+   * Typed context.querySelector.
+   * @template {string} T
+   * @param {T} query
+   * @param {ParentNode} context
+   * @return {ParseSelector<T> | null}
+   */
+  maybeFind(query, context) {
+    const result = context.querySelector(query);
+    if (result === null) {
+      return null;
+    }
+
+    // Because we control the report layout and templates, use the simpler
+    // `typed-query-selector` types that don't require differentiating between
+    // e.g. HTMLAnchorElement and SVGAElement. See https://github.com/GoogleChrome/lighthouse/issues/12011
+    return /** @type {ParseSelector<T>} */ (result);
+  }
+
+  /**
    * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.
    * @template {string} T
    * @param {T} query

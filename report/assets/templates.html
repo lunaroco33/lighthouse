@@ -515,6 +515,27 @@ SPDX-License-Identifier: Apache-2.0
   </a>
 </template>
 
+<!-- Lighthouse score gauge - explodey version -->
+<template id="explodeyGauge">
+  <div class="lh-exp-gauge-component">
+    <div class="lh-exp-gauge__wrapper">
+      <div class="lh-exp-gauge__svg-wrapper">
+        <svg class="lh-exp-gauge">
+          <g class="lh-exp-gauge__inner">
+            <circle class="lh-exp-gauge__bg" />
+            <circle class="lh-exp-gauge__base lh-exp-gauge--faded" />
+            <circle class="lh-exp-gauge__arc" />
+            <text class="lh-exp-gauge__percentage"></text>
+          </g>
+          <g class="lh-exp-gauge__outer">
+            <circle class="lh-cover" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</template>
+
 <!-- Lighthouse category fraction -->
 <template id="fraction">
   <a class="lh-fraction__wrapper">

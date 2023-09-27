@@ -1964,5 +1964,213 @@ details[open] .lh-clump-toggletext--hide { display: block;}
   }
 }
 
+/* Explodey gauge */
+
+.lh-exp-gauge-component circle {
+  stroke: currentcolor;
+  r: var(--radius);
+}
+
+.lh-exp-gauge-component text {
+  font-size: calc(var(--radius) * 0.2);
+  /* stroke-width: unset; */
+}
+
+.lh-exp-gauge-component .lh-exp-gauge {
+  margin: 0 auto;
+  width: 225px;
+  stroke-width: var(--stroke-width);
+  stroke-linecap: round;
+  
+  /* for better rendering perf */
+  contain: strict;
+  height: 225px;
+  will-change: transform;
+}
+.lh-exp-gauge-component .lh-exp-gauge--faded {
+  opacity: 0.1;
+}
+.lh-exp-gauge-component .lh-exp-gauge__wrapper {
+  font-family: var(--report-font-family-monospace);
+  text-align: center;
+  text-decoration: none;
+  transition: .3s;
+  cursor:default;
+}
+.lh-exp-gauge-component .lh-exp-gauge__wrapper--pass {
+  color: var(--color-pass);
+}
+.lh-exp-gauge-component .lh-exp-gauge__wrapper--average {
+  color: var(--color-average);
+}
+.lh-exp-gauge-component .lh-exp-gauge__wrapper--fail {
+  color: var(--color-fail);
+}
+.lh-exp-gauge-component .state--expanded {
+  color: var(--color-gray-600);
+  transition: color .3s;
+}
+.lh-exp-gauge-component .state--highlight {
+  color: var(--color-highlight);
+}
+.lh-exp-gauge-component .lh-exp-gauge__svg-wrapper {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.lh-exp-gauge-component .lh-exp-gauge__cutout {
+  opacity: .999;
+  transition: opacity .3s;
+}
+.lh-exp-gauge-component .state--highlight .lh-exp-gauge__cutout {
+  opacity: 0;
+}
+
+.lh-exp-gauge-component .lh-exp-gauge__inner {
+  color: inherit;
+}
+.lh-exp-gauge-component .lh-exp-gauge__base {
+  fill: currentcolor;
+}
+
+
+.lh-exp-gauge-component .lh-exp-gauge__arc {
+  fill: none;
+  transition: opacity .3s;
+}
+.lh-exp-gauge-component .lh-exp-gauge__arc--metric {
+  color: var(--metric-color);
+  stroke-dashoffset: var(--metric-offset);
+}
+.lh-exp-gauge-component .lh-exp-gauge-hovertarget {
+  color: currentcolor;
+  opacity: 0.001;
+  stroke-linecap: butt;
+  stroke-width: 24;
+  /* hack. move the hover target out of the center. ideally i tweak the r instead but that rquires considerably more math. */
+  transform: scale(1.15);
+}
+.lh-exp-gauge-component .lh-exp-gauge__arc--metric.lh-exp-gauge--miniarc {
+  opacity: 0;
+  stroke-dasharray: 0 calc(var(--circle-meas) * var(--radius));
+  transition: 0s .005s;
+}
+.lh-exp-gauge-component .state--expanded .lh-exp-gauge__arc--metric.lh-exp-gauge--miniarc {
+  opacity: .999;
+  stroke-dasharray: var(--metric-array);
+  transition: 0.3s; /*  calc(.005s + var(--i)*.05s); entrace animation */
+}
+.lh-exp-gauge-component .state--expanded .lh-exp-gauge__inner .lh-exp-gauge__arc {
+  opacity: 0;
+}
+
+
+.lh-exp-gauge-component .lh-exp-gauge__percentage {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: currentcolor;
+  opacity: .999;
+  font-size: calc(var(--radius) * 0.625);
+  transition: opacity .3s ease-in;
+}
+.lh-exp-gauge-component .state--highlight .lh-exp-gauge__percentage {
+  opacity: 0;
+}
+
+.lh-exp-gauge-component .lh-cover {
+  fill: none;
+  opacity: .001;
+  pointer-events: none;
+}
+.lh-exp-gauge-component .state--expanded .lh-cover {
+  pointer-events: auto;
+}
+
+.lh-exp-gauge-component .metric {
+  transform: scale(var(--scale-initial));
+  opacity: 0;
+  transition: transform .1s .2s ease-out,  opacity .3s ease-out;
+  pointer-events: none;
+}
+.lh-exp-gauge-component .metric text {
+  pointer-events: none;
+}
+.lh-exp-gauge-component .metric__value {
+  fill: currentcolor;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lh-exp-gauge-component .state--expanded .metric {
+  transform: scale(1);
+  opacity: .999;
+  transition: transform .3s ease-out,  opacity .3s ease-in,  stroke-width .1s ease-out;
+  transition-delay: calc(var(--i)*.05s);
+  pointer-events: auto;
+}
+.lh-exp-gauge-component .state--highlight .metric {
+  opacity: .3;
+}
+.lh-exp-gauge-component .state--highlight .metric--highlight {
+  opacity: .999;
+  stroke-width: calc(1.5*var(--stroke-width));
+}
+.lh-exp-gauge-component .state--highlight .metric--highlight .metric__value {
+  opacity: 0.999;
+}
+
+
+/*
+ the initial first load peek
+*/
+.lh-exp-gauge-component .lh-exp-gauge__bg {  /* needed for the use zindex stacking w/ transparency */
+  fill: var(--report-background-color);
+  stroke: var(--report-background-color);
+}
+.lh-exp-gauge-component .state--peek .metric {
+  transition-delay: 0ms;
+  animation: peek var(--peek-dur) cubic-bezier(0.46, 0.03, 0.52, 0.96);
+  animation-fill-mode: forwards;
+}
+.lh-exp-gauge-component .state--peek .lh-exp-gauge__inner .lh-exp-gauge__arc {
+  opacity: 1;
+}
+.lh-exp-gauge-component .state--peek .lh-exp-gauge__arc.lh-exp-gauge--faded {
+  opacity: 0.3; /* just a tad stronger cuz its fighting with a big solid arg */
+}
+/* do i need to set expanded and override this? */
+.lh-exp-gauge-component .state--peek .lh-exp-gauge__arc--metric.lh-exp-gauge--miniarc {
+  transition: opacity 0.3s;
+}
+.lh-exp-gauge-component .state--peek {
+  color: unset;
+}
+.lh-exp-gauge-component .state--peek .metric__label {
+  display: none;
+}
+
+.lh-exp-gauge-component .metric__label {
+  fill: var(--report-text-color);
+}
+
+@keyframes peek {
+  /* biggest it should go is 0.92. smallest is 0.8 */
+   0% { transform: scale(0.8); opacity: 0.8; }
+   50% {  transform: scale(0.92); opacity: 1; }
+   100% { transform: scale(0.8); opacity: 0.8; }
+ }
+
+/* for explody hax */
+.lh-exp-gauge-component thead,
+.lh-exp-gauge-component table td:nth-child(2),
+.lh-exp-gauge-component table td:nth-child(4),
+.lh-exp-gauge-component table td:nth-child(5),
+.lh-exp-gauge-component table td:nth-child(6),
+.lh-exp-gauge-component h2 {
+  /* display: none; */
+}
+
+.lh-exp-gauge-component .wrapper {
+  width: 620px;
+}
 
 /*# sourceURL=report-styles.css */

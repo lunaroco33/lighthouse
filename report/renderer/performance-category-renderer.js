@@ -9,6 +9,7 @@
 import {CategoryRenderer} from './category-renderer.js';
 import {ReportUtils} from './report-utils.js';
 import {Globals} from './report-globals.js';
+import {createGauge, updateGauge} from './explodey-gauge.js';
 
 export class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
@@ -311,6 +312,12 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
       budgetTableEls.forEach(table => groupEl.insertBefore(table, footerEl));
       groupEl.classList.add('lh-audit-group--budgets');
       element.append(groupEl);
+    }
+
+    if (!options || options?.gatherMode === 'navigation') {
+      const el = createGauge(this.dom);
+      updateGauge(this.dom, el, category);
+      this.dom.find('.lh-score__gauge', element).replaceWith(el);
     }
 
     return element;
