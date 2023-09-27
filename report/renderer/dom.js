@@ -7,6 +7,7 @@
 /* eslint-env browser */
 
 /** @typedef {HTMLElementTagNameMap & {[id: string]: HTMLElement}} HTMLElementByTagName */
+/** @typedef {SVGElementTagNameMap & {[id: string]: SVGElement}} SVGElementByTagName */
 /** @template {string} T @typedef {import('typed-query-selector/parser').ParseSelector<T, Element>} ParseSelector */
 
 import {Util} from '../../shared/util.js';
@@ -59,6 +60,17 @@ export class DOM {
       }
     }
     return element;
+  }
+
+  /**
+   * @template {string} T
+   * @param {T} name
+   * @param {string=} className
+   * @return {SVGElementByTagName[T]}
+   */
+  createSVGElement(name, className) {
+    return /** @type {SVGElementByTagName[T]} */ (
+      this._document.createElementNS('http://www.w3.org/2000/svg', name, className));
   }
 
   /**

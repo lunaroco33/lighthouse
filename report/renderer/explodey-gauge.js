@@ -32,6 +32,11 @@ function updateGauge(dom, componentEl, category) {
   _setPerfGaugeExplodey(dom, wrapperEl, category);
 }
 
+/**
+ * @param {number} sizeSVG
+ * @param {number} percent
+ * @param {number=} strokeWidth
+ */
 function _determineTrig(sizeSVG, percent, strokeWidth) {
   strokeWidth = strokeWidth || sizeSVG / 32;
 
@@ -55,8 +60,11 @@ function _determineTrig(sizeSVG, percent, strokeWidth) {
     circumferenceInner,
     circumferenceOuter,
     getArcLength: () => Math.max(0, Number((percent * circumferenceInner))),
-    // isButt case is for metricArcHoverTarget
-    getMetricArcLength: (weightingPct, isButt) => {
+    /**
+     * @param {number} weightingPct
+     * @param {boolean} isButt for metricArcHoverTarget
+     */
+    getMetricArcLength: (weightingPct, isButt = false) => {
       // TODO: this math isn't perfect butt it's very close.
       const linecapFactor = isButt ? 0 : 2 * endDiffOuter;
       return Math.max(0, Number((weightingPct * circumferenceOuter - strokeGap - linecapFactor)));
@@ -92,7 +100,6 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
   } = _determineTrig(sizeSVG, percent);
 
   const SVG = dom.find('svg.lh-exp-gauge', wrapperEl);
-  const NS_URI = 'http://www.w3.org/2000/svg';
 
   SVG.setAttribute('viewBox', [offsetSVG, offsetSVG, sizeSVG, sizeSVG].join(' '));
   SVG.style.setProperty('--stroke-width', `${strokeWidth}px`);
@@ -138,12 +145,12 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
     const needsDomPopulation = !groupOuter.querySelector(`.metric--${alias}`);
 
     // HACK:This isn't ideal but it was quick. Create element during initialization or reuse existing during updates
-    const metricGroup = dom.maybeFind(`g.metric--${alias}`, groupOuter) || dom.createElementNS(NS_URI, 'g');
-    const metricArcMax = dom.maybeFind(`.metric--${alias} circle.lh-exp-gauge--faded`, groupOuter) || dom.createElementNS(NS_URI, 'circle');
-    const metricArc = dom.maybeFind(`.metric--${alias} circle.lh-exp-gauge--miniarc`, groupOuter) || dom.createElementNS(NS_URI, 'circle');
-    const metricArcHoverTarget = dom.maybeFind(`.metric--${alias} circle.lh-exp-gauge-hovertarget`, groupOuter) || dom.createElementNS(NS_URI, 'circle');
-    const metricLabel = dom.maybeFind(`.metric--${alias} text.metric__label`, groupOuter) || dom.createElementNS(NS_URI, 'text');
-    const metricValue = dom.maybeFind(`.metric--${alias} text.metric__value`, groupOuter) || dom.createElementNS(NS_URI, 'text');
+    const metricGroup = dom.maybeFind(`g.metric--${alias}`, groupOuter) || dom.createSVGElement('g');
+    const metricArcMax = dom.maybeFind(`.metric--${alias} circle.lh-exp-gauge--faded`, groupOuter) || dom.createSVGElement('circle');
+    const metricArc = dom.maybeFind(`.metric--${alias} circle.lh-exp-gauge--miniarc`, groupOuter) || dom.createSVGElement('circle');
+    const metricArcHoverTarget = dom.maybeFind(`.metric--${alias} circle.lh-exp-gauge-hovertarget`, groupOuter) || dom.createSVGElement('circle');
+    const metricLabel = dom.maybeFind(`.metric--${alias} text.metric__label`, groupOuter) || dom.createSVGElement('text');
+    const metricValue = dom.maybeFind(`.metric--${alias} text.metric__value`, groupOuter) || dom.createSVGElement('text');
 
     metricGroup.classList.add('metric', `metric--${alias}`);
     metricArcMax.classList.add('lh-exp-gauge__arc', 'lh-exp-gauge__arc--metric', 'lh-exp-gauge--faded');
@@ -222,7 +229,7 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
   });
 
   // Catch pointerover movement between the hovertarget arcs. Without this the metric-highlights can clear when moving between.
-  const underHoverTarget = groupOuter.querySelector(`.lh-exp-gauge-underhovertarget`) || dom.createElementNS(NS_URI, 'circle');
+  const underHoverTarget = groupOuter.querySelector(`.lh-exp-gauge-underhovertarget`) || dom.createSVGElement('circle');
   underHoverTarget.classList.add('lh-exp-gauge__arc', 'lh-exp-gauge__arc--metric', 'lh-exp-gauge-hovertarget', 'lh-exp-gauge-underhovertarget');
   const underHoverLength = getMetricArcLength(1, true);
   underHoverTarget.setAttribute('stroke-dasharray', `${underHoverLength} ${circumferenceOuter - underHoverLength - endDiffOuter}`);
@@ -232,6 +239,7 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
 
   // Hack. Not ideal.
   if (SVG.dataset.listenersSetup) return;
+  // @ts-expect-error
   SVG.dataset.listenersSetup = true;
 
   peekGauge(SVG);
@@ -242,62 +250,70 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
     metric.metric-highlight: highlight this particular metric
   */
   SVG.addEventListener('pointerover', e => {
-    console.log(e.target);
-
     // If hovering outside of the arcs, reset back to unexploded state
     if (e.target === SVG && SVG.classList.contains('state--expanded')) {
       SVG.classList.remove('state--expanded');
 
       if (SVG.classList.contains('state--highlight')) {
         SVG.classList.remove('state--highlight');
-        SVG.querySelector('.metric--highlight').classList.remove('metric--highlight');
+        dom.find('.metric--highlight', SVG).classList.remove('metric--highlight');
       }
       return;
     }
 
-    const parent = e.target.parentNode;
+    if (!(e.target instanceof Element)) {
+      return;
+    }
+
+    const parentEl = e.target.parentNode;
+    if (!(parentEl instanceof SVGElement)) {
+      return;
+    }
 
     // if hovering on the primary (inner) part, then explode it but dont highlight
-    if (parent && parent === groupInner) {
+    if (parentEl && parentEl === groupInner) {
       if (!SVG.classList.contains('state--expanded')) SVG.classList.add('state--expanded');
       else if (SVG.classList.contains('state--highlight')) {
         SVG.classList.remove('state--highlight');
-        SVG.querySelector('.metric--highlight').classList.remove('metric--highlight');
+        dom.find('.metric--highlight', SVG).classList.remove('metric--highlight');
       }
       return;
     }
 
     // if hovering on a metric, highlight that one.
     // TODO: The hover target is a little small. ideally it's thicker.
-    if (parent && parent.classList && parent.classList.contains('metric')) {
+    if (parentEl && parentEl.classList && parentEl.classList.contains('metric')) {
       // match the bg color of the gauge during a metric highlight
-      const metricRating = parent.style.getPropertyValue('--metric-rating');
+      const metricRating = parentEl.style.getPropertyValue('--metric-rating');
       wrapperEl.style.setProperty('--color-highlight', `var(--color-${metricRating}-secondary)`);
 
       if (!SVG.classList.contains('state--highlight')) {
         SVG.classList.add('state--highlight');
-        parent.classList.add('metric--highlight');
+        parentEl.classList.add('metric--highlight');
       } else {
-        const highlighted = SVG.querySelector('.metric--highlight');
+        const highlightEl = dom.find('.metric--highlight', SVG);
 
-        if (parent !== highlighted) {
-          highlighted.classList.remove('metric--highlight');
-          parent.classList.add('metric--highlight');
-          console.log({highlighted, parent});
+        if (parentEl !== highlightEl) {
+          highlightEl.classList.remove('metric--highlight');
+          parentEl.classList.add('metric--highlight');
+          console.log({highlightEl, parent: parentEl});
         }
       }
     }
   });
 
   // clear on mouselave even if mousemove didn't catch it.
-  SVG.addEventListener('mouseleave', e => {
+  SVG.addEventListener('mouseleave', () => {
     // SVG.classList.remove('state--expanded');
     SVG.classList.remove('state--highlight');
     const mh = SVG.querySelector('.metric--highlight');
-    mh && mh.classList.remove('metric--highlight');
+    mh?.classList.remove('metric--highlight');
   });
 
-  // On the first run, tease with a little peek reveal
+  /**
+   * On the first run, tease with a little peek reveal
+   * @param {SVGElement} SVG
+   */
   async function peekGauge(SVG) {
     // Delay just a tad to let the user aclimatize beforehand.
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -306,10 +322,10 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
     if (SVG.classList.contains('state--expanded')) return;
 
     // To visually get the outer ring to peek on the edge, we need the inner ring on top. This is SVG's equivalent to `innerElem.zIndex = 100`
-    const inner = SVG.querySelector('.lh-exp-gauge__inner');
+    const inner = dom.find('.lh-exp-gauge__inner', SVG);
     const id = `uniq-${Math.random()}`;
     inner.setAttribute('id', id);
-    const useElem = dom.createElementNS(NS_URI, 'use');
+    const useElem = dom.createSVGElement('use');
     useElem.setAttribute('href', `#${id}`);
     // for paint order this must come _after_ the outer.
     SVG.appendChild(useElem);
@@ -320,7 +336,8 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
 
     // Fancy double cleanup
     const cleanup = () => {
-      SVG.classList.remove('state--peek', 'state--expanded') || useElem.remove();
+      SVG.classList.remove('state--peek', 'state--expanded');
+      useElem.remove();
     };
     const tId = setTimeout(() => {
       SVG.removeEventListener('mouseenter', handleEarlyInteraction);
