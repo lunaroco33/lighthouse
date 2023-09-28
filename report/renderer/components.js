@@ -177,7 +177,7 @@ function createElementScreenshotComponent(dom) {
 function createExplodeyGaugeComponent(dom) {
   const el0 = dom.createFragment();
   const el1 = dom.createElement("div", "lh-exp-gauge-component");
-  const el2 = dom.createElement("a", "lh-exp-gauge__wrapper");
+  const el2 = dom.createElement("div", "lh-exp-gauge__wrapper");
   el2.setAttribute('target', '_blank');
   const el3 = dom.createElement("div", "lh-exp-gauge__svg-wrapper");
   const el4 = dom.createElementNS("http://www.w3.org/2000/svg", "svg", "lh-exp-gauge");
