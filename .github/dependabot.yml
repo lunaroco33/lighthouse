@@ -1,6 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "yarn"
+    directory: '/'
     allow:
       - "production"
     schedule:
@@ -8,3 +9,8 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+  - package-ecosystem: 'github-actions' # Necessary to update action hash
+    directory: '/'
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 2
