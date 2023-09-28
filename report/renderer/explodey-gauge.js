@@ -21,12 +21,14 @@ function createGauge(dom) {
  * @param {import('./dom.js').DOM} dom
  * @param {Element} componentEl
  * @param {LH.ReportResult.Category} category
+ * @param {string} href
  */
-function updateGauge(dom, componentEl, category) {
-  const wrapperEl = dom.find('div.lh-exp-gauge__wrapper', componentEl);
+function updateGauge(dom, componentEl, category, href) {
+  const wrapperEl = dom.find('a.lh-exp-gauge__wrapper', componentEl);
   wrapperEl.className = '';
   wrapperEl.classList.add('lh-exp-gauge__wrapper',
     `lh-exp-gauge__wrapper--${ReportUtils.calculateRating(category.score)}`);
+  wrapperEl.href = href;
   _setPerfGaugeExplodey(dom, wrapperEl, category);
 }
 

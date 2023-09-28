@@ -316,7 +316,7 @@ export class PerformanceCategoryRenderer extends CategoryRenderer {
 
     if (!options || options?.gatherMode === 'navigation') {
       const el = createGauge(this.dom);
-      updateGauge(this.dom, el, category);
+      updateGauge(this.dom, el, category, this._getScoringCalculatorHref(category.auditRefs));
       this.dom.find('.lh-score__gauge', element).replaceWith(el);
     }
 

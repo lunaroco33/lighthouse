@@ -1995,7 +1995,6 @@ details[open] .lh-clump-toggletext--hide { display: block;}
   text-align: center;
   text-decoration: none;
   transition: .3s;
-  cursor:default;
 }
 .lh-exp-gauge-component .lh-exp-gauge__wrapper--pass {
   color: var(--color-pass);
