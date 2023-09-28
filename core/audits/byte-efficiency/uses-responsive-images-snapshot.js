@@ -42,6 +42,7 @@ class UsesResponsiveImagesSnapshot extends Audit {
       title: str_(UIStrings.title),
       failureTitle: str_(UIStrings.failureTitle),
       description: UsesResponsiveImages.str_(UsesResponsiveImages.UIStrings.description),
+      scoreDisplayMode: Audit.SCORING_MODES.METRIC_SAVINGS,
       supportedModes: ['snapshot'],
       guidanceLevel: 2,
       requiredArtifacts: ['ImageElements', 'ViewportDimensions'],

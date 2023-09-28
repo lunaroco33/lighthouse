@@ -14373,8 +14373,8 @@
             "id": "uses-responsive-images-snapshot",
             "title": "Images were larger than their displayed size",
             "description": "Serve images that are appropriately-sized to save cellular data and improve load time. [Learn how to size images](https://developer.chrome.com/docs/lighthouse/performance/uses-responsive-images/).",
-            "score": 0,
-            "scoreDisplayMode": "binary",
+            "score": 0.5,
+            "scoreDisplayMode": "metricSavings",
             "details": {
               "type": "table",
               "headings": [
