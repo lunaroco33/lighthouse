@@ -2007,7 +2007,6 @@ details[open] .lh-clump-toggletext--hide { display: block;}
   color: var(--color-fail);
 }
 .lh-exp-gauge-component .state--expanded {
-  color: var(--color-gray-600);
   transition: color .3s;
 }
 .lh-exp-gauge-component .state--highlight {
@@ -2041,6 +2040,7 @@ details[open] .lh-clump-toggletext--hide { display: block;}
 .lh-exp-gauge-component .lh-exp-gauge__arc--metric {
   color: var(--metric-color);
   stroke-dashoffset: var(--metric-offset);
+  opacity: 0.3;
 }
 .lh-exp-gauge-component .lh-exp-gauge-hovertarget {
   color: currentcolor;
