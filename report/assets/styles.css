@@ -1966,6 +1966,10 @@ details[open] .lh-clump-toggletext--hide { display: block;}
 
 /* Explodey gauge */
 
+.lh-exp-gauge-component {
+  margin-bottom: 10px;
+}
+
 .lh-exp-gauge-component circle {
   stroke: currentcolor;
   r: var(--radius);
@@ -2014,6 +2018,12 @@ details[open] .lh-clump-toggletext--hide { display: block;}
 .lh-exp-gauge-component .lh-exp-gauge__svg-wrapper {
   display: flex;
   flex-direction: column-reverse;
+}
+
+.lh-exp-gauge-component .lh-exp-gauge__label {
+  fill: var(--report-text-color);
+  font-family: var(--report-font-family);
+  font-size: 12px;
 }
 
 .lh-exp-gauge-component .lh-exp-gauge__cutout {

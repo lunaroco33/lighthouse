@@ -101,7 +101,9 @@ function _setPerfGaugeExplodey(dom, wrapperEl, category) {
 
   const SVG = dom.find('svg.lh-exp-gauge', wrapperEl);
 
-  SVG.setAttribute('viewBox', [offsetSVG, offsetSVG, sizeSVG, sizeSVG].join(' '));
+  dom.find('.lh-exp-gauge__label', SVG).textContent = category.title;
+
+  SVG.setAttribute('viewBox', [offsetSVG, offsetSVG / 2, sizeSVG, sizeSVG / 2].join(' '));
   SVG.style.setProperty('--stroke-width', `${strokeWidth}px`);
   SVG.style.setProperty('--circle-meas', (2 * Math.PI).toFixed(4));
 
