@@ -2067,13 +2067,22 @@ details[open] .lh-clump-toggletext--hide { display: block;}
 .lh-exp-gauge-component .lh-exp-gauge__percentage {
   text-anchor: middle;
   dominant-baseline: middle;
-  fill: currentcolor;
   opacity: .999;
   font-size: calc(var(--radius) * 0.625);
   transition: opacity .3s ease-in;
 }
 .lh-exp-gauge-component .state--highlight .lh-exp-gauge__percentage {
   opacity: 0;
+}
+
+.lh-exp-gauge-component .lh-exp-gauge__wrapper--fail .lh-exp-gauge__percentage {
+  fill: var(--color-fail);
+}
+.lh-exp-gauge-component .lh-exp-gauge__wrapper--average .lh-exp-gauge__percentage {
+  fill: var(--color-average);
+}
+.lh-exp-gauge-component .lh-exp-gauge__wrapper--pass .lh-exp-gauge__percentage {
+  fill: var(--color-pass);
 }
 
 .lh-exp-gauge-component .lh-cover {
