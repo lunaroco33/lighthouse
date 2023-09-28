@@ -2159,16 +2159,6 @@ details[open] .lh-clump-toggletext--hide { display: block;}
    100% { transform: scale(0.8); opacity: 0.8; }
  }
 
-/* for explody hax */
-.lh-exp-gauge-component thead,
-.lh-exp-gauge-component table td:nth-child(2),
-.lh-exp-gauge-component table td:nth-child(4),
-.lh-exp-gauge-component table td:nth-child(5),
-.lh-exp-gauge-component table td:nth-child(6),
-.lh-exp-gauge-component h2 {
-  /* display: none; */
-}
-
 .lh-exp-gauge-component .wrapper {
   width: 620px;
 }

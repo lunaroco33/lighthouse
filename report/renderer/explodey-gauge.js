@@ -9,8 +9,6 @@
 
 import {ReportUtils} from './report-utils.js';
 
-/* Most of the impressive code here authored by Ana Tudor, Nov 2019 */
-
 /**
  * @param {import('./dom.js').DOM} dom
  */
