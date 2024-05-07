@@ -34,12 +34,16 @@ const ProtocolEventEmitter = /** @type {ProtocolEventMessageEmitter} */ (EventEm
  * appear and allows listeners to the flattened protocol events from all targets.
  */
 class TargetManager extends ProtocolEventEmitter {
-  /** @param {LH.Puppeteer.CDPSession} cdpSession */
-  constructor(cdpSession) {
+  /**
+   * @param {LH.Puppeteer.CDPSession} cdpSession
+   * @param {Promise<never>} crashPromise
+   */
+  constructor(cdpSession, crashPromise) {
     super();
 
     this._enabled = false;
     this._rootCdpSession = cdpSession;
+    this._crashPromise = crashPromise;
     this._mainFrameId = '';
 
     /**
@@ -123,7 +127,7 @@ class TargetManager extends ProtocolEventEmitter {
    * @param {LH.Puppeteer.CDPSession} cdpSession
    */
   async _onSessionAttached(cdpSession) {
-    const newSession = new ProtocolSession(cdpSession);
+    const newSession = new ProtocolSession(cdpSession, this._crashPromise);
 
     let targetType;
 

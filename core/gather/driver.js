@@ -88,7 +88,7 @@ class Driver {
     const status = {msg: 'Connecting to browser', id: 'lh:driver:connect'};
     log.time(status);
     const cdpSession = await this._page.target().createCDPSession();
-    this._targetManager = new TargetManager(cdpSession);
+    this._targetManager = new TargetManager(cdpSession, this.fatalRejection.promise);
     await this._targetManager.enable();
     this._networkMonitor = new NetworkMonitor(this._targetManager);
     await this._networkMonitor.enable();

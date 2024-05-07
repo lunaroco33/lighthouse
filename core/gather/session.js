@@ -31,11 +31,13 @@ const CrdpEventEmitter = /** @type {CrdpEventMessageEmitter} */ (EventEmitter);
 class ProtocolSession extends CrdpEventEmitter {
   /**
    * @param {LH.Puppeteer.CDPSession} cdpSession
+   * @param {Promise<never>} crashPromise
    */
-  constructor(cdpSession) {
+  constructor(cdpSession, crashPromise) {
     super();
 
     this._cdpSession = cdpSession;
+    this._crashPromise = crashPromise;
     /** @type {LH.Crdp.Target.TargetInfo|undefined} */
     this._targetInfo = undefined;
     /** @type {number|undefined} */
@@ -114,7 +116,7 @@ class ProtocolSession extends CrdpEventEmitter {
       log.formatProtocol('method <= browser ERR', {method}, 'error');
       throw LighthouseError.fromProtocolMessage(method, error);
     });
-    const resultWithTimeoutPromise = Promise.race([resultPromise, timeoutPromise]);
+    const resultWithTimeoutPromise = Promise.race([resultPromise, timeoutPromise, this._crashPromise]);
 
     return resultWithTimeoutPromise.finally(() => {
       if (timeout) clearTimeout(timeout);
